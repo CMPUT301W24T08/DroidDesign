@@ -1,5 +1,7 @@
 package com.example.droiddesign;
 
 public abstract class Shape {
-    String colour = "Blue";
+    int x;
+    int y;
+    String colour = "blue";
 }
