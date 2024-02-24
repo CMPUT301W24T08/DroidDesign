@@ -42,9 +42,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:backgroundTint="@color/white"
             android:text="@string/google_login"
             android:textColor="@color/bg_dark"
-            android:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="24dp"
+            android:backgroundTint="@color/white"
             android:text="@string/continue_with_email"
             android:textColor="@color/bg_dark"
-            android:backgroundTint="@color/white"
-            app:icon="@drawable/baseline_email_24"
+            app:icon="@drawable/mail_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_continue_with_google" />
@@ -80,6 +80,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button2"
             app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/google_logo_launch"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_continue_with_google"
+            app:layout_constraintEnd_toEndOf="@+id/button_continue_with_google"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/button_continue_with_google"
+            app:layout_constraintTop_toTopOf="@+id/button_continue_with_google"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/google_logo_black" />
+
+        <ImageView
+            android:id="@+id/email_icon_launch"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="75dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="246dp"
+            android:layout_marginBottom="25dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button2"
+            app:layout_constraintEnd_toEndOf="@+id/button2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/button2"
+            app:layout_constraintTop_toTopOf="@+id/button2"
+            app:layout_constraintVertical_bias="0.375"
+            app:srcCompat="@drawable/mail_icon" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
