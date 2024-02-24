@@ -19,3 +19,6 @@ Conclave is an innovative Android application designed to streamline the event o
 ## Wiki
 
 For more detailed information about the Conclave project, please visit our [project wiki](https://github.com/CMPUT301W24T08/DroidDesign/wiki).
+
+## Style Guide
+We use Google's style guidelines for Java development. Check out the guide [here](https://google.github.io/styleguide/javaguide.html)!
