@@ -1,4 +1,4 @@
-package com.example.droiddesign;
+package com.example.droiddesign.model;
 
 import java.util.ArrayList;
 import java.util.Date;
