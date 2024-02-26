@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.droiddesign.Event;
+import com.example.droiddesign.model.Event;
 import com.example.droiddesign.R;
 
 import java.util.ArrayList;
