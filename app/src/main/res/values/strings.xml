@@ -5,4 +5,13 @@
     <string name="no_account">Don\'t have an account? Sign up here.</string>
     <string name="continue_with_email">Continue with Email</string>
     <string name="skip">Skip</string>
+    <string name="role_choice_query">Just stepping in, Or leading the way?</string>
+    <string name="admin">Admin</string>
+    <string name="organizer">Organizer</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="date_placeholder">01</string>
+    <string name="month_placeholder">January</string>
+    <string name="year_placeholder">2024</string>
+    <string name="event_name">Event Name</string>
+    <string name="location">Location</string>
 </resources>

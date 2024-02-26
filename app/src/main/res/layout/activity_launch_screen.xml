@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <ImageView
+        android:id="@+id/bg_logo"
+        android:layout_width="369dp"
+        android:layout_height="372dp"
+        android:layout_marginStart="228dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.26"
+        app:srcCompat="@drawable/big_logo_placeholder" />
+
     <TextView
         android:id="@+id/launch_tagline"
         android:layout_width="0dp"
@@ -36,13 +47,13 @@
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="24dp"
             android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/google_login"
             android:textColor="@color/bg_dark"
-            android:focusable="true"
-            android:clickable="true"
             app:elevation="2dp"
             app:layout_constraintBottom_toTopOf="@id/continue_with_email"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,10 +69,10 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="24dp"
             android:backgroundTint="@color/white"
-            android:text="@string/continue_with_email"
-            android:textColor="@color/bg_dark"
             android:clickable="true"
             android:focusable="true"
+            android:text="@string/continue_with_email"
+            android:textColor="@color/bg_dark"
             app:elevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,12 +83,12 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/no_account"
             android:textAllCaps="false"
             android:textColor="@color/text_dark"
             android:textSize="12sp"
-            android:clickable="true"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +96,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/image_google_logo"
             android:layout_width="26dp"
             android:layout_height="26dp"
             app:layout_constraintBottom_toBottomOf="@+id/button_continue_with_google"
@@ -100,6 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="@string/skip"
             android:focusable="true"
             app:backgroundTint="@color/bg_dark"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -109,11 +121,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.92"
             app:srcCompat="@drawable/double_arrow_right_light"
-            app:tint="@color/secondary_light"
-            android:contentDescription="@string/skip" />
+            app:tint="@color/secondary_light" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/image_mail"
             android:layout_width="26dp"
             android:layout_height="26dp"
             app:layout_constraintBottom_toBottomOf="@+id/continue_with_email"
@@ -125,5 +136,17 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/image_logo"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintBottom_toTopOf="@+id/launch_tagline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25"
+        app:srcCompat="@drawable/logo_placeholder" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

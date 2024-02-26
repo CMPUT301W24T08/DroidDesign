@@ -1,14 +1,16 @@
-package com.example.droiddesign;
+package com.example.droiddesign.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.droiddesign.R;
+
+public class LaunchScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.launch_screen);
+        setContentView(R.layout.activity_launch_screen);
     }
 }
