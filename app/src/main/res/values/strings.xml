@@ -14,4 +14,11 @@
     <string name="year_placeholder">2024</string>
     <string name="event_name">Event Name</string>
     <string name="location">Location</string>
+    <string name="browse_events">Browse Events</string>
+    <string name="profile_settings">Profile Settings</string>
+    <string name="app_settings">App Settings</string>
+    <string name="menu">Menu</string>
+    <string name="back">Back</string>
+    <string name="event_name_query">What is the name of your event?</string>
+    <string name="event_name_placeholder">Event Name</string>
 </resources>

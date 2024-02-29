@@ -8,7 +8,7 @@
 
     <!-- So the image that you put into discord doesn't have the inner square thingy -->
     <ImageView
-        android:id="rename me"
+        android:id="@id/logo_large"
         android:layout_width="845dp"
         android:layout_height="845dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
     <ImageView
-        android:id="me too"
+        android:id="@id/logo_small"
         android:layout_width="117dp"
         android:layout_height="104dp"
         app:layout_constraintBottom_toBottomOf="parent"
