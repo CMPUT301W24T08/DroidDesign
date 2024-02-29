@@ -7,22 +7,34 @@
     android:background="@drawable/gradient_background">
 
     <ImageView
-        android:id="@+id/bg_logo"
-        android:layout_width="369dp"
-        android:layout_height="372dp"
-        android:layout_marginStart="228dp"
+        android:id="@id/logo_large"
+        android:layout_width="845dp"
+        android:layout_height="845dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.26"
-        app:srcCompat="@drawable/big_logo_placeholder" />
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/conclave_logo_large_dark" />
+
+    <ImageView
+        android:id="@id/logo_small"
+        android:layout_width="101dp"
+        android:layout_height="74dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/conclave_logo_small" />
 
     <TextView
         android:id="@+id/launch_tagline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:fontFamily="@font/montserrat_semibold"
+        android:fontFamily="@font/opensans_semibold"
         android:text="@string/conclave_tagline"
         android:textColor="@color/white"
         android:textSize="63sp"
@@ -136,17 +148,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageView
-        android:id="@+id/image_logo"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        app:layout_constraintBottom_toTopOf="@+id/launch_tagline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25"
-        app:srcCompat="@drawable/logo_placeholder" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
