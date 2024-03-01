@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.396" />
 
     <ImageView
         android:id="@+id/logo_large_role_selection"
@@ -83,6 +83,7 @@
         app:layout_constraintVertical_bias="0.29000002"
         app:srcCompat="@drawable/admin2" />
 
+
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
@@ -93,5 +94,4 @@
         app:layout_constraintTop_toTopOf="@+id/organizer_button"
         app:layout_constraintVertical_bias="0.29000002"
         app:srcCompat="@drawable/organizer" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
