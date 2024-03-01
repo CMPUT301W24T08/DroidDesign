@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+
+    <TextView
+        android:id="@+id/role_choice_query"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center"
+        android:paddingEnd="20dp"
+        android:text="@string/role_choice_query"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/logo_large_role_selection"
+        android:layout_width="615dp"
+        android:layout_height="404dp"
+        android:layout_marginTop="220dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/role_choice_query"
+        app:srcCompat="@drawable/big_logo_placeholder" />
+
+    <ImageView
+        android:id="@+id/image_logo_role_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/role_choice_query"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25"
+        app:srcCompat="@drawable/logo_placeholder" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/attendee_button"
+        android:layout_width="106dp"
+        android:layout_height="108dp"
+        android:backgroundTint="@color/bg_dark"
+        android:paddingTop="70dp"
+        android:text="@string/attendee"
+        android:textSize="12sp"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/logo_large_role_selection"
+        app:layout_constraintEnd_toStartOf="@+id/organizer_button"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/role_choice_query"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/organizer_button"
+        android:layout_width="106dp"
+        android:layout_height="108dp"
+        android:backgroundTint="@color/bg_dark"
+        android:paddingTop="70dp"
+        android:text="@string/organizer"
+        android:textSize="12sp"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/logo_large_role_selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/role_choice_query"
+        app:layout_constraintVertical_bias="0.437" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/admin_button"
+        android:layout_width="106dp"
+        android:layout_height="108dp"
+        android:backgroundTint="@color/bg_dark"
+        android:paddingTop="70dp"
+        android:text="@string/admin"
+        android:textSize="12sp"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/logo_large_role_selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.524"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/role_choice_query"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:layout_constraintBottom_toBottomOf="@+id/attendee_button"
+        app:layout_constraintEnd_toEndOf="@+id/attendee_button"
+        app:layout_constraintStart_toStartOf="@+id/attendee_button"
+        app:layout_constraintTop_toTopOf="@+id/attendee_button"
+        app:layout_constraintVertical_bias="0.29000002" />
+
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_button"
+        app:layout_constraintEnd_toEndOf="@+id/organizer_button"
+        app:layout_constraintStart_toStartOf="@+id/organizer_button"
+        app:layout_constraintTop_toTopOf="@+id/organizer_button"
+        app:layout_constraintVertical_bias="0.29000002"
+        app:srcCompat="@drawable/organizer" />
+
+    <ImageView
+        android:id="@+id/admin_image"
+        android:layout_width="75dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toTopOf="@+id/logo_large_role_selection"
+        app:layout_constraintEnd_toEndOf="@+id/admin_button"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="@+id/admin_button"
+        app:layout_constraintTop_toTopOf="@+id/admin_button"
+        app:layout_constraintVertical_bias="0.343"
+        app:srcCompat="@drawable/admin2" />
+</androidx.constraintlayout.widget.ConstraintLayout>
