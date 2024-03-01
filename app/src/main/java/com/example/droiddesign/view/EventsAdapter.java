@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
-	private List<Event> eventsList;
-	private OnItemClickListener listener;
+	private final List<Event> eventsList;
+	private final OnItemClickListener listener;
 
 	public interface OnItemClickListener {
 		void onItemClick(Event event);
@@ -26,6 +27,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 		this.listener = listener;
 	}
 
+	@NonNull
 	@Override
 	public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_card, parent, false);

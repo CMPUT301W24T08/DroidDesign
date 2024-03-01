@@ -17,6 +17,7 @@ public class Event {
     private List<OrganizerMessage> organizerMessages;
     private String imagePosterId;
     private EventDetails eventDetails;
+
     // Constructor
     public Event() {
         // Default constructor for Firestore serialization
@@ -80,5 +81,5 @@ public class Event {
     // Callback interface for asynchronous Firestore operations
     public interface FirestoreCallback {
         void onCallback(Event event);
-    }
+    };
 }
