@@ -30,24 +30,27 @@ public class EventMenuActivity extends AppCompatActivity {
 	private EventsAdapter eventsAdapter;
 	private List<Event> eventsList; // Populate this list with the events later using firestore.
 	private NavigationView navigationMenu;
+	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+	private String userId, userRole;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
+		userId = getIntent().getStringExtra("UserId");
+		userRole = getIntent().getStringExtra("role");
+
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
 		ImageButton menuButton = findViewById(R.id.button_menu);
-		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			// Handle the event click here
 			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId()); // Make sure your Event class has a method getId().
-			startActivity(intent);
-		});
-
+			startActivity(intent);		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -73,7 +76,54 @@ public class EventMenuActivity extends AppCompatActivity {
 				showEventInputDialog(view);
 			}
 		});
+
+		// Adjust UI elements based on the user's role
+//		adjustUIBasedOnRole(userRole, (ImageButton) addEventButton);
+		navigationMenu.inflateMenu(R.menu.navigation_drawer);
+		// Set the navigation item selection listener if needed
+		navigationMenu.setNavigationItemSelectedListener(item -> {
+			// Handle navigation view item clicks here.
+			int id = item.getItemId();
+			// Logic to handle item clicks
+			Intent intent;
+
+			if (id == R.id.browse_events) {
+				// Intent for the admin dashboard
+				intent = new Intent(this, EventMenuActivity.class);
+				startActivity(intent);
+			} else if (id == R.id.profile_settings) {
+				// Intent for the organizer dashboard
+				intent = new Intent(this, ProfileSettingsActivity.class);
+				startActivity(intent);
+			} else if (id == R.id.app_settings) {
+				// Intent for the attendee dashboard
+				intent = new Intent(this, AppSettingsActivity.class);
+				startActivity(intent);
+			}
+			return true;
+		});
 	}
+
+//	private void adjustUIBasedOnRole(String role, ImageButton addEventButton) {
+//		switch (role) {
+//			case "admin":
+//				// For admin, set the addEventButton to visible and load the admin menu
+//				addEventButton.setVisibility(View.VISIBLE);
+//				navigationMenu.inflateMenu(R.menu.menu_navigation_admin); // Replace with your actual admin menu
+//				break;
+//			case "organizer":
+//				// For organizer, leave the addEventButton to visible and load the organizer menu
+//				navigationMenu.inflateMenu(R.menu.menu_navigation_organizer); // Replace with your actual organizer menu
+//				break;
+//			case "attendee":
+//				// For attendee, set the addEventButton to gone and load the attendee menu
+//				addEventButton.setVisibility(View.GONE);
+//				navigationMenu.inflateMenu(R.menu.menu_navigation_attendee); // Replace with your actual attendee menu
+//				break;
+//		}
+//
+//	}
+
 	public void showEventInputDialog(View view) {
 		// Initialize the inflater
 		LayoutInflater inflater = getLayoutInflater();
