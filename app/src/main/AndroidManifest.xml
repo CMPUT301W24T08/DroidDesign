@@ -22,7 +22,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.EventMenuActivity"/>
-
+        <activity android:name=".view.EventDetailsActivity"/>
+        <activity android:name=".view.AppSettingsActivity"/>
+        <activity android:name=".view.ProfileSettingsActivity"/>
+        <activity android:name=".view.RoleSelectionActivity"/>
     </application>
 
 </manifest>
