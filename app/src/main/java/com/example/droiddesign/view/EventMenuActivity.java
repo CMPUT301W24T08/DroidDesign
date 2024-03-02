@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -63,17 +64,17 @@ public class EventMenuActivity extends AppCompatActivity {
 		setupRecyclerView();
 		ImageButton backButton = findViewById(R.id.button_back);
 		backButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					finish();
-				}
-			});
-		ImageView addEventButton = findViewById(R.id.add_event);
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
 		addEventButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// Handle the ImageView click here
-				showEventInputDialog(view);
+				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+				startActivity(intent);
 			}
 		});
 
