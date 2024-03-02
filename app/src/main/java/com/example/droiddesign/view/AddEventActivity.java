@@ -66,6 +66,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", Locale.getDefault());
         String dateString = dateFormat.format(eventDate);
 
-        btnShowDatePicker.setText(dateString);
+//        btnShowDatePicker.setText(dateString);
     }
 }

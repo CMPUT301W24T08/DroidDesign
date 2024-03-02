@@ -84,7 +84,7 @@ public class LaunchScreenActivity extends AppCompatActivity {
 
         db.collection("usersDB").document(userId).set(user)
                 .addOnSuccessListener(aVoid -> {
-                    Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
+                    Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
                     intent.putExtra("UserId", userId); // Pass the user ID to the next activity
                     startActivity(intent);
                 })

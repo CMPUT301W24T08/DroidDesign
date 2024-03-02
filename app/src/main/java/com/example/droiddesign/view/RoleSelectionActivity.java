@@ -29,7 +29,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
 	// Retrieve the document snapshot asynchronously
 	private static final String PREF_USER_ID = "defaultID";
-	SharedPreferences prefs = getSharedPreferences(PREF_USER_ID, MODE_PRIVATE);
+//	SharedPreferences prefs = getSharedPreferences(PREF_USER_ID, MODE_PRIVATE);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
