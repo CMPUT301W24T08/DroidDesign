@@ -24,4 +24,9 @@
     <string name="attendee">Attendee</string>
     <string name="date_and_time">Date and Time</string>
     <string name="date">Date</string>
+    <string name="send_announcement_hint">Write announcement</string>
+    <string name="edit_event_details">Edit event details</string>
+    <string name="event_description">About the event ...</string>
+    <string name="event_details_title">Title</string>
+    <string name="event_details">Event Details</string>
 </resources>

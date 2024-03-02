@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class LaunchScreenActivity extends AppCompatActivity {
 
     private com.google.android.material.floatingactionbutton.FloatingActionButton skipButton;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
