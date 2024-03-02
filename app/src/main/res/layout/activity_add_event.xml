@@ -68,7 +68,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.74">
+        app:layout_constraintVertical_bias="0.43">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_event_name"
@@ -91,7 +91,7 @@
         app:layout_constraintHorizontal_bias="0.131"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.100000024" />
 
 
     <Button
@@ -103,8 +103,12 @@
         android:fontFamily="@font/opensans_semibold"
         android:text="25 January"
         android:textColor="@color/white"
-        tools:layout_editor_absoluteX="217dp"
-        tools:layout_editor_absoluteY="588dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <TextView
         android:id="@+id/textView"
@@ -114,8 +118,12 @@
         android:text="Start Date"
         android:textColor="@color/white"
         android:textSize="16sp"
-        tools:layout_editor_absoluteX="73dp"
-        tools:layout_editor_absoluteY="553dp" />
+        app:layout_constraintBottom_toTopOf="@+id/button_start_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.22"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
+        app:layout_constraintVertical_bias="0.75" />
 
     <TextView
         android:id="@+id/textView2"
@@ -129,12 +137,147 @@
         tools:layout_editor_absoluteY="64dp" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switch_is_multi_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Switch"
-        tools:layout_editor_absoluteX="25dp"
-        tools:layout_editor_absoluteY="200dp" />
+        android:fontFamily="@font/opensans_semibold"
+        android:layoutDirection="rtl"
+        android:text="Multi-Day Event?"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/event_name_query"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans"
+        android:text="End Date"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_end_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.77"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
+        app:layout_constraintVertical_bias="0.51" />
+
+    <Button
+        android:id="@+id/button_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:drawableLeft="@drawable/time_clock"
+        android:fontFamily="@font/opensans_semibold"
+        android:text="curr_time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start_date"
+        app:layout_constraintVertical_bias="0.110000014" />
+
+    <Button
+        android:id="@+id/button_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:drawableLeft="@drawable/time_clock"
+        android:fontFamily="@font/opensans_semibold"
+        android:text="time + 1hr"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.91"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_end_date"
+        app:layout_constraintVertical_bias="0.04" />
+
+    <TextView
+        android:id="@+id/text_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:fontFamily="@font/opensans"
+        android:text="Start Time"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_start_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.22"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start_date"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/opensans"
+        android:text="End Time"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_end_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.77"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_end_date"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_location_box"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:elevation="4dp"
+        android:hint="@string/location"
+        android:textColorHint="#80FFFFFF"
+        app:boxBackgroundColor="@color/card_bg_light_transparent"
+        app:boxCornerRadiusBottomEnd="15dp"
+        app:boxCornerRadiusBottomStart="15dp"
+        app:boxCornerRadiusTopEnd="15dp"
+        app:boxCornerRadiusTopStart="15dp"
+        app:boxStrokeColor="@color/white"
+        app:boxStrokeWidth="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.89">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_location"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:fontFamily="@font/opensans"
+            android:text=""
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="6dp"
+        android:fontFamily="@font/opensans"
+        android:text="Event Location"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start_time"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
