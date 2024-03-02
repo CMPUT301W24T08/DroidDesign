@@ -22,12 +22,11 @@
         android:id="@+id/logo_large"
         android:layout_width="845dp"
         android:layout_height="845dp"
-        android:layout_marginTop="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo_small"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
+        app:layout_constraintVertical_bias="0.050000012"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
 
@@ -85,7 +84,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:drawableLeft="@drawable/calendar_style2_small"
-        android:text="24 January"
+        android:text="@string/_24_january"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.131"
@@ -101,7 +100,7 @@
         android:backgroundTint="@color/card_bg_light_transparent"
         android:drawableLeft="@drawable/calendar_style2_small"
         android:fontFamily="@font/opensans_semibold"
-        android:text="25 January"
+        android:text="@string/_25_january"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans"
-        android:text="Start Date"
+        android:text="@string/start_date"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_start_date"
@@ -130,7 +129,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_semibold"
-        android:text="Event Details"
+        android:text="@string/event_details"
         android:textColor="@color/white"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -138,16 +137,18 @@
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintVertical_bias="0.10" />
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switch_is_multi_day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:fontFamily="@font/opensans_semibold"
         android:layoutDirection="rtl"
-        android:text="Multi-Day Event?"
+        android:text="@string/multi_day_event"
         android:textColor="@color/white"
+        app:trackTint="@color/card_bg_light_transparent"
+        app:thumbTint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/event_name_query"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
@@ -159,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans"
-        android:text="End Date"
+        android:text="@string/end_date"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_end_date"
@@ -192,7 +193,7 @@
         android:backgroundTint="@color/card_bg_light_transparent"
         android:drawableLeft="@drawable/time_clock"
         android:fontFamily="@font/opensans_semibold"
-        android:text="time + 1hr"
+        android:text="@string/time_1hr"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -207,9 +208,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="21dp"
         android:fontFamily="@font/opensans"
-        android:text="Start Time"
+        android:text="@string/start_time"
         android:textColor="@color/white"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_start_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.22"
@@ -223,9 +224,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:fontFamily="@font/opensans"
-        android:text="End Time"
+        android:text="@string/end_time"
         android:textColor="@color/white"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_end_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.77"
@@ -255,7 +256,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87">
+        app:layout_constraintVertical_bias="0.86">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_location"
@@ -270,10 +271,8 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:layout_marginBottom="6dp"
         android:fontFamily="@font/opensans"
-        android:text="Event Location"
+        android:text="@string/event_location"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
@@ -284,10 +283,10 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fab_next_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/bg_dark_secondary"
+        android:backgroundTint="@color/bg_light"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -295,7 +294,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.98"
-        app:srcCompat="@drawable/chevron_right_white" />
-
+        app:srcCompat="@drawable/chevron_right_white"
+        android:focusable="true"
+        android:contentDescription="@string/next" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.sql.Time;
@@ -22,8 +24,12 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
     Time timeStart;
     Time timeEnd;
     TextInputEditText eventNameInput;
-    Button btnShowDatePicker;
-    Button btnShowTimePicker;
+    Button btnStartDate;
+    Button btnEndDate;
+    Button btnStartTime;
+    Button btnEndTime;
+    FloatingActionButton nextPage;
+    SwitchMaterial switchMultiDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +37,20 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         setContentView(R.layout.activity_add_event);
 
         eventNameInput = findViewById(R.id.text_input_event_name);
-        btnShowDatePicker = findViewById(R.id.button_start_date);
+        btnStartDate = findViewById(R.id.button_start_date);
+        btnEndDate = findViewById(R.id.button_end_date);
+        btnStartTime = findViewById(R.id.button_start_time);
+        btnEndTime = findViewById(R.id.button_end_time);
+        switchMultiDay = findViewById(R.id.switch_is_multi_day);
 
-        btnShowDatePicker.setOnClickListener(new View.OnClickListener() {
+        btnStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
             }
         });
+
+
     }
 
     private void showDatePickerDialog() {
@@ -51,7 +63,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         calendar.set(year, month, day);
         eventDate = calendar.getTime();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", Locale.getDefault());
         String dateString = dateFormat.format(eventDate);
 
         btnShowDatePicker.setText(dateString);

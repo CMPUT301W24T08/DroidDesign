@@ -24,9 +24,23 @@
     <string name="attendee">Attendee</string>
     <string name="date_and_time">Date and Time</string>
     <string name="date">Date</string>
+<<<<<<< HEAD
     <string name="send_announcement_hint">Write announcement</string>
     <string name="edit_event_details">Edit event details</string>
     <string name="event_description">About the event ...</string>
     <string name="event_details_title">Title</string>
     <string name="event_details">Event Details</string>
+=======
+    <string name="multi_day_event">Multi-Day Event?</string>
+    <string name="end_date">End Date</string>
+    <string name="time_1hr">time + 1hr</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="event_location">Event Location</string>
+    <string name="next">next</string>
+    <string name="_25_january">25 January</string>
+    <string name="event_details">Event Details</string>
+    <string name="start_date">Start Date</string>
+    <string name="_24_january">24 January</string>
+>>>>>>> chris
 </resources>
