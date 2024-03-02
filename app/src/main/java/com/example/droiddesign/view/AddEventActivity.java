@@ -31,7 +31,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         setContentView(R.layout.activity_add_event);
 
         eventNameInput = findViewById(R.id.text_input_event_name);
-        //btnShowDatePicker = findViewById(R.id.btn_show_date_picker);
+        btnShowDatePicker = findViewById(R.id.button_start_date);
 
         btnShowDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
