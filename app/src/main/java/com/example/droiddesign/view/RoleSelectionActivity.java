@@ -92,8 +92,8 @@ public class RoleSelectionActivity extends AppCompatActivity {
 					// Navigate to event menu after successful registration
 					navigateToEventMenu(role, userId);
 					Intent intent = new Intent(RoleSelectionActivity.this, EventMenuActivity.class);
-					intent.putExtra("UserId", userId);
-					intent.putExtra("Role", role);
+//					intent.putExtra("UserId", userId);
+//					intent.putExtra("Role", role);
 					startActivity(intent);
 					// Document added successfully, show a toast message
 					Toast.makeText(getApplicationContext(), "Default user created successfully", Toast.LENGTH_SHORT).show();
@@ -112,8 +112,8 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
 	private void navigateToEventMenu(String role, String userId) {
 		Intent intent = new Intent(this, EventMenuActivity.class);
-		intent.putExtra("role", role);
-		intent.putExtra("userId", userId);
+//		intent.putExtra("role", role);
+//		intent.putExtra("userId", userId);
 		startActivity(intent);
 	}
 

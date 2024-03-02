@@ -3,46 +3,77 @@ package com.example.droiddesign.view;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
-import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * The activity that starts when the app is opened.
+ * Provides an interface for the user to log into the app with.
+ */
 public class LaunchScreenActivity extends AppCompatActivity {
 
-    private com.google.android.material.floatingactionbutton.FloatingActionButton skipButton;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private SharedPreferences prefs;
     private static final String PREF_USER_ID = "defaultID";
+
+
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
 
-        prefs = getSharedPreferences("ConclavePrefs", MODE_PRIVATE);
-//        String userId = prefs.getString(PREF_USER_ID, null);
+        // Initialize FirebaseAuth instance
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize SharedPreferences within onCreate
+        SharedPreferences prefs = getSharedPreferences("ConclavePrefs", MODE_PRIVATE);
+        String userId = prefs.getString("userID", null);
+        com.google.android.material.floatingactionbutton.FloatingActionButton skipButton = findViewById(R.id.skip_button);
+        MaterialButton loginGoogle = findViewById(R.id.button_continue_with_google);
 
-        if (isFirstTimeUser()) {
-            // User is already logged in, proceed with automatic login
-            startActivity(new Intent(this, EventDetailsActivity.class));
-            finish();
-        }
-        skipButton = findViewById(R.id.skip_button);
+        loginGoogle.setOnClickListener(v -> showLoginDialog());
         skipButton.setOnClickListener(v -> createUnregisteredUser());
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
-                startActivity(intent);
-            }
+    }
+    // Method to show login dialog
+    private void showLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Login");
+
+        // Set up the input
+        final EditText usernameText = new EditText(this);
+        final EditText passwordText = new EditText(this);
+        usernameText.setInputType(InputType.TYPE_CLASS_TEXT);
+        passwordText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        // Set hint for the username and password fields
+        usernameText.setHint("Username");
+        passwordText.setHint("Password");
+        builder.setView(usernameText);
+        builder.setView(passwordText);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String username = usernameText.getText().toString().trim();
+            String password = passwordText.getText().toString().trim();
+            authenticateUser(username, password);
         });
+        builder.setNegativeButton("Cancel", (dialog, which) ->{
+                dialog.cancel();
+        });
+
+        builder.show();
     }
 
     private void createUnregisteredUser() {
@@ -53,7 +84,7 @@ public class LaunchScreenActivity extends AppCompatActivity {
 
         db.collection("usersDB").document(userId).set(user)
                 .addOnSuccessListener(aVoid -> {
-                    Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
+                    Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
                     intent.putExtra("UserId", userId); // Pass the user ID to the next activity
                     startActivity(intent);
                 })
@@ -62,9 +93,21 @@ public class LaunchScreenActivity extends AppCompatActivity {
                     Log.e("LaunchScreenActivity", "Error creating unregistered user", e);
                 });
     }
-
-    private boolean isFirstTimeUser() {
-        return prefs.getString(PREF_USER_ID, null) == null;
+    // Method to authenticate user
+    private void authenticateUser(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LaunchScreenActivity.this, "Authentication successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, EventMenuActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LaunchScreenActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+//    private boolean isFirstTimeUser() {
+//        return prefs.getString(PREF_USER_ID, null) == null;
+//    }
 
 }

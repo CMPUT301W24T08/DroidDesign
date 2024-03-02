@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,8 +38,8 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		userId = getIntent().getStringExtra("UserId");
-		userRole = getIntent().getStringExtra("role");
+//		userId = getIntent().getStringExtra("UserId");
+//		userRole = getIntent().getStringExtra("role");
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
