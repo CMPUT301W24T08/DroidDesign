@@ -1,6 +1,7 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,15 +15,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LaunchScreenActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private com.google.android.material.floatingactionbutton.FloatingActionButton skipButton;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private SharedPreferences prefs;
+    private static final String PREF_USER_ID = "defaultID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
 
+        prefs = getSharedPreferences("ConclavePrefs", MODE_PRIVATE);
+//        String userId = prefs.getString(PREF_USER_ID, null);
+
+        if (isFirstTimeUser()) {
+            // User is already logged in, proceed with automatic login
+            startActivity(new Intent(this, EventDetailsActivity.class));
+            finish();
+        }
         skipButton = findViewById(R.id.skip_button);
         skipButton.setOnClickListener(v -> createUnregisteredUser());
         skipButton.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +61,10 @@ public class LaunchScreenActivity extends AppCompatActivity {
                     // Handle the failure of adding a user
                     Log.e("LaunchScreenActivity", "Error creating unregistered user", e);
                 });
+    }
+
+    private boolean isFirstTimeUser() {
+        return prefs.getString(PREF_USER_ID, null) == null;
     }
 
 }
