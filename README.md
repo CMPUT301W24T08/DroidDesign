@@ -8,7 +8,7 @@ Conclave is an innovative Android application designed to streamline the event o
 
 | Name             | CCID     | GitHub Profile                                 |
 |------------------|----------|------------------------------------------------|
-| Fiza Afrin Khan  | saherafr | [@saherafr](https://github.com/saherafr)       |
+| Saher Afrin Khan  | saherafr | [@saherafr](https://github.com/saherafr)       |
 | Ayokunle Amodu   | aaamodu  | [@ayokunle321](https://github.com/ayokunle321) |
 | Nanribet Fwangje | fwangje  | [@Nanrbet](https://github.com/Nanrbet)         |
 | Fardil Iqbal     | fardil   | [@FardilIqbal](https://github.com/FardilIqbal) |
