@@ -27,7 +27,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_role_selection_unregistered);
 
 		userId = getIntent().getStringExtra("UserId");
-		checkUserRegistrationStatus(userId);
 
 		// Initialize views and set click listeners
 		adminImage = findViewById(R.id.admin_button);
