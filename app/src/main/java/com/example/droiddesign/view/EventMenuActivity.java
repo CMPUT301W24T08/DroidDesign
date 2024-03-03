@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,8 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class EventMenuActivity extends AppCompatActivity {
 
 //		userId = getIntent().getStringExtra("UserId");
 //		userRole = getIntent().getStringExtra("role");
+		// Fetch events from Firestore and populate RecyclerView
+		fetchEvents();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -213,6 +218,43 @@ public class EventMenuActivity extends AppCompatActivity {
 		} else {
 			navigationMenu.setVisibility(View.VISIBLE);
 		}
+	}
+
+	private void fetchEvents() {
+		// Get reference to the events collection
+		CollectionReference eventsCollection = db.collection("events");
+
+		// Query Firestore for all events
+		eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+			// Initialize events list
+			eventsList = new ArrayList<>();
+
+			// Iterate through each document snapshot
+			for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+				// Convert document snapshot to Event object
+				Event event = documentSnapshot.toObject(Event.class);
+				if (event != null) {
+					// Add event to the events list
+					eventsList.add(event);
+				}
+			}
+
+			// Populate RecyclerView with events
+			eventsAdapter = new EventsAdapter(eventsList, event -> {
+				// Handle event click here
+				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+				intent.putExtra("EVENT_ID", event.getEventId()); // Assuming you have a method to get event ID
+				startActivity(intent);
+			});
+			eventsRecyclerView.setAdapter(eventsAdapter);
+
+			// Notify adapter that data set has changed
+			eventsAdapter.notifyDataSetChanged();
+		}).addOnFailureListener(e -> {
+			// Handle failure to fetch events
+			Log.e("EventMenuActivity", "Error fetching events", e);
+			Toast.makeText(this, "Error fetching events", Toast.LENGTH_SHORT).show();
+		});
 	}
 
 }
