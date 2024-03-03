@@ -21,15 +21,12 @@ import java.util.Locale;
 public class AddEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerListener {
     String eventName;
     Date eventDate;
-    Time timeStart;
-    Time timeEnd;
+    Time timeStart, timeEnd;
     TextInputEditText eventNameInput;
-    Button btnStartDate;
-    Button btnEndDate;
-    Button btnStartTime;
-    Button btnEndTime;
+    Button btnStartTime, btnEndTime, btnEndDate, btnStartDate, btnCancelAdd;
     FloatingActionButton nextPage;
     SwitchMaterial switchMultiDay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +40,30 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         btnEndTime = findViewById(R.id.button_end_time);
         switchMultiDay = findViewById(R.id.switch_is_multi_day);
 
+        switchMultiDay.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            btnEndDate.setEnabled(isChecked);
+            if(isChecked) {
+                btnEndDate.setVisibility(View.VISIBLE);
+            } else {
+                btnEndDate.setVisibility(View.GONE);
+            }
+        }));
+
         btnStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog();
+                showDatePickerDialog(true);
             }
         });
 
-
+        btnEndDate.setOnClickListener(v -> {
+            if (btnEndDate.getVisibility() == View.VISIBLE) {
+                showDatePickerDialog(false);
+            }
+        });
     }
 
-    private void showDatePickerDialog() {
+    private void showDatePickerDialog(boolean isStartDate) {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }

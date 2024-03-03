@@ -7,6 +7,14 @@
     android:background="@drawable/gradient_background"
     tools:context="com.example.droiddesign.view.EventMenuActivity">
 
+    <ImageView
+        android:layout_width="845dp"
+        android:layout_height="845dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
+        app:srcCompat="@drawable/conclave_logo_large_dark" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_event"
         android:layout_width="wrap_content"
@@ -104,14 +112,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <ImageView
-        android:layout_width="845dp"
-        android:layout_height="845dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:srcCompat="@drawable/conclave_logo_large_dark" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
