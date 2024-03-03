@@ -19,13 +19,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.9" />
 
-    <ImageView
-        android:layout_width="845dp"
-        android:layout_height="845dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/events_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/top_menu_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:srcCompat="@drawable/conclave_logo_large_dark" />
+        app:layout_constraintVertical_bias="0.108" />
+
+
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_menu"
@@ -95,17 +101,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.9"
             app:srcCompat="@drawable/menu" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/events_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:layout_width="845dp"
+        android:layout_height="845dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:layout_constraintVertical_bias="0.15" />
+        app:srcCompat="@drawable/conclave_logo_large_dark" />
 
 
 
