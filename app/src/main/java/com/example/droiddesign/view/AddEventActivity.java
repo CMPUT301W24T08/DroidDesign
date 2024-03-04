@@ -21,7 +21,10 @@ import java.util.Locale;
 public class AddEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerListener {
     private String eventName, eventLocation;
     private Time timeStart, timeEnd;
-    private Button btnEndDate, btnStartDate, btnCancelAdd, btnStartTime, btnEndTime;
+    private Button btnEndDate;
+    private Button btnStartDate;
+    private Button btnStartTime;
+    private Button btnEndTime;
     private FloatingActionButton nextPage;
     private Boolean isStartDate;
 
@@ -37,6 +40,8 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         btnEndDate = findViewById(R.id.button_end_date);
         btnStartTime = findViewById(R.id.button_start_time);
         btnEndTime = findViewById(R.id.button_end_time);
+        Button btnCancelAdd = findViewById(R.id.button_cancel);
+        SwitchMaterial switchMultiDay = findViewById(R.id.switch_is_multi_day);
 
         switchMultiDay.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             btnEndDate.setEnabled(isChecked);

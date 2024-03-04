@@ -30,5 +30,31 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_description_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:hint="@string/tell_us_about_your_event"
+        android:textColorHint="@color/white"
+        app:boxBackgroundColor="@color/card_bg_light_transparent"
+        app:boxCornerRadiusBottomEnd="12.5dp"
+        app:boxCornerRadiusBottomStart="12.5dp"
+        app:boxCornerRadiusTopEnd="12.5dp"
+        app:boxCornerRadiusTopStart="12.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.77">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_event_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensans" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

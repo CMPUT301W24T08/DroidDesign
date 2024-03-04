@@ -41,5 +41,6 @@
     <string name="_24_january">24 January</string>
     <string name="cancel">Cancel</string>
     <string name="curr_time">curr_time</string>
+    <string name="tell_us_about_your_event">Tell us about your event</string>
 
 </resources>
