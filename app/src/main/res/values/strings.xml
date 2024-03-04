@@ -39,5 +39,7 @@
     <string name="_25_january">25 January</string>
     <string name="start_date">Start Date</string>
     <string name="_24_january">24 January</string>
+    <string name="cancel">Cancel</string>
+    <string name="curr_time">curr_time</string>
 
 </resources>

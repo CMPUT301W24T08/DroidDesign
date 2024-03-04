@@ -39,6 +39,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         btnStartTime = findViewById(R.id.button_start_time);
         btnEndTime = findViewById(R.id.button_end_time);
         switchMultiDay = findViewById(R.id.switch_is_multi_day);
+        btnCancelAdd = findViewById(R.id.button_cancel);
 
         switchMultiDay.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             btnEndDate.setEnabled(isChecked);
@@ -59,6 +60,13 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         btnEndDate.setOnClickListener(v -> {
             if (btnEndDate.getVisibility() == View.VISIBLE) {
                 showDatePickerDialog(false);
+            }
+        });
+
+        btnCancelAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
