@@ -56,4 +56,11 @@ dependencies {
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation ("androidx.multidex:multidex:2.0.1")
 
+    // JUnit
+    testImplementation("junit:junit:4.13.2")
+    // Mockito
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    // Firebase Firestore (if needed for mocking Firestore)
+    testImplementation("com.google.firebase:firebase-firestore:24.10.3")
+
 }
