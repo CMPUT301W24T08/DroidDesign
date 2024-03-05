@@ -1,14 +1,20 @@
 package com.example.droiddesign.model;
 
-import com.google.firebase.firestore.DocumentReference;
+
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class Event {
+
     private String eventId;
     private String eventName;
     private String eventDate;
@@ -245,4 +251,5 @@ public class Event {
     };
 
 }
+
 
