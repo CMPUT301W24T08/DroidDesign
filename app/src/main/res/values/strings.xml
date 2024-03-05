@@ -42,5 +42,8 @@
     <string name="cancel">Cancel</string>
     <string name="curr_time">curr_time</string>
     <string name="tell_us_about_your_event">Tell us about your event</string>
+    <string name="qr_code">QR Code</string>
+    <string name="upload_an_event_poster">Upload an Event Poster</string>
+    <string name="max_attendees">Max Attendees</string>
 
 </resources>
