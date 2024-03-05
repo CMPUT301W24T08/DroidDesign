@@ -44,6 +44,7 @@ public class EventMenuActivity extends AppCompatActivity {
 //		userId = getIntent().getStringExtra("UserId");
 //		userRole = getIntent().getStringExtra("role");
 		// Fetch events from Firestore and populate RecyclerView
+//		addRandomEvents();
 		fetchEvents();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -108,7 +109,34 @@ public class EventMenuActivity extends AppCompatActivity {
 			return true;
 		});
 	}
-
+//	public void addRandomEvents() {
+//		FirebaseFirestore db = FirebaseFirestore.getInstance();
+//		String[] eventNames = {"Community Cleanup", "Tech Talk", "Art Exhibition", "Book Club Meeting", "Local Concert"};
+//		String[] locations = {"Park Avenue, New York", "Tech Hub, San Francisco", "Art Gallery, Paris", "Library, Chicago", "Concert Hall, London"};
+//		String[] organizers = {"Green Earth Organization", "Tech Innovators", "Artists United", "Book Lovers Association", "Music for All"};
+//		String[] categories = {"Environmental", "Technology", "Art", "Education", "Music"};
+//
+//		Random random = new Random();
+//
+//		// Adding 3 to 5 random events
+//		int numberOfEventsToAdd = 3 + random.nextInt(3); // This will add between 3 to 5 events
+//		for (int i = 0; i < 2; i++) {
+//			Map<String, Object> event = new HashMap<>();
+//			event.put("eventID", UUID.randomUUID().toString());
+//			event.put("eventName", eventNames[random.nextInt(eventNames.length)]);
+//			event.put("eventDate", "1/3/2024"); // For simplicity, using the same date for all events
+//			event.put("geolocation", locations[random.nextInt(locations.length)]);
+//			event.put("description", "Join us for an amazing event.");
+//			event.put("startTime", "10:00 AM");
+//			event.put("endTime", "2:00 PM");
+//			event.put("organizerOwnerId", organizers[random.nextInt(organizers.length)]);
+//			event.put("participants", Arrays.asList("user1", "user2"));
+//
+//			db.collection("Events").add(event)
+//					.addOnSuccessListener(documentReference -> Log.d("AddEvents", "DocumentSnapshot added with ID: " + documentReference.getId()))
+//					.addOnFailureListener(e -> Log.w("AddEvents", "Error adding document", e));
+//		}
+//	}
 //	private void adjustUIBasedOnRole(String role, ImageButton addEventButton) {
 //		switch (role) {
 //			case "admin":
