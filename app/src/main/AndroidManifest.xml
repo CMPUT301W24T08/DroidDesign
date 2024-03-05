@@ -25,6 +25,7 @@
         <activity android:name=".view.ProfileSettingsActivity"/>
         <activity android:name=".view.RoleSelectionActivity"/>
         <activity android:name=".view.AddEventActivity"/>
+        <activity android:name=".view.AddEventSecondActivity"/>
     </application>
 
 </manifest>

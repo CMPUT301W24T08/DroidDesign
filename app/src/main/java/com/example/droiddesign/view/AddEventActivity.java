@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -37,6 +38,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
         TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
         TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
+        TextView endDateText = findViewById(R.id.textView3);
         btnStartDate = findViewById(R.id.button_start_date);
         btnEndDate = findViewById(R.id.button_end_date);
         btnStartTime = findViewById(R.id.button_start_time);
@@ -44,10 +46,11 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         Button btnCancelAdd = findViewById(R.id.button_cancel);
         SwitchMaterial switchMultiDay = findViewById(R.id.switch_is_multi_day);
 
-        switchMultiDay.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+        switchMultiDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
             btnEndDate.setEnabled(isChecked);
             btnEndDate.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-        }));
+            endDateText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
 
         btnCancelAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +106,11 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+    private void showTimePickerDialog() {
+        DialogFragment timePicker = new TimePickerFragment();
+        timePicker.show(getSupportFragmentManager(), "timePicker");
+    }
+
     public void onDateSet(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
@@ -120,9 +128,9 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-        if (".StartTimePicker".equals(tag)) {
+        if (".startTimePicker".equals(tag)) {
             btnStartTime.setText(formattedTime);
-        } else {
+        } else if ("endTimePicker".equals(tag)) {
             btnEndTime.setText(formattedTime);
         }
     }
