@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
-        <activity android:name=".view.AddEventSecondActivity"
+        <activity android:name=".view.LaunchScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
