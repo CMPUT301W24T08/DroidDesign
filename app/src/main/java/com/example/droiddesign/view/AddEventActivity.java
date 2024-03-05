@@ -120,7 +120,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-        if (".StartTimePicker".equals(tag)) {
+        if (".startTimePicker".equals(tag)) {
             btnStartTime.setText(formattedTime);
         } else {
             btnEndTime.setText(formattedTime);
