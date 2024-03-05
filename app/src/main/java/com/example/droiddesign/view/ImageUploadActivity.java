@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -43,7 +44,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     private ImageView mImageView;
 
     private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
+    private FirebaseFirestore mFirestoreDb; // Firestore reference
     private ProgressBar mProgressBar;
     private StorageTask mUploadTask;
 
@@ -58,11 +59,11 @@ public class ImageUploadActivity extends AppCompatActivity {
         mButtonUpload = findViewById(R.id.button_upload);
         mTextViewShowUploads = findViewById(R.id.text_view_show_uploads);
         mEditTextFileName = findViewById(R.id.edit_text_file_name);
-        mImageView = findViewById(R.id.image_preview);  // Ensure this ID matches your layout
+        mImageView = findViewById(R.id.image_preview);
         mProgressBar = findViewById(R.id.progress_bar);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mFirestoreDb = FirebaseFirestore.getInstance(); // Initialize Firestore
 
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +75,9 @@ public class ImageUploadActivity extends AppCompatActivity {
         mButtonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mUploadTask != null && mUploadTask.isInProgress()){
-                    Toast.makeText(ImageUploadActivity.this, "Upload in Progress", Toast.LENGTH_SHORT).show();
-                } else{
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    Toast.makeText(ImageUploadActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                } else {
                     uploadFile();
                 }
             }
@@ -85,7 +86,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         mTextViewShowUploads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Implement your logic to show uploads here
+                // Implement your logic to show uploads
             }
         });
     }
@@ -105,50 +106,34 @@ public class ImageUploadActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // Handler to reset progress bar after a delay
                             Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setProgress(0);
-                                }
-                            }, 5000);
+                            handler.postDelayed(() -> mProgressBar.setProgress(0), 5000);
 
-                            Toast.makeText(ImageUploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-
-                            // Assuming taskSnapshot.getMetadata() contains the URL
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Upload upload = new Upload(mEditTextFileName.getText().toString().trim(), uri.toString());
-                                    String uploadId = mDatabaseRef.push().getKey();
-                                    mDatabaseRef.child(uploadId).setValue(upload);
+
+                                    // Save upload record in Firestore instead of Realtime Database
+                                    mFirestoreDb.collection("uploads").add(upload)
+                                            .addOnSuccessListener(documentReference -> Toast.makeText(ImageUploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show())
+                                            .addOnFailureListener(e -> Toast.makeText(ImageUploadActivity.this, "Upload failed", Toast.LENGTH_LONG).show());
                                 }
                             });
                         }
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ImageUploadActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            mProgressBar.setProgress(0);  // Reset progress bar on failure as well
-                        }
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(ImageUploadActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        mProgressBar.setProgress(0);
                     })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            mProgressBar.setProgress((int) progress);
-                        }
+                    .addOnProgressListener(taskSnapshot -> {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        mProgressBar.setProgress((int) progress);
                     });
-
-
-
         } else {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -166,5 +151,4 @@ public class ImageUploadActivity extends AppCompatActivity {
             Picasso.get().load(mImageUri).into(mImageView);
         }
     }
-
 }
