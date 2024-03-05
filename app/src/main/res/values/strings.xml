@@ -5,7 +5,7 @@
     <string name="no_account">Don\'t have an account? Sign up here.</string>
     <string name="continue_with_email">Continue with Email</string>
     <string name="skip">Skip</string>
-    <string name="role_choice_query">Just stepping in, Or leading the way?</string>
+    <string name="role_choice_query">Just stepping in, or leading the way?</string>
     <string name="admin">Admin</string>
     <string name="organizer">Organizer</string>
     <string name="upcoming_events">Upcoming Events</string>
@@ -21,4 +21,29 @@
     <string name="back">Back</string>
     <string name="event_name_query">What is the name of your event?</string>
     <string name="event_name_placeholder">Event Name</string>
+    <string name="attendee">Attendee</string>
+    <string name="date_and_time">Date and Time</string>
+    <string name="date">Date</string>
+    <string name="send_announcement_hint">Write announcement</string>
+    <string name="edit_event_details">Edit event details</string>
+    <string name="event_description">About the event …</string>
+    <string name="event_details_title">Title</string>
+    <string name="event_details">Event Details</string>
+    <string name="multi_day_event">Multi-Day Event?</string>
+    <string name="end_date">End Date</string>
+    <string name="time_1hr">time + 1hr</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="event_location">Event Location</string>
+    <string name="next">next</string>
+    <string name="_25_january">25 January</string>
+    <string name="start_date">Start Date</string>
+    <string name="_24_january">24 January</string>
+    <string name="cancel">Cancel</string>
+    <string name="curr_time">curr_time</string>
+    <string name="tell_us_about_your_event">Tell us about your event</string>
+    <string name="qr_code">QR Code</string>
+    <string name="upload_an_event_poster">Upload an Event Poster</string>
+    <string name="max_attendees">Max Attendees</string>
+
 </resources>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+    <!-- Note: this one is wierd and may be incorrect -->
+    <ImageView
+        android:id="@+id/logo_small"
+        android:layout_width="115dp"
+        android:layout_height="121dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/conclave_logo_small" />
+
+    <ImageView
+        android:id="@+id/logo_large"
+        android:layout_width="845dp"
+        android:layout_height="845dp"
+        android:layout_marginTop="200dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_small"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/conclave_logo_large_dark" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_description_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:hint="@string/tell_us_about_your_event"
+        android:textColorHint="@color/white"
+        app:boxBackgroundColor="@color/card_bg_light_transparent"
+        app:boxCornerRadiusBottomEnd="12.5dp"
+        app:boxCornerRadiusBottomStart="12.5dp"
+        app:boxCornerRadiusTopEnd="12.5dp"
+        app:boxCornerRadiusTopStart="12.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.84">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_event_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/opensans" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/image_event_poster"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.17"
+        app:srcCompat="@drawable/image_placeholder" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:textColor="@color/white"
+        android:text="@string/upload_an_event_poster"
+        android:fontFamily="@font/opensans"
+        android:layout_marginEnd="100dp"
+        android:layout_marginStart="100dp"
+        app:cornerRadius="12.5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintVertical_bias=".38"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/qr_code"
+        android:textColorHint="@color/white"
+        android:layout_marginStart="95dp"
+        android:layout_marginEnd="95dp"
+        app:hintTextColor="@color/white"
+        app:boxCornerRadiusBottomEnd="12.5dp"
+        app:boxCornerRadiusBottomStart="12.5dp"
+        app:boxCornerRadiusTopEnd="12.5dp"
+        app:boxCornerRadiusTopStart="12.5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".7">
+
+        <AutoCompleteTextView
+            android:id="@+id/QR_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:textColor="@color/white"
+            android:fontFamily="@font/opensans"
+            android:backgroundTint="@color/card_bg_light_transparent"
+            android:background="@color/card_bg_light_transparent"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/qr_code"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        app:srcCompat="@drawable/qr_placeholder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintVertical_bias=".55" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_description"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/event_description_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintHorizontal_bias="0.1"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_max_attendees_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="225dp"
+        android:textColorHint="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:boxCornerRadiusTopStart="12.5dp"
+        app:boxCornerRadiusTopEnd="12.5dp"
+        app:boxCornerRadiusBottomStart="12.5dp"
+        app:boxCornerRadiusBottomEnd="12.5dp"
+        app:boxBackgroundColor="@color/card_bg_light_transparent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_max_attendees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_attendees"
+            android:fontFamily="@font/opensans"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/max_attendees"
+        android:fontFamily="@font/opensans"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_layout"
+        app:layout_constraintBottom_toTopOf="@+id/input_max_attendees_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.10"
+        app:layout_constraintVertical_bias="1.1"
+        tools:layout_editor_absoluteX="91dp"
+        tools:layout_editor_absoluteY="626dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
