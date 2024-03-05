@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -248,6 +249,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	private void fetchEvents() {
 		// Get reference to the events collection
 		CollectionReference eventsCollection = db.collection("events");
