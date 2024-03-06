@@ -64,7 +64,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/date_numeric"
+                    android:id="@+id/date_day"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold"
@@ -80,7 +80,7 @@
                     app:layout_constraintVertical_bias="0.2" />
 
                 <TextView
-                    android:id="@+id/month_placeholder"
+                    android:id="@+id/date_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold"
@@ -93,7 +93,7 @@
                     app:layout_constraintVertical_bias="0.6" />
 
                 <TextView
-                    android:id="@+id/year_placeholder"
+                    android:id="@+id/date_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold"
