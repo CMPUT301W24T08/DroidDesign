@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,16 @@ import com.google.android.material.button.MaterialButton;
 import com.bumptech.glide.Glide;
 
 public class AddEventSecondActivity extends AppCompatActivity {
+
+    Intent intent = getIntent();
+    String eventName = intent.getStringExtra("EVENT_NAME");
+    String eventLocation = intent.getStringExtra("EVENT_LOCATION");
+    String startTime = intent.getStringExtra("START_TIME");
+    String endTime = intent.getStringExtra("END_TIME");
+    String startDate = intent.getStringExtra("START_DATE");
+    String endDate = intent.getStringExtra("END_DATE");
+    boolean isMultiDayEvent = intent.getBooleanExtra("IS_MULTIDAY_EVENT", false);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +61,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                startActivity(new Intent(AddEventSecondActivity.this, EventMenuActivity.class));
             }
         });
 
