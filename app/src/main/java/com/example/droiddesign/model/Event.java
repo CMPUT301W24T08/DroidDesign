@@ -11,6 +11,7 @@ import java.util.Map;
 public class Event {
     private String eventId;
     private String eventName;
+    private String eventLocation;
     private String eventDate;
     private String startTime;
     private String endTime;
@@ -24,13 +25,16 @@ public class Event {
     private String qrCode;
     private List<String> attendeeList;
     private List<OrganizerMessage> organizerMessages;
-    private static final String COLLECTION_PATH = "events";
+    private static final String COLLECTION_PATH = "EventsDB";
     private transient DocumentReference eventRef;
 
-    public Event(String eventId, String eventName, String eventDate, String startTime, String endTime, String geolocation, String organizerOwnerId, String imagePosterId, String description, Integer signupLimit, Integer attendeesCount, String qrCode) {
+    public Event() {}
+
+    public Event(String eventId, String eventName, String eventDate, String eventLocation, String startTime, String endTime, String geolocation, String organizerOwnerId, String imagePosterId, String description, Integer signupLimit, Integer attendeesCount, String qrCode) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDate = eventDate;
+        this.eventLocation = eventLocation;
         this.startTime = startTime;
         this.endTime = endTime;
         this.geolocation = geolocation;
@@ -42,6 +46,14 @@ public class Event {
         this.qrCode = qrCode;
     }
     // Getters and Setters
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+        updateFirestore("eventLocation", eventLocation);
+    }
     public String getEventId() {
         return eventId;
     }
@@ -178,10 +190,11 @@ public class Event {
     }
 
     // Method to save event to Firestore
+    // Method to save event to Firestore - Now an instance method
     public void saveToFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> eventData = toMap();
-        db.collection(COLLECTION_PATH).document(eventId).set(eventData, SetOptions.merge())
+        Map<String, Object> eventData = this.toMap(); // Use instance method
+        db.collection(COLLECTION_PATH).document(this.eventId).set(eventData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     // Handle success
                 })
@@ -190,37 +203,38 @@ public class Event {
                 });
     }
 
-    // Method to update Firestore with a single field
+    // Method to update Firestore with a single field - Instance method
     private void updateFirestore(String fieldName, Object value) {
-        if (eventId != null) {
+        if (this.eventId != null) { // Use this.eventId to refer to the instance's eventId
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             Map<String, Object> updateData = new HashMap<>();
             updateData.put(fieldName, value);
-            db.collection(COLLECTION_PATH).document(eventId).set(updateData, SetOptions.merge());
+            db.collection(COLLECTION_PATH).document(this.eventId).set(updateData, SetOptions.merge());
         }
     }
 
     // Method to convert event object to a map
+    // Convert event object to a map - Instance method
     private Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("eventId", eventId);
-        map.put("eventName", eventName);
-        map.put("eventDate", eventDate);
-        map.put("startTime", startTime);
-        map.put("endTime", endTime);
-        map.put("date", date);
-        map.put("geolocation", geolocation);
-        map.put("organizerOwnerId", organizerOwnerId);
-        map.put("imagePosterId", imagePosterId);
-        map.put("description", description);
-        map.put("signupLimit", signupLimit);
-        map.put("attendeesCount", attendeesCount);
-        map.put("qrCode", qrCode);
-        map.put("attendeeList", attendeeList);
-        map.put("organizerMessages", organizerMessages);
+        map.put("eventId", this.eventId);
+        map.put("eventName", this.eventName);
+        map.put("eventDate", this.eventDate);
+        map.put("eventLocation", this.eventLocation);
+        map.put("startTime", this.startTime);
+        map.put("endTime", this.endTime);
+        map.put("date", this.date);
+        map.put("geolocation", this.geolocation);
+        map.put("organizerOwnerId", this.organizerOwnerId);
+        map.put("imagePosterId", this.imagePosterId);
+        map.put("description", this.description);
+        map.put("signupLimit", this.signupLimit);
+        map.put("attendeesCount", this.attendeesCount);
+        map.put("qrCode", this.qrCode);
+        map.put("attendeeList", this.attendeeList);
+        map.put("organizerMessages", this.organizerMessages);
         return map;
     }
-
     // Method to load event from Firestore
     public static void loadFromFirestore(String eventId, FirestoreCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
