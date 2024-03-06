@@ -49,6 +49,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         Button buttonGenerate = findViewById(R.id.button_generate);
         mImageViewQrCode = findViewById(R.id.qr_code);
         mButtonSaveQrCode = findViewById(R.id.button_save_qr);
+        Button buttonBack = findViewById(R.id.button_back);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("qrcodes");
         mFirestoreDb = FirebaseFirestore.getInstance();
@@ -84,6 +85,8 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                 }
             }
         });
+
+        buttonBack.setOnClickListener(v -> finish());
     }
 
     private void uploadQrCode(Bitmap bitmap, String text) {

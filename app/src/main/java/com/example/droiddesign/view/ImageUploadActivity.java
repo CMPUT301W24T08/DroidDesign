@@ -57,10 +57,10 @@ public class ImageUploadActivity extends AppCompatActivity {
 
         mButtonChooseImage = findViewById(R.id.button_choose_image);
         mButtonUpload = findViewById(R.id.button_upload);
-        mTextViewShowUploads = findViewById(R.id.text_view_show_uploads);
         mEditTextFileName = findViewById(R.id.edit_text_file_name);
         mImageView = findViewById(R.id.image_preview);
         mProgressBar = findViewById(R.id.progress_bar);
+        Button buttonBack = findViewById(R.id.button_back_upload);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mFirestoreDb = FirebaseFirestore.getInstance(); // Initialize Firestore
@@ -83,12 +83,8 @@ public class ImageUploadActivity extends AppCompatActivity {
             }
         });
 
-        mTextViewShowUploads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Implement your logic to show uploads
-            }
-        });
+
+        buttonBack.setOnClickListener(v -> finish());
     }
 
     private String getFileExtension(Uri uri) {

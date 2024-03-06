@@ -23,50 +23,39 @@
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
 
+        <activity android:name=".view.LaunchScreenActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".view.ImageUploadActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-
 
         <activity
             android:name=".view.QrCodeGeneratorActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name=".view.QrCodeScanActivity"
-            android:exported="true"> <!-- Adjust exported attribute as necessary -->
-            <!-- Add intent filters here if QrCodeScanActivity is supposed to respond to specific intents -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".view.LaunchScreenActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+
+        <activity android:name=".view.RoleSelectionActivity"/>
+        <activity android:name=".view.EventMenuActivity"/>
+        <activity android:name=".view.EventDetailsActivity"/>
+        <activity android:name=".view.AppSettingsActivity"/>
+        <activity android:name=".view.ProfileSettingsActivity"/>
+        <activity android:name=".view.AddEventActivity"/>
+        <activity android:name=".view.AddEventSecondActivity"/>
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"

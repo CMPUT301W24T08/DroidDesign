@@ -71,6 +71,7 @@
         app:srcCompat="@drawable/image_placeholder" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_upload_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
