@@ -44,7 +44,7 @@ public class ImageUploadActivity extends AppCompatActivity {
     private ImageView mImageView;
 
     private StorageReference mStorageRef;
-    private FirebaseFirestore mFirestoreDb; // Firestore reference
+    private FirebaseFirestore mFirestoreDb;
     private ProgressBar mProgressBar;
     private StorageTask mUploadTask;
 
