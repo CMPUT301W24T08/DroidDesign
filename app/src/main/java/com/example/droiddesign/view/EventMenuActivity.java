@@ -166,9 +166,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		// View dialogView = inflater.inflate(R.layout.add_event_input_dialog, null);
 
 		// Get the dialog components
-		// EditText eventNameInput = dialogView.findViewById(R.id.event_name_input);
-		// EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input3);
-		// Button createEventButton = dialogView.findViewById(R.id.create_event_button);
 
 		// Create the AlertDialog
 		// AlertDialog dialog = new AlertDialog.Builder(this)

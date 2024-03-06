@@ -1,6 +1,7 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,10 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.GenerateQRCode;
-import com.google.android.material.button.MaterialButton;
 
-import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 
 import com.example.droiddesign.model.Event;
 
@@ -26,6 +25,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_second);
+
+
+        MaterialButton cancelButton = findViewById(R.id.button_cancel);
 
         // Retrieve data from Intent
         Intent intent = getIntent();
@@ -47,11 +49,20 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
         dropdownMenu.setAdapter(adapter);
 
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AddEventSecondActivity.this, EventMenuActivity.class));
+
         buttonUploadPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddEventSecondActivity.this, ImageUploadActivity.class);
                 startActivity(intent);
+            }
+        });
+
+
             }
         });
 

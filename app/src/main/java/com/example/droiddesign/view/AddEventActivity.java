@@ -136,7 +136,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                 String startTime = btnStartTime.getText().toString();
                 String endTime = btnEndTime.getText().toString();
                 String startDate = btnStartDate.getText().toString();
-                String endDate = btnEndDate.getText().toString(); // Handle visibility & logic for single vs. multi-day events
 
                 // Pack the data into an Intent
                 Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
