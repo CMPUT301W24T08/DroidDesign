@@ -93,7 +93,29 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             @Override
             public void onClick(View view) {
                 // Start the AddEventSecondActivity
-                startActivity(new Intent(AddEventActivity.this, AddEventSecondActivity.class));
+                TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
+                TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
+
+                // Convert event start and end times to String
+                String eventName = eventNameInput.getText().toString();
+                String eventLocation = eventLocationInput.getText().toString();
+                String startTime = btnStartTime.getText().toString();
+                String endTime = btnEndTime.getText().toString();
+                String startDate = btnStartDate.getText().toString();
+                String endDate = btnEndDate.getText().toString(); // Handle visibility & logic for single vs. multi-day events
+
+                // Pack the data into an Intent
+                Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
+                intent.putExtra("eventName", eventName);
+                intent.putExtra("eventLocation", eventLocation);
+                intent.putExtra("startTime", startTime);
+                intent.putExtra("endTime", endTime);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("endDate", endDate);
+
+                // Start the EventDetailsActivity
+                startActivity(intent);
+
             }
         });
     }
