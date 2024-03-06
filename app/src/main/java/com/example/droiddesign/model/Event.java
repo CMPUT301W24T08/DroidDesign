@@ -1,17 +1,16 @@
 package com.example.droiddesign.model;
 
-
-
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Objects;
+import java.util.UUID;
 
 public class Event {
 
@@ -195,6 +194,10 @@ public class Event {
         updateFirestore("organizerMessages", organizerMessages);
     }
 
+    public String getHashId() {
+        return UUID.randomUUID().toString();
+    }
+
     // Method to save event to Firestore
     // Method to save event to Firestore - Now an instance method
     public void saveToFirestore() {
@@ -221,7 +224,7 @@ public class Event {
 
     // Method to convert event object to a map
     // Convert event object to a map - Instance method
-    private Map<String, Object> toMap() {
+    Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("eventId", this.eventId);
         map.put("eventName", this.eventName);
@@ -265,5 +268,3 @@ public class Event {
     };
 
 }
-
-

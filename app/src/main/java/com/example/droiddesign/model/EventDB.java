@@ -29,7 +29,7 @@ public class EventDB {
     public void addEvent(Event event) {
 
 
-        HashMap<String, Object> data = event.toMap();
+        HashMap<String, Object> data = (HashMap<String, Object>) event.toMap();
 
 
         eventCollection.document(event.getHashId())
