@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -104,11 +105,16 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 Upload upload = new Upload(text, uri.toString());
-                                mFirestoreDb.collection("qrcodes").add(upload)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                String uploadId = mFirestoreDb.collection("qrcodes").document().getId();
+                                mFirestoreDb.collection("qrcodes").document(uploadId).set(upload)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
-                                            public void onSuccess(DocumentReference documentReference) {
+                                            public void onSuccess(Void aVoid) {
                                                 Toast.makeText(QrCodeGeneratorActivity.this, "QR Code saved", Toast.LENGTH_LONG).show();
+                                                Intent resultIntent = new Intent();
+                                                resultIntent.putExtra("qrCodeUrl", uri.toString());
+                                                setResult(RESULT_OK, resultIntent);
+                                                finish();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -128,4 +134,5 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

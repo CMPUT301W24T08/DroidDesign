@@ -39,7 +39,6 @@ public class ImageUploadActivity extends AppCompatActivity {
 
     private Button mButtonChooseImage;
     private Button mButtonUpload;
-    private TextView mTextViewShowUploads;
     private EditText mEditTextFileName;
     private ImageView mImageView;
 
@@ -103,16 +102,21 @@ public class ImageUploadActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Handler handler = new Handler();
-                            handler.postDelayed(() -> mProgressBar.setProgress(0), 5000);
+                            handler.postDelayed(() -> mProgressBar.setProgress(0), 500);
 
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Upload upload = new Upload(mEditTextFileName.getText().toString().trim(), uri.toString());
-
-                                    // Save upload record in Firestore instead of Realtime Database
-                                    mFirestoreDb.collection("uploads").add(upload)
-                                            .addOnSuccessListener(documentReference -> Toast.makeText(ImageUploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show())
+                                    String uploadId = mFirestoreDb.collection("uploads").document().getId();
+                                    mFirestoreDb.collection("uploads").document(uploadId).set(upload)
+                                            .addOnSuccessListener(documentReference -> {
+                                                Toast.makeText(ImageUploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+                                                Intent resultIntent = new Intent();
+                                                resultIntent.putExtra("imagePosterUrl", uri.toString());
+                                                setResult(RESULT_OK, resultIntent);
+                                                finish();
+                                            })
                                             .addOnFailureListener(e -> Toast.makeText(ImageUploadActivity.this, "Upload failed", Toast.LENGTH_LONG).show());
                                 }
                             });
@@ -130,6 +134,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
