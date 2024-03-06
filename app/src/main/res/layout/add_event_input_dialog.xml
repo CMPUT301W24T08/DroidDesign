@@ -16,21 +16,21 @@ android:padding="16dp">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:hint="Event Description" />
+    android:hint="Event Location" />
 
 <EditText
     android:id="@+id/event_description_input2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:hint="Event Description" />
+    android:hint="Event Date" />
 
 <EditText
     android:id="@+id/event_description_input3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:hint="Event Description" />
+    android:hint="Event Max attendee" />
 
 <Button
     android:id="@+id/create_event_button"

@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -166,7 +167,7 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		// Get the dialog components
 		EditText eventNameInput = dialogView.findViewById(R.id.event_name_input);
-		EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input1);
+		EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input3);
 		Button createEventButton = dialogView.findViewById(R.id.create_event_button);
 
 		// Create the AlertDialog
@@ -248,6 +249,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	private void fetchEvents() {
 		// Get reference to the events collection
 		CollectionReference eventsCollection = db.collection("events");
