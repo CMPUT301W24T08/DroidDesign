@@ -47,7 +47,11 @@ dependencies {
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     implementation("com.google.firebase:firebase-auth:22.3.1")
+<<<<<<< HEAD
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+=======
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+>>>>>>> f00a83d0f855d53d691828d490feeb337df7260e
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -56,6 +60,10 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.squareup.picasso:picasso:2.71828")
+
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
+
 
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation ("androidx.multidex:multidex:2.0.1")
