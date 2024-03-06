@@ -22,15 +22,6 @@ import com.example.droiddesign.model.Event;
 
 public class AddEventSecondActivity extends AppCompatActivity {
 
-    Intent intent = getIntent();
-    String eventName = intent.getStringExtra("EVENT_NAME");
-    String eventLocation = intent.getStringExtra("EVENT_LOCATION");
-    String startTime = intent.getStringExtra("START_TIME");
-    String endTime = intent.getStringExtra("END_TIME");
-    String startDate = intent.getStringExtra("START_DATE");
-    String endDate = intent.getStringExtra("END_DATE");
-    boolean isMultiDayEvent = intent.getBooleanExtra("IS_MULTIDAY_EVENT", false);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

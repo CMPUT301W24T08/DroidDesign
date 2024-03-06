@@ -189,7 +189,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:fontFamily="@font/opensans"
-        android:text="@string/cancel"
+        android:text="@string/finish"
         app:cornerRadius="12.5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
