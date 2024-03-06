@@ -1,4 +1,4 @@
-package com.example.droiddesign;
+package com.example.droiddesign.UnitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EventTest {
+public class EventUnitTest {
 
 	private FirebaseFirestore mockFirestore;
 	private Event testEvent;
