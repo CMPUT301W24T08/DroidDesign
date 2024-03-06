@@ -25,6 +25,9 @@
         <activity android:name=".view.ProfileSettingsActivity"/>
         <activity android:name=".view.RoleSelectionActivity"/>
         <activity android:name=".view.AddEventActivity"/>
+        <activity android:name=".view.AddEventSecondActivity"/>
+        <activity android:name=".view.QrCodeGeneratorActivity"/>
+        <activity android:name=".view.QrCodeScanActivity"/>
     </application>
 
 </manifest>
