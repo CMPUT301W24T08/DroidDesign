@@ -45,7 +45,11 @@
     <string name="qr_code">QR Code</string>
     <string name="upload_an_event_poster">Upload an Event Poster</string>
     <string name="max_attendees">Max Attendees</string>
+<<<<<<< HEAD
     <string name="description">Description</string>
     <string name="event_poster">Event Poster</string>
+=======
+    <string name="finish">Finish</string>
+>>>>>>> f00a83d0f855d53d691828d490feeb337df7260e
 
 </resources>

@@ -63,14 +63,16 @@
         android:textColor="#FFFFFF"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/text_view_show_uploads"
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/button_back_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Uploads"
-        android:textSize="16sp"
+        android:text="Back"
+        android:background="#000000"
+        android:textColor="#FFFFFF"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/button_upload"
-        android:layout_marginStart="25dp"
-        android:gravity="center_vertical" />
+        android:layout_marginStart="10dp" />
+
 </RelativeLayout>

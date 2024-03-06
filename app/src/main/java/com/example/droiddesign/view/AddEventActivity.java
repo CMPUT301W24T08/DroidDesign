@@ -126,25 +126,28 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         fabNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Pass values for event to next activity
-                Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
+                // Start the AddEventSecondActivity
+                TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
+                TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
+
+                // Convert event start and end times to String
                 String eventName = eventNameInput.getText().toString();
                 String eventLocation = eventLocationInput.getText().toString();
                 String startTime = btnStartTime.getText().toString();
                 String endTime = btnEndTime.getText().toString();
                 String startDate = btnStartDate.getText().toString();
-                String endDate = btnEndDate.getText().toString();
-                boolean isMultiDayEvent = switchMultiDay.isChecked();
+                String endDate = btnEndDate.getText().toString(); // Handle visibility & logic for single vs. multi-day events
 
+                // Pack the data into an Intent
+                Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                 intent.putExtra("eventName", eventName);
                 intent.putExtra("eventLocation", eventLocation);
                 intent.putExtra("startTime", startTime);
                 intent.putExtra("endTime", endTime);
                 intent.putExtra("startDate", startDate);
                 intent.putExtra("endDate", endDate);
-                intent.putExtra("isMultiDayEvent", isMultiDayEvent);
 
-                // Start the second activity
+                // Start the EventDetailsActivity
                 startActivity(intent);
             }
         });
