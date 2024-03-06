@@ -136,13 +136,13 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                 String endDate = btnEndDate.getText().toString();
                 boolean isMultiDayEvent = switchMultiDay.isChecked();
 
-                intent.putExtra("EVENT_NAME", eventName);
-                intent.putExtra("EVENT_LOCATION", eventLocation);
-                intent.putExtra("START_TIME", startTime);
-                intent.putExtra("END_TIME", endTime);
-                intent.putExtra("START_DATE", startDate);
-                intent.putExtra("END_DATE", endDate);
-                intent.putExtra("IS_MULTIDAY_EVENT", isMultiDayEvent);
+                intent.putExtra("eventName", eventName);
+                intent.putExtra("eventLocation", eventLocation);
+                intent.putExtra("startTime", startTime);
+                intent.putExtra("endTime", endTime);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("endDate", endDate);
+                intent.putExtra("isMultiDayEvent", isMultiDayEvent);
 
                 // Start the second activity
                 startActivity(intent);
