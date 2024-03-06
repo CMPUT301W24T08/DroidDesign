@@ -71,6 +71,7 @@
         app:srcCompat="@drawable/image_placeholder" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_upload_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
@@ -162,7 +163,6 @@
         app:boxBackgroundColor="@color/card_bg_light_transparent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_input_max_attendees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/max_attendees"
@@ -170,7 +170,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/text_input_max_attendees"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/max_attendees"
@@ -184,12 +184,12 @@
         app:layout_constraintVertical_bias="1.1"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_finish"
+        android:id="@+id/finish_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:fontFamily="@font/opensans"
-        android:text="Finish"
+        android:text="@string/finish"
         app:cornerRadius="12.5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -211,6 +211,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.050000012" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

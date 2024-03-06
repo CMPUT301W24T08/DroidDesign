@@ -45,8 +45,6 @@ public class ProfileImage extends Image {
 						// Set the associatedUserIds with the value from Firestore
 						associatedUserIds = (List<String>) documentSnapshot.get("associatedUserIds");
 						// Now you can use associatedUserIds in your application
-					} else {
-						// Handle the case where the profile image does not exist
 					}
 				})
 				.addOnFailureListener(e -> {
