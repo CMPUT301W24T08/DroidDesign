@@ -56,8 +56,6 @@ public class BasicLoginFragment extends DialogFragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
-                            assert user != null;
-                            User firestoreuser = new Organizer(user.getUid());
                         }
                     }
                 });
