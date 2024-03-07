@@ -36,6 +36,8 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_role_selection_unregistered);
 
+		String userId = getIntent().getStringExtra("userId");
+		boolean registered = getIntent().getBooleanExtra("registered", false);
 		// Initialize views and set click listeners
 		adminImage = findViewById(R.id.admin_button);
 		organizerImage = findViewById(R.id.organizer_button);
@@ -92,8 +94,9 @@ public class RoleSelectionActivity extends AppCompatActivity {
 					// Navigate to event menu after successful registration
 					navigateToEventMenu(role, userId);
 					Intent intent = new Intent(RoleSelectionActivity.this, EventMenuActivity.class);
-//					intent.putExtra("UserId", userId);
-//					intent.putExtra("Role", role);
+					intent.putExtra("userId", userId);
+					intent.putExtra("role", role);
+					intent.putExtra("registered", false);
 					startActivity(intent);
 					// Document added successfully, show a toast message
 					Toast.makeText(getApplicationContext(), "Default user created successfully", Toast.LENGTH_SHORT).show();
@@ -112,8 +115,8 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
 	private void navigateToEventMenu(String role, String userId) {
 		Intent intent = new Intent(this, EventMenuActivity.class);
-//		intent.putExtra("role", role);
-//		intent.putExtra("userId", userId);
+		intent.putExtra("role", role);
+		intent.putExtra("userId", userId);
 		startActivity(intent);
 	}
 

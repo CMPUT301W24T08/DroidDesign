@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -12,12 +11,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -28,6 +26,7 @@ public class LaunchScreenActivity extends AppCompatActivity {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String PREF_USER_ID = "defaultID";
+    private SharedPreferences sharedPreferences;
 
 
     private FirebaseAuth mAuth;
@@ -40,7 +39,16 @@ public class LaunchScreenActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // Initialize SharedPreferences within onCreate
         SharedPreferences prefs = getSharedPreferences("ConclavePrefs", MODE_PRIVATE);
-        String userId = prefs.getString("userID", null);
+        // Check if the user ID is already stored
+        String userId = sharedPreferences.getString(PREF_USER_ID, null);
+        if (userId != null) {
+            // User ID exists, proceed to the next activity
+            goToRoleSelectionActivity(userId);
+        } else {
+            // User ID doesn't exist, create a new unregistered user
+            createUnregisteredUser();
+        }
+
         com.google.android.material.floatingactionbutton.FloatingActionButton skipButton = findViewById(R.id.skip_button);
         MaterialButton loginGoogle = findViewById(R.id.button_continue_with_google);
 
@@ -76,22 +84,23 @@ public class LaunchScreenActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void goToRoleSelectionActivity(String userId) {//TODO: make this get the userid and registered status from firestore
+        Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
+        intent.putExtra("user", userId); // Pass the user ID to the next activity
+        startActivity(intent);
+        finish(); // Finish the current activity to prevent going back to it (no need for login)
+    }
+
     private void createUnregisteredUser() {
         String userId = UUID.randomUUID().toString(); // Generate a random user ID
-        Map<String, Object> user = new HashMap<>();
-        user.put("userId", userId);
-        user.put("registered", false);
+        User user = new User(); // Create a User object with unregistered status
+        user.setUserId(userId);
+        user.setRegistered(false);
 
-        db.collection("usersDB").document(userId).set(user)
-                .addOnSuccessListener(aVoid -> {
-                    Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
-                    intent.putExtra("UserId", userId); // Pass the user ID to the next activity
-                    startActivity(intent);
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the failure of adding a user
-                    Log.e("LaunchScreenActivity", "Error creating unregistered user", e);
-                });
+        Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
+        intent.putExtra("user", user); // Pass the User object to the next activity
+        startActivity(intent);
+
     }
     // Method to authenticate user
     private void authenticateUser(String username, String password) {
