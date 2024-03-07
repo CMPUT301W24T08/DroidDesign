@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
-    >
-=======
     android:background="#061222">
 
     <!-- Note: this one is wierd and may be incorrect -->
@@ -127,7 +124,5 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
->>>>>>> 24ad25a1cceb8df9e436313a88878eed7e91944e
 
 </androidx.constraintlayout.widget.ConstraintLayout>
