@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Organizer;
 import com.example.droiddesign.model.User;
-import com.example.droiddesign.model.UsersDB;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -56,6 +56,7 @@ public class BasicLoginFragment extends DialogFragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
                             User firestoreuser = new Organizer(user.getUid());
                         }
                     }

@@ -2,7 +2,6 @@ package com.example.droiddesign.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Organizer extends User {
 	private String username;
@@ -13,7 +12,7 @@ public class Organizer extends User {
 	private ArrayList<String> eventsIdList;
 
 
-	public Organizer(String userId, String role, String username, String email) {
+	public Organizer(String userId) {
 		super(userId, role);
 		this.username = "";
 		this.email = "";

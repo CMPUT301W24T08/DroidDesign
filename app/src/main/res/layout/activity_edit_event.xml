@@ -300,7 +300,7 @@
             android:layout_marginEnd="25dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_edittext_dark"
-            app:layout_constraintBottom_to="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
