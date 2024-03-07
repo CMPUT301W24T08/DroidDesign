@@ -13,10 +13,10 @@ public class Organizer extends User {
 	private ArrayList<String> eventsIdList;
 
 
-	public Organizer(String userId, String role) {
+	public Organizer(String userId, String role, String email) {
 		super(userId, role);
 		this.username = "";
-		this.email = "";
+		this.email = email;
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
