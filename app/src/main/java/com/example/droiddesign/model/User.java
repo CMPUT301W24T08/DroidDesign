@@ -24,8 +24,8 @@ public abstract class User {
 	private List<String> eventsList;
 
 	// Firestore collection name
-	private static final String COLLECTION_NAME = "UsersDB";
-
+	private static final String COLLECTION_NAME = "User";
+	protected ArrayList<String> rolesList;
 	// Firestore instance
 	protected transient FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -33,6 +33,12 @@ public abstract class User {
 	public User() {
 	}
 
+	// Default constructor
+
+	public User(String userId, String role) {
+		this.userId = userId;
+		this.role = role;
+	}
 
 	/*
 		constructor for unregistered users
