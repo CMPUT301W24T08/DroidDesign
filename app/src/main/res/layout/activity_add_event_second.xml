@@ -186,12 +186,12 @@
         app:layout_constraintVertical_bias="1.1"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_finish"
+        android:id="@+id/finish_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:fontFamily="@font/opensans"
-        android:text="Finish"
+        android:text="@string/finish"
         app:cornerRadius="12.5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

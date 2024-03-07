@@ -57,7 +57,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation("com.google.zxing:core:3.4.1")
+    implementation("com.google.zxing:core:3.5.3")
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.squareup.picasso:picasso:2.71828")
 

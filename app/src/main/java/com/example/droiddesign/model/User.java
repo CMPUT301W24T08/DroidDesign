@@ -6,14 +6,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class User implements Serializable {
-	private static final long serialVersionUID = 1L; // Recommended to include
+public abstract class User {
 	protected String userId;
 	protected String userName;
 	protected Boolean registered;
