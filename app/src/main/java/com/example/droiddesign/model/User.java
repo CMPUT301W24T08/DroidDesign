@@ -3,6 +3,7 @@ package com.example.droiddesign.model;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ public abstract class User {
 	protected String userId;
 	protected String role;
 
+	protected ArrayList<String> rolesList;
 
 
 	// Default constructor
@@ -19,7 +21,6 @@ public abstract class User {
 		this.role = role;
 	}
 
-	// Method to save the user to Firestore
 
 
 	// Getters and setters
