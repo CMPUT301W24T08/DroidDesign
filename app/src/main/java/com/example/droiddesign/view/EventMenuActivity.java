@@ -38,7 +38,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		userRole = "attendee"; // Placeholder for user role assignment logic
+		userRole = getIntent().getStringExtra("role");
 
 		fetchEvents();
 

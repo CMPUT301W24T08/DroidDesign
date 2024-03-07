@@ -109,10 +109,10 @@ public class RoleSelectionActivity extends AppCompatActivity {
 					});
 				});
 	}
-
-	private void navigateToEventMenu(String role, String userId) {
+		private void navigateToEventMenu(String role, String userId) {
+	// private void navigateToEventMenu(String role, String userId) {
 		Intent intent = new Intent(this, EventMenuActivity.class);
-//		intent.putExtra("role", role);
+		intent.putExtra("role", role);
 //		intent.putExtra("userId", userId);
 		startActivity(intent);
 	}
