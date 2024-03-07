@@ -71,6 +71,7 @@
         app:srcCompat="@drawable/image_placeholder" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_upload_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/card_bg_light_transparent"
@@ -164,6 +165,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/max_attendees"
+            android:inputType="number"
+            android:id="@+id/input_number_max_attendees"
             android:fontFamily="@font/opensans"/>
     </com.google.android.material.textfield.TextInputLayout>
 
