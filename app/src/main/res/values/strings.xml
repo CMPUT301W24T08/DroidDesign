@@ -45,6 +45,22 @@
     <string name="qr_code">QR Code</string>
     <string name="upload_an_event_poster">Upload an Event Poster</string>
     <string name="max_attendees">Max Attendees</string>
+    <string name="DateandTime">MM/DD/YYYY 00:00</string>
+    <string name="placeholderimage">Placeholder image description</string>
+    <string name="smalllogo">small logo</string>
+    <string name="biglogo">big logo</string>
+    <string name="scan">Scan</string>
+    <string name="company">Company</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="user_name">User Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="blue_square">Blue Square</string>
+    <string name="Description">Description</string>
+    <string name="Sign_Up">Sign Up For Event</string>
+    <string name="current_attendance">X out of Y participants have arrived.</string>
+    <string name="event_poster">Event Poster</string>
     <string name="finish">Finish</string>
 
 </resources>
