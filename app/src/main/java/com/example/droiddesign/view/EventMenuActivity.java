@@ -1,14 +1,10 @@
 package com.example.droiddesign.view;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -42,10 +38,8 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-//		userId = getIntent().getStringExtra("UserId");
-//		userRole = getIntent().getStringExtra("role");
-		// Fetch events from Firestore and populate RecyclerView
-//		addRandomEvents();
+		userRole = "attendee"; // Placeholder for user role assignment logic
+
 		fetchEvents();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -54,191 +48,90 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
-			// Handle the event click here
 			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-			intent.putExtra("EVENT_ID", event.getEventId()); // Make sure your Event class has a method getId().
-			startActivity(intent);		});
+			intent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(intent);
+		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
-		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-		menuButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				toggleNavigationMenu();
-			}
-		});
+		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
+
 		ImageButton backButton = findViewById(R.id.button_back);
-		backButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		backButton.setOnClickListener(v -> finish());
+
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
-		addEventButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
-				startActivity(intent);
-			}
+		addEventButton.setOnClickListener(view -> {
+			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+			startActivity(intent);
 		});
 
-		// Adjust UI elements based on the user's role
-//		adjustUIBasedOnRole(userRole, (ImageButton) addEventButton);
-		navigationMenu.inflateMenu(R.menu.navigation_drawer);
-		// Set the navigation item selection listener if needed
+
+		navigationMenu.getMenu().clear();
+
+		// Inflate the menu based on user role
+		if ("organizer".equals(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);
+		} else if ("admin".equals(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
+		} else { // Default to attendee if no role or attendee role
+			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
+		}
+
+		// Set the navigation item selection listener
 		navigationMenu.setNavigationItemSelectedListener(item -> {
-			// Handle navigation view item clicks here.
 			int id = item.getItemId();
-			// Logic to handle item clicks
-			Intent intent;
+			Intent intent = null;
 
 			if (id == R.id.browse_events) {
-				// Intent for the admin dashboard
 				intent = new Intent(this, EventMenuActivity.class);
-				startActivity(intent);
-			} else if (id == R.id.profile_settings) {
-				// Intent for the organizer dashboard
+			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
-				startActivity(intent);
-			} else if (id == R.id.app_settings) {
-				// Intent for the attendee dashboard
+			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+				// Assuming you have an activity to handle sharing of events
+			}
+
+			if (intent != null) {
 				startActivity(intent);
 			}
+
 			return true;
 		});
+
 	}
-//	public void addRandomEvents() {
-//		FirebaseFirestore db = FirebaseFirestore.getInstance();
-//		String[] eventNames = {"Community Cleanup", "Tech Talk", "Art Exhibition", "Book Club Meeting", "Local Concert"};
-//		String[] locations = {"Park Avenue, New York", "Tech Hub, San Francisco", "Art Gallery, Paris", "Library, Chicago", "Concert Hall, London"};
-//		String[] organizers = {"Green Earth Organization", "Tech Innovators", "Artists United", "Book Lovers Association", "Music for All"};
-//		String[] categories = {"Environmental", "Technology", "Art", "Education", "Music"};
-//
-//		Random random = new Random();
-//
-//		// Adding 3 to 5 random events
-//		int numberOfEventsToAdd = 3 + random.nextInt(3); // This will add between 3 to 5 events
-//		for (int i = 0; i < 2; i++) {
-//			Map<String, Object> event = new HashMap<>();
-//			event.put("eventID", UUID.randomUUID().toString());
-//			event.put("eventName", eventNames[random.nextInt(eventNames.length)]);
-//			event.put("eventDate", "1/3/2024"); // For simplicity, using the same date for all events
-//			event.put("geolocation", locations[random.nextInt(locations.length)]);
-//			event.put("description", "Join us for an amazing event.");
-//			event.put("startTime", "10:00 AM");
-//			event.put("endTime", "2:00 PM");
-//			event.put("organizerOwnerId", organizers[random.nextInt(organizers.length)]);
-//			event.put("participants", Arrays.asList("user1", "user2"));
-//
-//			db.collection("Events").add(event)
-//					.addOnSuccessListener(documentReference -> Log.d("AddEvents", "DocumentSnapshot added with ID: " + documentReference.getId()))
-//					.addOnFailureListener(e -> Log.w("AddEvents", "Error adding document", e));
-//		}
-//	}
-//	private void adjustUIBasedOnRole(String role, ImageButton addEventButton) {
-//		switch (role) {
-//			case "admin":
-//				// For admin, set the addEventButton to visible and load the admin menu
-//				addEventButton.setVisibility(View.VISIBLE);
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_admin); // Replace with your actual admin menu
-//				break;
-//			case "organizer":
-//				// For organizer, leave the addEventButton to visible and load the organizer menu
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_organizer); // Replace with your actual organizer menu
-//				break;
-//			case "attendee":
-//				// For attendee, set the addEventButton to gone and load the attendee menu
-//				addEventButton.setVisibility(View.GONE);
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_attendee); // Replace with your actual attendee menu
-//				break;
-//		}
-//
-//	}
 
-	// public void showEventInputDialog(View view) {
-		// Initialize the inflater
-		// LayoutInflater inflater = getLayoutInflater();
-
-		// Inflate the custom dialog layout
-		// View dialogView = inflater.inflate(R.layout.add_event_input_dialog, null);
-
-		// Get the dialog components
-
-		// Create the AlertDialog
-		// AlertDialog dialog = new AlertDialog.Builder(this)
-		//		.setView(dialogView)
-		//		.setTitle("Create New Event")
-		//		.create();
-
-		// Set the click listener for the create button
-	//	createEventButton.setOnClickListener(new View.OnClickListener() {
-	//		@Override
-	//		public void onClick(View view) {
-	//			String eventName = String.valueOf(eventNameInput.getText());
-	//			String eventDescription = String.valueOf(eventDescriptionInput.getText());
-
-				// Create the event with the provided input
-	//			createEvent(eventName, eventDescription);
-
-				// Dismiss the dialog
-	//			dialog.dismiss();
-	//		}
-	//	});
-
-		// Show the dialog
-	//	dialog.show();
-	//}
 	private void createEvent(String eventName, String eventDescription) {
-		// Get an instance of the Firestore database
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-		// Create a new event object
 		Map<String, Object> event = new HashMap<>();
 		event.put("EventDetails.Name", eventName);
 		event.put("EventDetails.Description", eventDescription);
-		// Add additional fields such as start time, end time, etc.
 
-		// Add the new event to the Firestore database
 		db.collection("events").add(event)
-				.addOnSuccessListener(documentReference -> {
-					// Handle success
-					Log.d("createEvent", "DocumentSnapshot added with ID: " + documentReference.getId());
-				})
-				.addOnFailureListener(e -> {
-					// Handle the error
-					Log.w("createEvent", "Error adding document", e);
-				});
+				.addOnSuccessListener(documentReference -> Log.d("createEvent", "DocumentSnapshot added with ID: " + documentReference.getId()))
+				.addOnFailureListener(e -> Log.w("createEvent", "Error adding document", e));
 	}
+
 	private void setupRecyclerView() {
-		// Set up RecyclerView with EventsAdapter and layout manager
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-		// Assuming you have a method to initialize your events list
 		eventsList = initializeEventsList();
 
-		eventsAdapter = new EventsAdapter(eventsList, new EventsAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(Event event) {
-				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-				intent.putExtra("EVENT_ID", event.getEventId()); // Make sure your Event class has a method getId().
-				startActivity(intent);
-			}
+		eventsAdapter = new EventsAdapter(eventsList, event -> {
+			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+			intent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(intent);
 		});
 
 		eventsRecyclerView.setAdapter(eventsAdapter);
 	}
 
 	private List<Event> initializeEventsList() {
-		// Initialize your events list here
 		return new ArrayList<>();
 	}
 
 	private void toggleNavigationMenu() {
-		// If the navigation menu is visible, hide it. Otherwise, show it.
 		if (navigationMenu.getVisibility() == View.VISIBLE) {
 			navigationMenu.setVisibility(View.GONE);
 		} else {
@@ -248,40 +141,27 @@ public class EventMenuActivity extends AppCompatActivity {
 
 	@SuppressLint("NotifyDataSetChanged")
 	private void fetchEvents() {
-		// Get reference to the events collection
 		CollectionReference eventsCollection = db.collection("events");
 
-		// Query Firestore for all events
 		eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-			// Initialize events list
 			eventsList = new ArrayList<>();
-
-			// Iterate through each document snapshot
 			for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-				// Convert document snapshot to Event object
 				Event event = documentSnapshot.toObject(Event.class);
 				if (event != null) {
-					// Add event to the events list
 					eventsList.add(event);
 				}
 			}
 
-			// Populate RecyclerView with events
 			eventsAdapter = new EventsAdapter(eventsList, event -> {
-				// Handle event click here
 				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-				intent.putExtra("EVENT_ID", event.getEventId()); // Assuming you have a method to get event ID
+				intent.putExtra("EVENT_ID", event.getEventId());
 				startActivity(intent);
 			});
 			eventsRecyclerView.setAdapter(eventsAdapter);
-
-			// Notify adapter that data set has changed
 			eventsAdapter.notifyDataSetChanged();
 		}).addOnFailureListener(e -> {
-			// Handle failure to fetch events
 			Log.e("EventMenuActivity", "Error fetching events", e);
 			Toast.makeText(this, "Error fetching events", Toast.LENGTH_SHORT).show();
 		});
 	}
-
 }
