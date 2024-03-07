@@ -62,4 +62,9 @@
     <string name="current_attendance">X out of Y participants have arrived.</string>
     <string name="event_poster">Event Poster</string>
     <string name="finish">Finish</string>
+    <string name="Profile">Profile</string>
+    <string name="Settings">Settings</string>
+    <string name="GeoLocation">Geo Location</string>
+    <string name="Notification_Preferences">Notification Preferences</string>
+
 </resources>
