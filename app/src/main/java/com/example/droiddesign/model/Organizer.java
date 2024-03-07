@@ -2,6 +2,7 @@ package com.example.droiddesign.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Organizer extends User {
 	private String username;
