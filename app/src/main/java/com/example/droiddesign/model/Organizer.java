@@ -12,7 +12,7 @@ public class Organizer extends User {
 	private ArrayList<String> eventsIdList;
 
 
-	public Organizer(String userId) {
+	public Organizer(String userId, String role) {
 		super(userId, role);
 		this.username = "";
 		this.email = "";
