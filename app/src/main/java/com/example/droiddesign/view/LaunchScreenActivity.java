@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -46,6 +48,16 @@ public class LaunchScreenActivity extends AppCompatActivity {
 
         loginGoogle.setOnClickListener(v -> showLoginDialog());
         skipButton.setOnClickListener(v -> createUnregisteredUser());
+
+        MaterialButton signUpButton = findViewById(R.id.button_sign_up);
+
+        signUpButton.setOnClickListener(v -> {
+            BasicLoginFragment loginFragment = new BasicLoginFragment();
+            loginFragment.show(getSupportFragmentManager(), "Sign Up");
+        });
+
+
+
     }
     // Method to show login dialog
     private void showLoginDialog() {
