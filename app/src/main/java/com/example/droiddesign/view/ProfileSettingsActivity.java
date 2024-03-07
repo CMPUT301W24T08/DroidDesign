@@ -30,9 +30,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 		db = FirebaseFirestore.getInstance();
 		userId = getUserIdFromIntent(); // Assume this retrieves the userId passed from the previous activity
 
-		editTextUsername = findViewById(R.id.editTextUsername);
-		editTextPhone = findViewById(R.id.editTextPhone);
-		btnSaveSettings = findViewById(R.id.btnSaveSettings);
 
 		// Initialize form fields
 		loadProfileSettings();

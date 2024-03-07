@@ -2,6 +2,8 @@ package com.example.droiddesign.view;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -18,10 +20,22 @@ public class AppSettingsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_app_settings); //TODO: create xml
+		setContentView(R.layout.activity_app_settings);
 
 		db = FirebaseFirestore.getInstance();
 		userId = getUserIdFromIntent(); // Assume this retrieves the userId passed from the previous activity
+
+		// Find the back button by its ID
+		Button backButton = findViewById(R.id.button_back);
+
+		// Set an OnClickListener on the backButton
+		backButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// This will close the current activity and go back to the previous screen
+				finish();
+			}
+		});
 
 //		switchGeolocation = findViewById(R.id.switch_geolocation); TODO: for later requirement
 //
