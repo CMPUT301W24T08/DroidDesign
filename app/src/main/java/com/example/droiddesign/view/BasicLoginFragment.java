@@ -4,6 +4,7 @@ package com.example.droiddesign.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,12 +38,28 @@ import java.util.ArrayList;
 
 
 public class BasicLoginFragment extends DialogFragment {
+
+    interface UserCreationListener{
+        void userCreated();
+    }
     private FirebaseAuth mAuth;
     private EditText email;
     private EditText password;
 
     private ArrayList<String> rolesList = new ArrayList<>();
 
+    private UserCreationListener listener;
+
+    @Override
+    public void onAttach(@NonNull Context context){
+        super.onAttach(context);
+        if(context instanceof UserCreationListener){
+            listener = (UserCreationListener) context;
+        } else {
+            throw new RuntimeException(context+" must implement UserCreationListener");
+        }
+
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -101,10 +118,9 @@ public class BasicLoginFragment extends DialogFragment {
                                     break;
                             }
                             userdb.addUser(newUser);
-
+                            listener.userCreated();
 
                         }
-
 
                     }
                 });

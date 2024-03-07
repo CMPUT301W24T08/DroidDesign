@@ -11,8 +11,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import org.w3c.dom.Document;
 
 import java.util.HashMap;
 
@@ -71,5 +74,27 @@ public class UsersDB {
         userCollection.document(user.getUserId()).delete();
     }
 
+    public void getUser(String userId, getUserCallback callback) {
+        DocumentReference docRef = userCollection.document(userId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = null;
+                String role = documentSnapshot.getString("role");
+                if(role.equals("Admin")){
+                    user = documentSnapshot.toObject(Admin.class);
+                } else if (role.equals("Organizer")) {
+                    user = documentSnapshot.toObject(Organizer.class);
+                } else if (role.equals("Attendee")){
+                    user = documentSnapshot.toObject(Attendee.class);
+                }
+                callback.onSuccess(user);
+            }
+        });
+    }
 
+    interface getUserCallback{
+        void onSuccess(User user);
+        void onFailure();
+    }
 }

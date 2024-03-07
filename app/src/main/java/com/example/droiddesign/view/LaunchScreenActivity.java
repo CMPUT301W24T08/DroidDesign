@@ -26,7 +26,7 @@ import java.util.UUID;
  * The activity that starts when the app is opened.
  * Provides an interface for the user to log into the app with.
  */
-public class LaunchScreenActivity extends AppCompatActivity {
+public class LaunchScreenActivity extends AppCompatActivity implements BasicLoginFragment.UserCreationListener, EmailLoginFragment.UserLoginListener {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String PREF_USER_ID = "defaultID";
@@ -54,6 +54,12 @@ public class LaunchScreenActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(v -> {
             BasicLoginFragment loginFragment = new BasicLoginFragment();
             loginFragment.show(getSupportFragmentManager(), "Sign Up");
+        });
+
+        MaterialButton loginEmailButton = findViewById(R.id.continue_with_email);
+        loginEmailButton.setOnClickListener(v->{
+            EmailLoginFragment emailFragment = new EmailLoginFragment();
+            emailFragment.show(getSupportFragmentManager(),"Log in");
         });
 
 
@@ -118,6 +124,25 @@ public class LaunchScreenActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void userCreated() {
+        Intent intent = new Intent(LaunchScreenActivity.this,EventMenuActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void userLoggedIn() {
+        Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void userFailedLogin() {
+        Toast.makeText(LaunchScreenActivity.this, "Login Failed",Toast.LENGTH_SHORT).show();
+    }
+
+
 //    private boolean isFirstTimeUser() {
 //        return prefs.getString(PREF_USER_ID, null) == null;
 //    }
