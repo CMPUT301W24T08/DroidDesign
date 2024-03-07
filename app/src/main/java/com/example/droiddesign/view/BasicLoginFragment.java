@@ -120,6 +120,7 @@ public class BasicLoginFragment extends DialogFragment {
                             userdb.addUser(newUser);
                             listener.userCreated();
 
+
                         }
 
                     }
