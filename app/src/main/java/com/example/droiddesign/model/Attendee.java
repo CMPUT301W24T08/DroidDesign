@@ -1,69 +1,74 @@
 package com.example.droiddesign.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Attendee extends User {
-	private boolean signed;
-	private String username;
-	private Geolocation attendeeGeolocation;
+	private String profileName;
+	private String email;
+	private String phone;
+	private String profilePic;
+	private boolean geolocation;
+	private ArrayList<String> eventsIdList;
 
-	@Override
-	public void saveToFirestore() {
-		Map<String, Object> attendeeMap = new HashMap<>();
-		attendeeMap.put("userId", this.userId);
-		attendeeMap.put("email", this.email);
-		attendeeMap.put("phone", this.phone);
-		attendeeMap.put("signed", this.signed);
-		attendeeMap.put("username", this.username);
-		// Add other properties to the map
 
-		db.collection("users").document(this.userId).set(attendeeMap)
-				.addOnSuccessListener(aVoid -> {
-					// Handle successful save
-				})
-				.addOnFailureListener(e -> {
-					// Handle failed save
-				});
+	public Attendee(String userId, String role) {
+		super(userId, role);
+		this.profileName = "";
+		this.email = "";
+		this.phone = "";
+		this.profilePic = "";
+		this.geolocation = false;
+		this.eventsIdList = new ArrayList<>();
 	}
 
 	@Override
-	public void loadFromFirestore(String userId) {
-		db.collection("users").document(userId).get()
-				.addOnSuccessListener(documentSnapshot -> {
-					if (documentSnapshot.exists()) {
-						Attendee attendee = documentSnapshot.toObject(Attendee.class);
-						// Now you can use the setter methods to set the data in your current object if needed
-						this.setUserId(attendee.getUserId());
-						this.setEmail(attendee.getEmail());
-						this.setPhone(attendee.getPhone());
-						// Set other properties
-					} else {
-						// Handle the case where the user does not exist
-					}
-				})
-				.addOnFailureListener(e -> {
-					// Handle any errors that may occur
-				});
+	public HashMap<String, Object> toMap() {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("userId",userId);
+		map.put("role", role);
+		map.put("email",email);
+		map.put("phone",phone);
+		map.put("profileName",profileName);
+		map.put("profilePic",profilePic);
+		map.put("eventsList",eventsIdList);
+		return map;
 	}
 
+	public void setProfileName(String profileName){
+		this.profileName = profileName;
+	}
+	public String getProfileName(){
+		return profileName;
+	}
 
-//	public void getAttendeeFromFirestore(String attendeeId) {
-//		FirebaseFirestore db = FirebaseFirestore.getInstance();
-//		db.collection("Users").document("Attendees").collection("IndividualAttendees").document(attendeeId)
-//				.get()
-//				.addOnSuccessListener(documentSnapshot -> {
-//					if (documentSnapshot.exists()) {
-//						Attendee attendee = documentSnapshot.toObject(Attendee.class);
-//						// Now you have your attendee object populated with the data from Firestore
-//						// You can use the data from the attendee object
-//					} else {
-//						// Handle the case where the attendee does not exist
-//					}
-//				})
-//				.addOnFailureListener(e -> {
-//					// Handle any errors that may occur
-//				});
-//	}
+	public void setEmail(String email){
+		this.email = email;
+	}
+	public String getEmail(){
+		return email;
+	}
+	public void setPhone(String phone){
+		this.phone = phone;
+	}
+	public String getPhone(){
+		return phone;
+	}
+	public void setProfilePic(String profilePic){
+		this.profilePic = profilePic;
+	}
+	public void setGeolocation(boolean geolocation){
+		this.geolocation = geolocation;
+	}
+	public boolean getGeolocation(){
+		return geolocation;
+	}
+	public void addEvent(Event event){
+		eventsIdList.add(event.getEventId());
+	}
 
+	public ArrayList<String> getEventsIdList(){
+		return eventsIdList;
+	}
 }
