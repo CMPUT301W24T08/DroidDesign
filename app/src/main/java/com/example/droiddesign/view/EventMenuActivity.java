@@ -61,6 +61,17 @@ public class EventMenuActivity extends AppCompatActivity {
 		backButton.setOnClickListener(v -> finish());
 
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		if ("attendee".equals(userRole)) {
+			// Make the button invisible and not take up layout space
+			addEventButton.setVisibility(View.GONE);
+		} else {
+			// Set the click listener only if the user is not an attendee
+			addEventButton.setOnClickListener(view -> {
+				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+				startActivity(intent);
+			});
+		}
+
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
 			startActivity(intent);
@@ -90,6 +101,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+
 				// Assuming you have an activity to handle sharing of events
 			}
 
