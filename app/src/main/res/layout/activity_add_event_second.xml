@@ -136,6 +136,7 @@
         android:layout_height="wrap_content"
         android:text="@string/event_description"
         android:textColor="@color/white"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/event_description_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -182,9 +183,36 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.10"
-        app:layout_constraintVertical_bias="1.1"
-        tools:layout_editor_absoluteX="91dp"
-        tools:layout_editor_absoluteY="626dp" />
+        app:layout_constraintVertical_bias="1.1"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:fontFamily="@font/opensans"
+        android:text="Finish"
+        app:cornerRadius="12.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.81"
+        app:layout_constraintStart_toEndOf="@+id/input_max_attendees_layout"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:fontFamily="@font/opensans"
+        android:text="@string/cancel"
+        app:cornerRadius="12.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.91"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <Button
         android:id="@+id/finish_add_button"

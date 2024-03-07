@@ -158,42 +158,48 @@ public class EventMenuActivity extends AppCompatActivity {
 //
 //	}
 
-	public void showEventInputDialog(View view) {
+	// public void showEventInputDialog(View view) {
 		// Initialize the inflater
-		LayoutInflater inflater = getLayoutInflater();
+		// LayoutInflater inflater = getLayoutInflater();
 
 		// Inflate the custom dialog layout
-		View dialogView = inflater.inflate(R.layout.add_event_input_dialog, null);
+		// View dialogView = inflater.inflate(R.layout.add_event_input_dialog, null);
 
 		// Get the dialog components
+<<<<<<< HEAD
+		// EditText eventNameInput = dialogView.findViewById(R.id.event_name_input);
+		// EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input);
+		// Button createEventButton = dialogView.findViewById(R.id.create_event_button);
+=======
 		EditText eventNameInput = dialogView.findViewById(R.id.event_name_input);
 		EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input3);
 		Button createEventButton = dialogView.findViewById(R.id.create_event_button);
+>>>>>>> f00a83d0f855d53d691828d490feeb337df7260e
 
 		// Create the AlertDialog
-		AlertDialog dialog = new AlertDialog.Builder(this)
-				.setView(dialogView)
-				.setTitle("Create New Event")
-				.create();
+		// AlertDialog dialog = new AlertDialog.Builder(this)
+		//		.setView(dialogView)
+		//		.setTitle("Create New Event")
+		//		.create();
 
 		// Set the click listener for the create button
-		createEventButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				String eventName = String.valueOf(eventNameInput.getText());
-				String eventDescription = String.valueOf(eventDescriptionInput.getText());
+	//	createEventButton.setOnClickListener(new View.OnClickListener() {
+	//		@Override
+	//		public void onClick(View view) {
+	//			String eventName = String.valueOf(eventNameInput.getText());
+	//			String eventDescription = String.valueOf(eventDescriptionInput.getText());
 
 				// Create the event with the provided input
-				createEvent(eventName, eventDescription);
+	//			createEvent(eventName, eventDescription);
 
 				// Dismiss the dialog
-				dialog.dismiss();
-			}
-		});
+	//			dialog.dismiss();
+	//		}
+	//	});
 
 		// Show the dialog
-		dialog.show();
-	}
+	//	dialog.show();
+	//}
 	private void createEvent(String eventName, String eventDescription) {
 		// Get an instance of the Firestore database
 		FirebaseFirestore db = FirebaseFirestore.getInstance();
