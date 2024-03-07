@@ -25,12 +25,14 @@ public class AddEventSecondActivity extends AppCompatActivity {
     private static final int GENERATE_QR_REQUEST = 2;
 
     private Event event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_second);
 
         event = new Event();
+        generateUniqueEventId();  // Generate and set unique event ID immediately.
         Intent intent = getIntent();
         populateEventFromIntent(intent);
 
@@ -45,9 +47,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
             startActivityForResult(imageUploadIntent, UPLOAD_IMAGE_REQUEST);
         });
 
-        finishAddButton.setOnClickListener(view -> {
-            saveEvent();
-        });
+        finishAddButton.setOnClickListener(view -> saveEvent());
+    }
+
+    private void generateUniqueEventId() {
+        String uniqueID = UUID.randomUUID().toString();
+        event.setEventId(uniqueID);
     }
 
     private void populateEventFromIntent(Intent intent) {
@@ -56,7 +61,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
         event.setStartTime(intent.getStringExtra("startTime"));
         event.setEndTime(intent.getStringExtra("endTime"));
         event.setEventDate(intent.getStringExtra("startDate"));
-        event.setGeolocation(intent.getStringExtra("eventLocation"));  // Assuming geolocation is derived or identical to eventLocation.
+        // Assuming geolocation is derived or identical to eventLocation.
+        event.setGeolocation(intent.getStringExtra("eventLocation"));
     }
 
     private void setupDropdownMenu(AutoCompleteTextView dropdownMenu) {
@@ -68,6 +74,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
             String selectedItem = (String) parent.getItemAtPosition(position);
             if ("Generate New QR".equals(selectedItem)) {
                 Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
+                qrGeneratorIntent.putExtra("eventId", event.getEventId());  // Pass the unique event ID.
                 startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
             }
         });
@@ -82,39 +89,33 @@ public class AddEventSecondActivity extends AppCompatActivity {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
                 String qrCodeUrl = data.getStringExtra("qrCodeUrl");
-                Log.d("AddEventSecondActivity", "QR Code URL: " + qrCodeUrl);
                 event.setQrCode(qrCodeUrl);
             }
         }
     }
 
     private void saveEvent() {
-        String uniqueID = UUID.randomUUID().toString();
-        event.setEventId(uniqueID);
-
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
-        Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
         event.setDescription(eventDescription);
 
         TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
-        Log.d("AddEvent", "Max Attendees String: '" + maxAttendeesString + "'");
 
         try {
             int maxAttendees = Integer.parseInt(maxAttendeesString);
             event.setSignupLimit(maxAttendees);
         } catch (NumberFormatException e) {
-            Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
             return;
         }
 
         event.saveToFirestore();
 
-        Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Event added successfully!", Toast.LENGTH_SHORT).show();
         finish();
 
-        Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
+        Intent detailsIntent = new Intent(this, EventDetailsActivity.class);
         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(detailsIntent);
     }
