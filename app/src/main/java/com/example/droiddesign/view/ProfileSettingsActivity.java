@@ -2,23 +2,17 @@ package com.example.droiddesign.view;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
 
-	private EditText editTextUsername, editTextPhone;
-	private Button btnSaveSettings;
+	private EditText editTextEmail;
 	private String userId;
 	private FirebaseFirestore db;
 
@@ -28,55 +22,38 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_profile_settings);
 
 		db = FirebaseFirestore.getInstance();
-		userId = getUserIdFromIntent(); // Assume this retrieves the userId passed from the previous activity
+		userId = getUserIdFromIntent();
 
 
-		// Initialize form fields
+
+		editTextEmail = findViewById(R.id.EditUserEmail);
+
+
 		loadProfileSettings();
 
-		btnSaveSettings.setOnClickListener(v -> {
-			saveProfileSettings();
-		});
+		ImageButton backButton = findViewById(R.id.button_back);
+		backButton.setOnClickListener(v -> finish());
 	}
 
 	private void loadProfileSettings() {
-		// Load the current profile settings for the user from Firestore
-		db.collection("users").document(userId).get()
+		db.collection("Users").document(userId).get()
 				.addOnSuccessListener(documentSnapshot -> {
 					if (documentSnapshot.exists()) {
-						String username = documentSnapshot.getString("Username");
-						String phone = documentSnapshot.getString("Phone");
+						String email = documentSnapshot.getString("email");
 
-						editTextUsername.setText(username);
-						editTextPhone.setText(phone);
+						editTextEmail.setText(email);
+					} else {
+						Log.w("ProfileSettings", "User does not exist.");
 					}
 				})
-				.addOnFailureListener(e -> Log.e("ProfileSettings", "Error loading settings", e));
-	}
-
-	private void saveProfileSettings() {
-		String username = editTextUsername.getText().toString().trim();
-		String phone = editTextPhone.getText().toString().trim();
-
-		// Perform input validation here if needed
-
-		Map<String, Object> userProfile = new HashMap<>();
-		userProfile.put("Username", username);
-		userProfile.put("Phone", phone);
-
-		db.collection("users").document(userId)
-				.set(userProfile, SetOptions.merge())
-				.addOnSuccessListener(aVoid -> {
-					Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-					finish(); // Close the activity or navigate the user elsewhere
-				})
 				.addOnFailureListener(e -> {
-					Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+					Log.e("ProfileSettings", "Error loading settings", e);
 				});
 	}
 
 	private String getUserIdFromIntent() {
-		// Get the userId from the intent that started this activity
-		return getIntent().getStringExtra("USER_ID");
+		String userId = getIntent().getStringExtra("USER_ID");
+		Log.d("ProfileSettingsActivity", "Fetched user ID: " + userId);
+		return userId;
 	}
 }

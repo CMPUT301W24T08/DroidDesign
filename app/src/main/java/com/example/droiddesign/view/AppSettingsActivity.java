@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -26,7 +27,7 @@ public class AppSettingsActivity extends AppCompatActivity {
 		userId = getUserIdFromIntent(); // Assume this retrieves the userId passed from the previous activity
 
 		// Find the back button by its ID
-		Button backButton = findViewById(R.id.button_back);
+		ImageButton backButton = findViewById(R.id.button_back);
 
 		// Set an OnClickListener on the backButton
 		backButton.setOnClickListener(new View.OnClickListener() {

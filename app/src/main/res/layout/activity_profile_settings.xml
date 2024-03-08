@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/bg_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:srcCompat="@drawable/left_chevron"
+        android:contentDescription="@string/back" />
+
     <ImageView
         android:id="@+id/logo_large"
         android:layout_width="845dp"
@@ -44,7 +58,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/edit_description_background" />
 
-    <TextView
+    <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,14 +66,14 @@
         android:layout_marginEnd="74dp"
         android:background="@android:color/transparent"
         android:fontFamily="@font/nunitosans"
-        android:text="@string/user_name"
+        android:hint="@string/user_name"
         android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView7"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/editTextCompany"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,28 +81,29 @@
         android:layout_marginEnd="132dp"
         android:background="@android:color/transparent"
         android:fontFamily="@font/nunitosans"
-        android:text="@string/company"
+        android:hint="@string/company"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imageView7"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <EditText
         android:id="@+id/EditUserEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/transparent_button"
         android:gravity="start"
         android:padding="16dp"
-        android:text="@string/email"
+        android:editable="false"
+        android:hint="@string/email"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
-    <Button
+    <EditText
         android:id="@+id/EditUserPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +111,7 @@
         android:background="@drawable/transparent_button"
         android:gravity="start"
         android:padding="16dp"
-        android:text="@string/password"
+        android:hint="@string/password"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -10,7 +10,7 @@ public class Attendee extends User {
 	private String phone;
 	private String profilePic;
 	private boolean geolocation;
-	private ArrayList<String> eventsIdList;
+	private ArrayList<String> eventsList;
 
 	public Attendee() {
 		super("", "");
@@ -19,7 +19,7 @@ public class Attendee extends User {
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
-		this.eventsIdList = new ArrayList<>();
+		this.eventsList = new ArrayList<>();
 	}
 
 
@@ -30,7 +30,7 @@ public class Attendee extends User {
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
-		this.eventsIdList = new ArrayList<>();
+		this.eventsList = new ArrayList<>();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Attendee extends User {
 		map.put("phone",phone);
 		map.put("profileName",profileName);
 		map.put("profilePic",profilePic);
-		map.put("eventsList",eventsIdList);
+		map.put("eventsList",eventsList);
 		return map;
 	}
 
@@ -75,10 +75,10 @@ public class Attendee extends User {
 		return geolocation;
 	}
 	public void addEvent(Event event){
-		eventsIdList.add(event.getEventId());
+		eventsList.add(event.getEventId());
 	}
 
-	public ArrayList<String> getEventsIdList(){
-		return eventsIdList;
+	public ArrayList<String> getEventsList(){
+		return eventsList;
 	}
 }

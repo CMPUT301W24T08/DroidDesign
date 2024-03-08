@@ -13,10 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.Attendee;
 import com.example.droiddesign.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -28,10 +31,11 @@ import java.util.Map;
 public class EventMenuActivity extends AppCompatActivity {
 	private RecyclerView eventsRecyclerView;
 	private EventsAdapter eventsAdapter;
-	private List<Event> eventsList; // Populate this list with the events later using firestore.
+	private List<Event> eventsList;
 	private NavigationView navigationMenu;
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 	private String userId, userRole;
+	private List<Event> signedUpEvents;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_event_menu);
 
 		userRole = getIntent().getStringExtra("role");
-
-		fetchEvents();
+		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -53,6 +56,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
+		fetchUserSignedUpEvents();
 
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
@@ -77,6 +81,13 @@ public class EventMenuActivity extends AppCompatActivity {
 			startActivity(intent);
 		});
 
+		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
+		fabQuickScan.setOnClickListener(v -> {
+			// Intent to start Quick Scan Activity or any specific logic
+			Intent intent = new Intent(EventMenuActivity.this, QrCodeScanActivity.class);
+			startActivity(intent);
+		});
+
 
 		navigationMenu.getMenu().clear();
 
@@ -98,11 +109,10 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
+				intent.putExtra("USER_ID", userId);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
-
-				// Assuming you have an activity to handle sharing of events
 			}
 
 			if (intent != null) {
@@ -111,19 +121,8 @@ public class EventMenuActivity extends AppCompatActivity {
 
 			return true;
 		});
-
 	}
 
-	private void createEvent(String eventName, String eventDescription) {
-		FirebaseFirestore db = FirebaseFirestore.getInstance();
-		Map<String, Object> event = new HashMap<>();
-		event.put("EventDetails.Name", eventName);
-		event.put("EventDetails.Description", eventDescription);
-
-		db.collection("events").add(event)
-				.addOnSuccessListener(documentReference -> Log.d("createEvent", "DocumentSnapshot added with ID: " + documentReference.getId()))
-				.addOnFailureListener(e -> Log.w("createEvent", "Error adding document", e));
-	}
 
 	private void setupRecyclerView() {
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -151,29 +150,45 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
-	@SuppressLint("NotifyDataSetChanged")
-	private void fetchEvents() {
-		CollectionReference eventsCollection = db.collection("events");
 
-		eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-			eventsList = new ArrayList<>();
-			for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+	private void fetchUserSignedUpEvents() {
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+			Attendee user = documentSnapshot.toObject(Attendee.class);
+			if (user != null && user.getEventsList() != null && !user.getEventsList().isEmpty()) {
+				fetchEventsByIds(user.getEventsList());
+			} else {
+				Log.w("EventMenuActivity", "User has no signed-up events or could not be fetched.");
+			}
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user", e));
+	}
+
+	private void fetchEventsByIds(List<String> eventIds) {
+		signedUpEvents = new ArrayList<>();
+		for (String eventId : eventIds) {
+			db.collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
 				Event event = documentSnapshot.toObject(Event.class);
 				if (event != null) {
-					eventsList.add(event);
+					signedUpEvents.add(event);
+					if (signedUpEvents.size() == eventIds.size()) {
+						updateUI();
+					}
 				}
-			}
-
-			eventsAdapter = new EventsAdapter(eventsList, event -> {
-				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-				intent.putExtra("EVENT_ID", event.getEventId());
-				startActivity(intent);
-			});
-			eventsRecyclerView.setAdapter(eventsAdapter);
-			eventsAdapter.notifyDataSetChanged();
-		}).addOnFailureListener(e -> {
-			Log.e("EventMenuActivity", "Error fetching events", e);
-			Toast.makeText(this, "Error fetching events", Toast.LENGTH_SHORT).show();
-		});
+			}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching event", e));
+		}
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		fetchUserSignedUpEvents();
+	}
+
+
+	private void updateUI() {
+		eventsAdapter.setEvents(signedUpEvents);
+		eventsAdapter.notifyDataSetChanged();
+		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
+	}
+	
 }

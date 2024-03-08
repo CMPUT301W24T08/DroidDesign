@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Locale;
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
-	private final List<Event> eventsList;
+	private List<Event> eventsList;
 	private final OnItemClickListener listener;
 
 	public interface OnItemClickListener {
@@ -82,6 +82,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
 		holder.bind(event, listener);
 	}
+
+	public void setEvents(List<Event> events) {
+		this.eventsList.clear();
+		this.eventsList.addAll(events);
+		notifyDataSetChanged();
+	}
+
 
 
 

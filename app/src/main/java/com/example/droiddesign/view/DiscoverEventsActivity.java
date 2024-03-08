@@ -71,5 +71,4 @@ public class DiscoverEventsActivity extends AppCompatActivity {
             eventsRecyclerView.setAdapter(eventsAdapter);
         }
     }
-
 }

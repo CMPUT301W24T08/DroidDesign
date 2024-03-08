@@ -82,7 +82,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 				.addOnSuccessListener(documentSnapshot -> {
 					Attendee user = documentSnapshot.toObject(Attendee.class);
 					if (user != null) {
-						user.getEventsIdList().add(eventId);
+						user.getEventsList().add(eventId);
 						db.collection("Users").document(currentUserId).set(user.toMap())
 								.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
 								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
