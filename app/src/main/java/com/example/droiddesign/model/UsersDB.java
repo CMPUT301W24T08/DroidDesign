@@ -81,19 +81,26 @@ public class UsersDB {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = null;
                 String role = documentSnapshot.getString("role");
-                if(role.equals("Admin")){
-                    user = documentSnapshot.toObject(Admin.class);
-                } else if (role.equals("Organizer")) {
-                    user = documentSnapshot.toObject(Organizer.class);
-                } else if (role.equals("Attendee")){
-                    user = documentSnapshot.toObject(Attendee.class);
+                assert role != null;
+                // Switch statements are FAST. In memory switch cases are handled in a similar
+                // fashion to hashes. Use them instead of if/else if possible. Compilers are cool!
+                switch (role) {
+                    case "Admin":
+                        user = documentSnapshot.toObject(Admin.class);
+                        break;
+                    case "Organizer":
+                        user = documentSnapshot.toObject(Organizer.class);
+                        break;
+                    case "Attendee":
+                        user = documentSnapshot.toObject(Attendee.class);
+                        break;
                 }
                 callback.onSuccess(user);
             }
         });
     }
 
-    interface getUserCallback{
+    public interface getUserCallback{
         void onSuccess(User user);
         void onFailure();
     }

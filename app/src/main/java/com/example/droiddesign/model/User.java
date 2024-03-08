@@ -28,10 +28,25 @@ public abstract class User {
 		return userId;
 	}
 
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	public String getRole(){
 		return role;
 	}
 
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public ArrayList<String> getRolesList() {
+		return rolesList;
+	}
+
+	public void setRolesList(ArrayList<String> rolesList) {
+		this.rolesList = rolesList;
+	}
 
 	public abstract HashMap<String, Object> toMap();
 

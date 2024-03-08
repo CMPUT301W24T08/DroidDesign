@@ -39,6 +39,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_event_menu);
 
 		userRole = getIntent().getStringExtra("role");
+		userId = getIntent().getStringExtra("userId");
 
 		fetchEvents();
 
@@ -72,6 +73,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			});
 		}
 
+		// Takes the user to the add event activity
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
 			startActivity(intent);

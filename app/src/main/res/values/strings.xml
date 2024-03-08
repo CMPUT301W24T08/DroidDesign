@@ -66,5 +66,12 @@
     <string name="Settings">Settings</string>
     <string name="GeoLocation">Geo Location</string>
     <string name="Notification_Preferences">Notification Preferences</string>
+    <string name="web_client_id">AIzaSyDaURE9ef74GOGqhTj1SP1lflZvX_AQI-0</string>
+    <string name="error_generic">Something went wrong</string>
+    <string name="login_failed">Login failed</string>
+    <string name="failed_to_fetch_user_data">Failed to fetch user data</string>
+    <string name="error_role_not_found">Error! role not found</string>
+    <string name="error_user_data_not_found">Error! User data not found</string>
+    <string name="authentication_failed">Authentication failed</string>
 
 </resources>

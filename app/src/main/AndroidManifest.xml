@@ -54,7 +54,7 @@
         <activity android:name=".view.AppSettingsActivity"/>
         <activity android:name=".view.ProfileSettingsActivity"/>
         <activity android:name=".view.AddEventActivity"/>
-
+        <activity android:name=".view.AddEventSecondActivity"/>
 
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

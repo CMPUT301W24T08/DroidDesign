@@ -26,19 +26,41 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
+/**
+ * A DialogFragment that provides an interface for user login using email and password.
+ * It uses Firebase Authentication to sign in the user and verify credentials then communicates the login result
+ * back to the hosting activity through the UserLoginListener interface.
+ */
 public class EmailLoginFragment extends DialogFragment{
     private FirebaseAuth mAuth;
     private EditText email;
     private EditText password;
 
-
+    /**
+     * Interface to be implemented by the LaunchScreen activity to handle login success or failure callbacks.
+     */
     interface UserLoginListener{
-        void userLoggedIn();
+
+        /**
+         * Called when the user is successfully logged in.
+         */
+        void userLoggedIn(FirebaseUser user);
+
+        /**
+         * Called when the login attempt fails.
+         */
         void userFailedLogin();
+
+        void userLoggedIn();
     }
     private UserLoginListener listener;
 
+    /**
+     * Called when the fragment is first attached to its context.
+     * {@inheritDoc}
+     *
+     * @throws RuntimeException if the context does not implement UserLoginListener.
+     */
     @Override
     public void onAttach(@NonNull Context context){
         super.onAttach(context);
@@ -50,12 +72,18 @@ public class EmailLoginFragment extends DialogFragment{
 
     }
 
+    /**
+     * Creates and returns the dialog for user login.
+     * {@inheritDoc}
+     *
+     * @return A Dialog instance for the user login.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
 
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_login_email, null);
+        View view = getLayoutInflater().inflate(R.layout.fragment_login_email, null);
 
         email = view.findViewById(R.id.edit_login_email);
 
@@ -75,7 +103,12 @@ public class EmailLoginFragment extends DialogFragment{
 
     }
 
-
+    /**
+     * Attempts to log in the user using the provided email and password.
+     *
+     * @param email    The user's email address.
+     * @param password The user's password.
+     */
     private void LogInUser(String email, String password){
         mAuth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

@@ -19,7 +19,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 	private EditText editTextUsername, editTextPhone;
 	private Button btnSaveSettings;
-	private String userId;
+	private String userId, userRole;
 	private FirebaseFirestore db;
 
 	@Override
