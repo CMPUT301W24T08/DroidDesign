@@ -86,20 +86,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements EmailLogi
     }
 
     /**
-     * Starts the EventMenuActivity and passes the user ID and role as extras.
-     *
-     * @param userId The unique identifier of the user.
-     * @param role   The role of the user within the application context.
-     */
-    private void startEventMenuActivity(String userId, String role) {
-
-        Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
-        intent.putExtra("userId", userId);
-        intent.putExtra("userRole", role);
-        startActivity(intent);
-    }
-
-    /**
      * Displays the email login dialog.
      */
     public void showEmailLoginDialog() {
@@ -222,7 +208,9 @@ public class LaunchScreenActivity extends AppCompatActivity implements EmailLogi
      */
     @Override
     public void userLoggedIn() {
-        navigateToEventMenuActivity();
+        String dummyUUID = "123e4567-e89b-12d3-a456-426614174000";
+        String dummyRole = "attendee";
+        navigateToEventMenuActivity(dummyUUID, dummyRole);
     }
 
     /**
@@ -252,7 +240,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements EmailLogi
     public void onUserDataFetched(User user) {
         // Handle successful user data fetch.
         if (user != null) {
-            startEventMenuActivity(user.getUserId(), user.getRole());
+            navigateToEventMenuActivity(user.getUserId(), user.getRole());
         } else {
             Toast.makeText(LaunchScreenActivity.this, "User data fetch failed.", Toast.LENGTH_SHORT).show();
         }

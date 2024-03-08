@@ -19,7 +19,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 	private EditText editTextUsername, editTextPhone;
 	private Button btnSaveSettings;
-	private String userId, userRole;
+	private String userId;
 	private FirebaseFirestore db;
 
 	@Override
@@ -28,30 +28,16 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_profile_settings);
 
 		db = FirebaseFirestore.getInstance();
-		userId = getUserIdFromIntent(); // Assume this retrieves the userId passed from the previous activity
+		userId = getUserIdFromIntent();
+		String userRole = getUserRoleFromIntent();
 
+		if (userId == null) {
+			Toast.makeText(this, "User ID is missing.", Toast.LENGTH_SHORT).show();
+		}
+		if (userRole == null) {
+			Toast.makeText(this, "User role is missing.", Toast.LENGTH_SHORT).show();
+		}
 
-		// Initialize form fields
-		loadProfileSettings();
-
-		btnSaveSettings.setOnClickListener(v -> {
-			saveProfileSettings();
-		});
-	}
-
-	private void loadProfileSettings() {
-		// Load the current profile settings for the user from Firestore
-		db.collection("users").document(userId).get()
-				.addOnSuccessListener(documentSnapshot -> {
-					if (documentSnapshot.exists()) {
-						String username = documentSnapshot.getString("Username");
-						String phone = documentSnapshot.getString("Phone");
-
-						editTextUsername.setText(username);
-						editTextPhone.setText(phone);
-					}
-				})
-				.addOnFailureListener(e -> Log.e("ProfileSettings", "Error loading settings", e));
 	}
 
 	private void saveProfileSettings() {
@@ -77,6 +63,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 	private String getUserIdFromIntent() {
 		// Get the userId from the intent that started this activity
-		return getIntent().getStringExtra("USER_ID");
+		return getIntent().getStringExtra("userId");
+	}
+
+	private String getUserRoleFromIntent() {
+		return getIntent().getStringExtra("userRole");
 	}
 }

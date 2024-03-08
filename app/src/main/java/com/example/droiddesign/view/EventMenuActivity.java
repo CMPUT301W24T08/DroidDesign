@@ -41,6 +41,13 @@ public class EventMenuActivity extends AppCompatActivity {
 		userRole = getIntent().getStringExtra("role");
 		userId = getIntent().getStringExtra("userId");
 
+		if (userId == null) {
+			Toast.makeText(this, "User ID is missing.", Toast.LENGTH_SHORT).show();
+		}
+		if (userRole == null) {
+			Toast.makeText(this, "User role is missing.", Toast.LENGTH_SHORT).show();
+		}
+
 		fetchEvents();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -100,14 +107,14 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, EventMenuActivity.class);
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
+				// Pass userId and userRole as extras to ProfileSettingsActivity
+				intent.putExtra("userId", userId);
+				intent.putExtra("userRole", userRole);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
-			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
-
-				// Assuming you have an activity to handle sharing of events
 			}
 
-			if (intent != null) {
+            if (intent != null) {
 				startActivity(intent);
 			}
 

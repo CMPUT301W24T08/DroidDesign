@@ -124,7 +124,5 @@ public class EmailLoginFragment extends DialogFragment{
 
                 });
     }
-
-
 }
 
