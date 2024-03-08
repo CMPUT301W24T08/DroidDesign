@@ -68,5 +68,6 @@
     <string name="Notification_Preferences">Notification Preferences</string>
     <string name="discover_events">Discover Events</string>
     <string name="Contact_Number">Contact Number</string>
+    <string name="Save">Save Changes</string>
 
 </resources>
