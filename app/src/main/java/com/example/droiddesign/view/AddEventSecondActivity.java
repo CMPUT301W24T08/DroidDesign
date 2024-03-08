@@ -21,13 +21,40 @@ import com.google.android.material.button.MaterialButton;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * The AddEventSecondActivity class is responsible for collecting additional details for a new event creation process.
+ * It allows the organizer to upload an image for the event, choose to generate a new QR code or use an existing one,
+ * and finalize event details. After completion, the event data is saved to Firestore and the user is directed
+ * to the EventDetailsActivity with the newly created event.
+ */
 public class AddEventSecondActivity extends AppCompatActivity {
 
+    /**
+     * Request code for triggering an image upload intent.
+     */
     private static final int UPLOAD_IMAGE_REQUEST = 1;
+
+    /**
+     * Request code for triggering a QR code generation intent.
+     */
     private static final int GENERATE_QR_REQUEST = 2;
 
+    /**
+     * Event object to store and manage the event details being added.
+     */
+
     private Event event;
+
+    /**
+     * Initializes the activity for the second step of adding a new event.
+     * Sets up UI components and retrieves event details passed from the previous activity.
+     * Initializes a new Event object and assigns a unique ID.
+     *
+     * @param savedInstanceState Contains data supplied in onSaveInstanceState(Bundle) or null if no data was supplied.
+     */
     @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_second);
@@ -61,6 +88,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Populates the Event object with data received from the Intent extras.
+     * Sets the event name, location, start time, end time, and date.
+     *
+     * @param intent The intent carrying the event details from the previous activity.
+     */
     private void populateEventFromIntent(Intent intent) {
         event.setEventName(intent.getStringExtra("eventName"));
         event.setEventLocation(intent.getStringExtra("eventLocation"));
@@ -70,6 +103,13 @@ public class AddEventSecondActivity extends AppCompatActivity {
         event.setGeolocation(intent.getStringExtra("eventLocation"));  // Assuming geolocation is derived or identical to eventLocation.
     }
 
+    /**
+     * Sets up the dropdown menu for QR code generation options.
+     * Configures the dropdown with "Generate New QR" and "Use Existing QR" options
+     * and sets an item click listener to handle the selection.
+     *
+     * @param dropdownMenu The AutoCompleteTextView that acts as the dropdown menu.
+     */
     private void setupDropdownMenu(AutoCompleteTextView dropdownMenu) {
         String[] listItems = new String[]{"Generate New QR", "Use Existing QR"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, listItems);
@@ -84,7 +124,15 @@ public class AddEventSecondActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Processes the result returned by any activities launched for result.
+     * Handles results for both image poster upload and QR code generation.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param data        An Intent, which can return result data to the caller (various data can be attached as Extras).
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -100,6 +148,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves the event to Firestore. Gathers additional event details from the user input,
+     * validates them, and calls the Event object's saveToFirestore method.
+     * If successful, transitions to the EventDetailsActivity displaying the newly added event.
+     */
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();

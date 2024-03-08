@@ -18,20 +18,51 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+/**
+ * Adapter class for populating the RecyclerView with events.
+ */
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
+	/**
+	 * A list containing Event objects to be displayed in the RecyclerView.
+	 */
 	private List<Event> eventsList;
+
+	/**
+	 * An interface defining the onItemClick method to handle item click events in the RecyclerView.
+	 * Implementations of this interface can be passed to the EventsAdapter to handle item clicks.
+	 */
 	private final OnItemClickListener listener;
+
+	/**
+	 * Interface for handling item click events.
+	 */
 
 	public interface OnItemClickListener {
 		void onItemClick(Event event);
 	}
+
+	/**
+	 * Constructor for the EventsAdapter.
+	 *
+	 * @param eventsList List of events to be displayed.
+	 * @param listener   Listener for item click events.
+	 */
 
 	public EventsAdapter(List<Event> eventsList, OnItemClickListener listener) {
 		this.eventsList = eventsList;
 		this.listener = listener;
 	}
 
+
+	/**
+	 * Inflates the layout for each event card.
+	 *
+	 * @param parent   The parent view group.
+	 * @param viewType The type of view to be inflated.
+	 * @return An instance of EventViewHolder.
+	 */
 	@NonNull
 	@Override
 	public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,7 +70,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 		return new EventViewHolder(view);
 	}
 
-
+	/**
+	 * Binds event data to the views within each card.
+	 *
+	 * @param holder   The view holder to bind data to.
+	 * @param position The position of the item within the RecyclerView.
+	 */
 
 	@Override
 	public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
@@ -83,6 +119,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 		holder.bind(event, listener);
 	}
 
+	/**
+	 * Sets the events data in the adapter.
+	 *
+	 * @param events List of events to be displayed.
+	 */
+
 	public void setEvents(List<Event> events) {
 		this.eventsList.clear();
 		this.eventsList.addAll(events);
@@ -90,19 +132,31 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	}
 
 
-
-
+	/**
+	 * Gets the number of events in the list.
+	 *
+	 * @return The number of events.
+	 */
 	@Override
 	public int getItemCount() {
 		return eventsList.size();// request database
 	}
 
+	/**
+	 * ViewHolder class for holding event views.
+	 */
 	public static class EventViewHolder extends RecyclerView.ViewHolder {
 		TextView textEventName, textLocation;
 		TextView dateDay;
 		TextView dateMonth;
 		TextView dateYear;
 
+
+		/**
+		 * Constructor for the EventViewHolder.
+		 *
+		 * @param itemView The view for each event item.
+		 */
 		public EventViewHolder(View itemView) {
 			super(itemView);
 			// Find views by ID
@@ -113,6 +167,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 			dateYear = itemView.findViewById(R.id.date_year);
 		}
 
+
+		/**
+		 * Binds event data to the views and sets click listener.
+		 *
+		 * @param event    The event object to bind.
+		 * @param listener The listener for item click events.
+		 */
 		public void bind(Event event, OnItemClickListener listener) {
 			// Bind event data to the views
 			itemView.setOnClickListener(v -> listener.onItemClick(event));

@@ -23,16 +23,34 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The activity that starts when the app is opened.
- * Provides an interface for the user to log into the app with.
+ * The LaunchScreenActivity class represents the main entry point for the application. It handles user authentication and navigation to different parts of the app based on user actions.
  */
 public class LaunchScreenActivity extends AppCompatActivity implements BasicLoginFragment.UserCreationListener, EmailLoginFragment.UserLoginListener {
 
+
+    /**
+     * An instance of FirebaseFirestore providing access to the Firebase Firestore database.
+     * This instance is used throughout the activity to interact with the Firestore database.
+     */
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * A constant string used as a key in SharedPreferences for storing and retrieving the user's ID.
+     * The user ID is essential for identifying the user uniquely across the application and persisting user state.
+     */
     private static final String PREF_USER_ID = "defaultID";
 
-
+    /**
+     * An instance of FirebaseAuth used for handling user authentication.
+     * This instance allows for user sign-in, sign-up, and status checking functionalities throughout the activity.
+     */
     private FirebaseAuth mAuth;
+
+
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +80,12 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
             emailFragment.show(getSupportFragmentManager(),"Log in");
         });
 
-
-
     }
+
+    /**
+     * Displays a login dialog to the user where they can enter their credentials.
+     */
+
     // Method to show login dialog
     private void showLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -94,6 +115,9 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
         builder.show();
     }
 
+    /**
+     * Creates an unregistered user in the system with a unique user ID and navigates to the RoleSelectionActivity.
+     */
     private void createUnregisteredUser() {
         String userId = UUID.randomUUID().toString(); // Generate a random user ID
         Map<String, Object> user = new HashMap<>();
@@ -111,6 +135,12 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
                     Log.e("LaunchScreenActivity", "Error creating unregistered user", e);
                 });
     }
+
+    /**
+     * Authenticates a user with the provided username and password.
+     * @param username The username inputted by the user.
+     * @param password The password inputted by the user.
+     */
     // Method to authenticate user
     private void authenticateUser(String username, String password) {
         mAuth.signInWithEmailAndPassword(username, password)
@@ -125,26 +155,33 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
                 });
     }
 
+
+    /**
+     * Callback triggered when a new user is successfully created. This navigates the user to the EventMenuActivity.
+     */
     @Override
     public void userCreated() {
         Intent intent = new Intent(LaunchScreenActivity.this,EventMenuActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Callback triggered when a user successfully logs in. This navigates the user to the EventMenuActivity.
+     */
     @Override
     public void userLoggedIn() {
         Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Callback triggered when a user fails to log in. Displays a toast message indicating login failure.
+     */
     @Override
     public void userFailedLogin() {
         Toast.makeText(LaunchScreenActivity.this, "Login Failed",Toast.LENGTH_SHORT).show();
     }
 
 
-//    private boolean isFirstTimeUser() {
-//        return prefs.getString(PREF_USER_ID, null) == null;
-//    }
 
 }

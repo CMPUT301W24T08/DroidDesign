@@ -21,16 +21,56 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * An activity that provides UI for adding a new event. It allows users to select start and end dates and times.
+ */
 public class AddEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerListener {
+    /**
+     * Button to trigger the end date picker.
+     */
     private Button btnEndDate;
+
+    /**
+     * Button to trigger the start date picker.
+     */
     private Button btnStartDate;
+
+    /**
+     * Button to trigger the start time picker.
+     */
     private Button btnStartTime;
+
+    /**
+     * Button to trigger the end time picker.
+     */
     private Button btnEndTime;
+
+    /**
+     * Flag to identify whether the date being picked is the start date.
+     */
     private Boolean isStartDate;
+
+    /**
+     * Calendar instance to keep track of the start time.
+     */
     Calendar startTimeCalendar = Calendar.getInstance();
+
+    /**
+     * Calendar instance to keep track of the end time.
+     */
     Calendar endTimeCalendar = Calendar.getInstance();
 
-
+    /**
+     * Initializes the activity, setting up the user interface for adding a new event. This includes initializing
+     * input fields for the event's name and location, setting up date and time pickers for the event's start and end
+     * times, and configuring visibility and interactivity based on the event duration type (single day or multi-day).
+     * The method also sets listeners for button clicks to handle various interactions like showing date/time pickers,
+     * cancelling the event addition, or proceeding to the next page for further event details.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this bundle contains the most recent data provided by onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +118,11 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         btnEndTime.setText(endTimeFormatted);
 
         switchMultiDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            btnEndDate.setEnabled(isChecked);
-            btnEndDate.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            endDateText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            btnEndDate.setEnabled(!isChecked);
+            btnEndDate.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+            endDateText.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
         });
+
 
         btnCancelAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,11 +193,25 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
     }
 
+    /**
+     * Displays a date picker dialog to allow the user to select a date.
+     * This method creates a new instance of DatePickerFragment and displays it.
+     */
     private void showDatePickerDialog() {
         DialogFragment datePicker = new DatePickerFragment();
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+
+    /**
+     * Handles the date selected by the user in the DatePickerFragment. Depending on whether the user is
+     * setting a start or end date, this method updates the appropriate button's text to reflect the
+     * selected date. It formats the date according to the "dd MMMM" pattern (e.g., "15 March").
+     *
+     * @param year The year that was picked by the user.
+     * @param month The month that was picked by the user (0-indexed, e.g., 0 for January).
+     * @param day The day of the month that was picked by the user.
+     */
     public void onDateSet(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
@@ -172,6 +227,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
+    /**
+     * Callback invoked when a time is picked in the TimePickerFragment.
+     * It updates the corresponding start or end time based on the source of the callback and validates the time logic.
+     *
+     * @param tag A tag identifying which time picker (start or end) triggered this callback.
+     * @param hourOfDay The hour of the day that was picked.
+     * @param minute The minute within the hour that was picked.
+     */
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
         // If button is startTime button
