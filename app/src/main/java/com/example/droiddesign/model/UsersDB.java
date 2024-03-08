@@ -21,12 +21,10 @@ import java.util.HashMap;
 
 
 public class UsersDB {
-    private FirebaseFirestore usersDB;
-    private CollectionReference userCollection;
+    private final CollectionReference userCollection;
 
 
     public UsersDB(FirebaseFirestore usersDB){
-        this.usersDB = usersDB;
         this.userCollection = usersDB.collection("Users");
     }
     public void addUser(User user) {
@@ -76,20 +74,22 @@ public class UsersDB {
 
     public void getUser(String userId, getUserCallback callback) {
         DocumentReference docRef = userCollection.document(userId);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User user = null;
-                String role = documentSnapshot.getString("role");
-                if(role.equals("Admin")){
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            User user = null;
+            String role = documentSnapshot.getString("role");
+            assert role != null;
+            switch (role) {
+                case "Admin":
                     user = documentSnapshot.toObject(Admin.class);
-                } else if (role.equals("Organizer")) {
+                    break;
+                case "Organizer":
                     user = documentSnapshot.toObject(Organizer.class);
-                } else if (role.equals("Attendee")){
+                    break;
+                case "Attendee":
                     user = documentSnapshot.toObject(Attendee.class);
-                }
-                callback.onSuccess(user);
+                    break;
             }
+            callback.onSuccess(user);
         });
     }
 

@@ -40,4 +40,52 @@ public class Organizer extends User {
 	public void addEvent(Event event){
 		eventsIdList.add(event.getEventId());
 	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	public boolean isGeolocation() {
+		return geolocation;
+	}
+
+	public void setGeolocation(boolean geolocation) {
+		this.geolocation = geolocation;
+	}
+
+	public ArrayList<String> getEventsIdList() {
+		return eventsIdList;
+	}
+
+	public void setEventsIdList(ArrayList<String> eventsIdList) {
+		this.eventsIdList = eventsIdList;
+	}
 }
