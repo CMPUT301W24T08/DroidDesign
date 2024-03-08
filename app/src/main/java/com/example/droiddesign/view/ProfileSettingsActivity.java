@@ -50,7 +50,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 		userProfile.put("Username", username);
 		userProfile.put("Phone", phone);
 
-		db.collection("users").document(userId)
+		db.collection("usersgit ").document(userId)
 				.set(userProfile, SetOptions.merge())
 				.addOnSuccessListener(aVoid -> {
 					Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();

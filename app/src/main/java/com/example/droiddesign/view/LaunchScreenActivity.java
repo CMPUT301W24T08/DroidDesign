@@ -210,7 +210,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements EmailLogi
     public void userLoggedIn() {
         String dummyUUID = "123e4567-e89b-12d3-a456-426614174000";
         String dummyRole = "attendee";
-        navigateToEventMenuActivity(dummyUUID, dummyRole);
+        navigateToEventMenuActivity(dummyUUID, dummyRole); // TODO fix this!!!!
     }
 
     /**
