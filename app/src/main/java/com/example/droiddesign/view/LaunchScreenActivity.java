@@ -142,9 +142,4 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
         Toast.makeText(LaunchScreenActivity.this, "Login Failed",Toast.LENGTH_SHORT).show();
     }
 
-
-//    private boolean isFirstTimeUser() {
-//        return prefs.getString(PREF_USER_ID, null) == null;
-//    }
-
 }
