@@ -104,7 +104,7 @@
         android:layout_marginStart="50dp"
         android:backgroundTint="@color/white"
         android:fontFamily="@font/opensans_semibold"
-        android:text="@string/edit_event_details"
+        android:text="Go Back To Menu Page"
         android:textColor="@color/bg_dark"
         app:cornerRadius="12.5dp"
         app:layout_constraintBottom_toBottomOf="parent"

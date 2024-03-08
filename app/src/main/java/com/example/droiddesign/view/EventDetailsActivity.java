@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -65,8 +66,23 @@ public class EventDetailsActivity extends AppCompatActivity {
 		ImageButton backButton = findViewById(R.id.back_button);
 		backButton.setOnClickListener(v -> finish());
 
+		Button goToMenuButton = findViewById(R.id.edit_event_details_button);
+		goToMenuButton.setOnClickListener(v -> {
+			Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			finish(); // If you don't want to return to this activity from EventMenuActivity
+		});
+
+
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		signUpButton.setOnClickListener(v -> signUpForEvent());
+	}
+
+	private void navigateBackToEventMenu() {
+		Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		startActivity(intent);
 	}
 
 	/**

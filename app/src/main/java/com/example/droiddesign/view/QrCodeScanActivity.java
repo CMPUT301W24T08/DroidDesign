@@ -10,8 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.droiddesign.R;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -88,6 +91,9 @@ public class QrCodeScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initBinding();
         initViews();
+
+        Button backButton = findViewById(R.id.cancelButton);
+        backButton.setOnClickListener(v -> finish());
     }
 
     /**

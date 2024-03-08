@@ -77,7 +77,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		userRole = getIntent().getStringExtra("role");
+		fetchUserRole();
 		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -100,16 +100,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		backButton.setOnClickListener(v -> finish());
 
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
-		if ("attendee".equals(userRole)) {
-			// Make the button invisible and not take up layout space
-			addEventButton.setVisibility(View.GONE);
-		} else {
-			// Set the click listener only if the user is not an attendee
-			addEventButton.setOnClickListener(view -> {
-				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
-				startActivity(intent);
-			});
-		}
 
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
@@ -241,6 +231,45 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onResume();
 		fetchUserSignedUpEvents();
 	}
+
+	/**
+	 * Fetches the current user's role from Firestore and configures the UI based on the role.
+	 * This method retrieves the role information from the 'Users' collection in Firestore
+	 * using the current user's ID. Once the role is fetched, it calls {@link #configureUIBasedOnRole()}
+	 * to update the UI elements based on the user's role.
+	 */
+	private void fetchUserRole() {
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
+				userRole = documentSnapshot.getString("role");
+				configureUIBasedOnRole();
+			} else {
+				Log.e("EventMenuActivity", "Role not found for user.");
+			}
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user role", e));
+	}
+
+	/**
+	 * Configures the user interface based on the user's role.
+	 * This method checks the user's role and sets the visibility of the add event button accordingly.
+	 * If the user is an organizer, the button is made visible and clickable; otherwise, it is hidden.
+	 * This method should be called after the user's role has been determined by {@link #fetchUserRole()}.
+	 */
+	private void configureUIBasedOnRole() {
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		if ("Organizer".equalsIgnoreCase(userRole)) {
+			addEventButton.setVisibility(View.VISIBLE);
+			addEventButton.setOnClickListener(view -> {
+				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+				startActivity(intent);
+			});
+		} else {
+			addEventButton.setVisibility(View.GONE);
+		}
+	}
+
+
 
 
 	/**

@@ -5,9 +5,6 @@
         android:id="@+id/group_attendee" >
 
         <item
-            android:id="@+id/nav_view_events"
-            android:title="View Events for attendee"/>
-        <item
             android:id="@+id/browse_events"
             android:title="@string/browse_events" />
 
