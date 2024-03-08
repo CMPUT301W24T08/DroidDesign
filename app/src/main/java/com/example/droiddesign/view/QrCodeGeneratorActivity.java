@@ -60,13 +60,17 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 QRCodeWriter qrCodeWriter = new QRCodeWriter();
                 try {
-                    String text = editText.getText().toString();
-                    if (text.trim().isEmpty()) {
-                        Toast.makeText(QrCodeGeneratorActivity.this, "Text is empty", Toast.LENGTH_SHORT).show();
+                    // Retrieve the event ID passed from AddEventSecondActivity
+                    Intent intent = getIntent();
+                    String eventId = intent.getStringExtra("eventID");
+
+                    if (eventId == null || eventId.trim().isEmpty()) {
+                        Toast.makeText(QrCodeGeneratorActivity.this, "Event ID is missing", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 200, 200);
+                    // Use the event ID for the QR code
+                    BitMatrix bitMatrix = qrCodeWriter.encode(eventId, BarcodeFormat.QR_CODE, 200, 200);
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                     mQrBitmap = barcodeEncoder.createBitmap(bitMatrix);
                     mImageViewQrCode.setImageBitmap(mQrBitmap);
@@ -75,6 +79,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
             @Override

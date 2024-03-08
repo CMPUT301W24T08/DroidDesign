@@ -16,36 +16,32 @@
 
         <TextView
             android:id="@+id/text_event_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/montserrat_semibold"
             android:text="@string/event_name"
             android:textColor="@color/bg_dark"
             android:textFontWeight="800"
-            android:textSize="35sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="30sp"
+            app:layout_constraintStart_toEndOf="@id/date_card"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.65"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.34" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/text_location"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_semibold"
             android:text="@string/location"
             android:textColor="@color/bg_dark_secondary"
             android:textFontWeight="800"
             android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.34"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.794" />
+            app:layout_constraintStart_toStartOf="@id/text_event_name"
+            app:layout_constraintEnd_toEndOf="@id/text_event_name"
+            app:layout_constraintTop_toBottomOf="@id/text_event_name" />
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/date_card"
@@ -113,11 +109,10 @@
             android:id="@+id/chevron_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/text_event_name"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/chevron_right" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,35 +39,51 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 		return new EventViewHolder(view);
 	}
 
+
+
 	@Override
 	public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
 		Event event = eventsList.get(position);
 		holder.textEventName.setText(event.getEventName());
-		holder.textLocation.setText((CharSequence) event.getGeolocation());
-		// Parse the date string
-		String dateString = event.getEventDate();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-		try {
-			Date date = dateFormat.parse(dateString);
-			Calendar cal = Calendar.getInstance();
-			if (date != null) {
-				cal.setTime(date);
-				int day = cal.get(Calendar.DAY_OF_MONTH);
-				// For month, to display it as a word (e.g., Jan, Feb).
-				String month = new SimpleDateFormat("MMM", Locale.getDefault()).format(cal.getTime());
-				int year = cal.get(Calendar.YEAR);
+		holder.textLocation.setText(event.getGeolocation());
 
-				holder.dateDay.setText(String.valueOf(day));
-				holder.dateMonth.setText(month);
-				holder.dateYear.setText(String.valueOf(year));
+		// Adjusted date parsing to handle strings like "08 Mar" or "14 March"
+		String dateString = event.getEventDate();
+		if (dateString != null && !dateString.isEmpty()) {
+			// Define format based on your input string
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+			Calendar cal = Calendar.getInstance();
+			try {
+				Date date = dateFormat.parse(dateString);
+				if (date != null) {
+					cal.setTime(date);
+					// Assume the current year if no year is provided in the dateString
+					cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+					int day = cal.get(Calendar.DAY_OF_MONTH);
+					String month = new SimpleDateFormat("MMM", Locale.getDefault()).format(cal.getTime());
+					int year = cal.get(Calendar.YEAR);
+
+					holder.dateDay.setText(String.valueOf(day));
+					holder.dateMonth.setText(month);
+					holder.dateYear.setText(String.valueOf(year));
+				}
+			} catch (ParseException e) {
+				Log.e("EventAdapter", "Error parsing date string: " + dateString);
+				holder.dateDay.setText("");
+				holder.dateMonth.setText("");
+				holder.dateYear.setText("");
 			}
-		}catch (ParseException e) {
-//			e.printStackTrace();
-			// Handle the case where the date string cannot be parsed
-			Log.e("EventAdapter", "Error parsing date string: " + dateString);
+		} else {
+			Log.e("EventAdapter", "Date string is null or empty for event: " + event.getEventName());
+			holder.dateDay.setText("");
+			holder.dateMonth.setText("");
+			holder.dateYear.setText("");
 		}
+
 		holder.bind(event, listener);
 	}
+
+
 
 	@Override
 	public int getItemCount() {

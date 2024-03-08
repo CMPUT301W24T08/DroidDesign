@@ -66,5 +66,6 @@
     <string name="Settings">Settings</string>
     <string name="GeoLocation">Geo Location</string>
     <string name="Notification_Preferences">Notification Preferences</string>
+    <string name="discover_events">Discover Events</string>
 
 </resources>

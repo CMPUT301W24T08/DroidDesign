@@ -2,15 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
 
     <application
         android:allowBackup="true"
@@ -22,40 +19,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
-
-        <activity android:name=".view.LaunchScreenActivity"
+        <activity
+            android:name=".view.DiscoverEventsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.LaunchScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".view.ImageUploadActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true"></activity>
         <activity
             android:name=".view.QrCodeGeneratorActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true"></activity>
         <activity
             android:name=".view.QrCodeScanActivity"
-            android:exported="true">
-
-        </activity>
-
-        <activity android:name=".view.RoleSelectionActivity"/>
-        <activity android:name=".view.EventMenuActivity"/>
-        <activity android:name=".view.EventDetailsActivity"/>
-        <activity android:name=".view.AppSettingsActivity"/>
-        <activity android:name=".view.ProfileSettingsActivity"/>
-        <activity android:name=".view.AddEventActivity"/>
-
-
+            android:exported="true"></activity>
+        <activity android:name=".view.RoleSelectionActivity" />
+        <activity android:name=".view.EventMenuActivity" />
+        <activity android:name=".view.EventDetailsActivity" />
+        <activity android:name=".view.AppSettingsActivity" />
+        <activity android:name=".view.ProfileSettingsActivity" />
+        <activity android:name=".view.AddEventActivity" />
+        <activity android:name=".view.AddEventSecondActivity" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"

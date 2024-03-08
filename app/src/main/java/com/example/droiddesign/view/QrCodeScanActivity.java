@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -37,7 +38,9 @@ public class QrCodeScanActivity extends AppCompatActivity {
     });
 
     private void setResult(String contents) {
-        binding.textResult.setText(contents);
+        Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
+        intent.putExtra("EVENT_ID", contents);
+        startActivity(intent);
     }
 
     private void showCamera() {

@@ -88,7 +88,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
             authenticateUser(username, password);
         });
         builder.setNegativeButton("Cancel", (dialog, which) ->{
-                dialog.cancel();
+            dialog.cancel();
         });
 
         builder.show();

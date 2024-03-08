@@ -33,6 +33,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_event_second);
 
         event = new Event();
+
+        String uniqueID = UUID.randomUUID().toString();
+        event.setEventId(uniqueID);
+
         Intent intent = getIntent();
         populateEventFromIntent(intent);
 
@@ -49,6 +53,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
         finishAddButton.setOnClickListener(view -> {
             saveEvent();
+        });
+
+        Button cancelButton = findViewById(R.id.button_cancel);
+        cancelButton.setOnClickListener(view -> {
+            finish();
         });
     }
 
@@ -70,6 +79,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
             String selectedItem = (String) parent.getItemAtPosition(position);
             if ("Generate New QR".equals(selectedItem)) {
                 Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
+                qrGeneratorIntent.putExtra("eventID", event.getEventId());
                 startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
             }
         });
@@ -91,9 +101,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
     }
 
     private void saveEvent() {
-        String uniqueID = UUID.randomUUID().toString();
-        event.setEventId(uniqueID);
-
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
         Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
@@ -117,6 +124,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         finish();
 
         Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
+        detailsIntent.putExtra("EVENT_ID", event.getEventId());
         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(detailsIntent);
     }

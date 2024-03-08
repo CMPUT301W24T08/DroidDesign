@@ -95,7 +95,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			Intent intent = null;
 
 			if (id == R.id.browse_events) {
-				intent = new Intent(this, EventMenuActivity.class);
+				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
 			} else if (id == R.id.settings) {

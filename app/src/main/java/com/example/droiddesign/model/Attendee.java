@@ -12,6 +12,16 @@ public class Attendee extends User {
 	private boolean geolocation;
 	private ArrayList<String> eventsIdList;
 
+	public Attendee() {
+		super("", "");
+		this.profileName = "";
+		this.email = "";
+		this.phone = "";
+		this.profilePic = "";
+		this.geolocation = false;
+		this.eventsIdList = new ArrayList<>();
+	}
+
 
 	public Attendee(String userId, String role) {
 		super(userId, role);
