@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -16,12 +17,29 @@ import com.example.droiddesign.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/**
+ * Activity class that presents the details of an event.
+ * It retrieves the event data from Firestore based on the passed event ID and allows the user to sign up for the event.
+ */
 public class EventDetailsActivity extends AppCompatActivity {
 
+	/**
+	 * The ID of the event whose details are to be displayed.
+	 */
 	private String eventId;
+
+	/**
+	 * Instance of FirebaseFirestore to interact with Firestore database.
+	 */
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+
+	/**
+	 * Initializes the activity, sets the content view, and initiates the process to fetch and display event details.
+	 * Sets up the interaction logic for UI elements like back button and sign up button.
+	 * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Otherwise it is null.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,9 +66,29 @@ public class EventDetailsActivity extends AppCompatActivity {
 		ImageButton backButton = findViewById(R.id.back_button);
 		backButton.setOnClickListener(v -> finish());
 
+		Button goToMenuButton = findViewById(R.id.edit_event_details_button);
+		goToMenuButton.setOnClickListener(v -> {
+			Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			finish(); // If you don't want to return to this activity from EventMenuActivity
+		});
+
+
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		signUpButton.setOnClickListener(v -> signUpForEvent());
 	}
+
+	private void navigateBackToEventMenu() {
+		Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		startActivity(intent);
+	}
+
+	/**
+	 * Populates the event details in the activity's UI components.
+	 * @param event Event object containing the details to be displayed.
+	 */
 
 	private void populateEventDetails(Event event) {
 		TextView eventName = findViewById(R.id.event_name);
@@ -68,6 +106,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 				.placeholder(R.drawable.image_placeholder)
 				.into(eventPoster);
 	}
+
+	/**
+	 * Signs up the current logged-in user for the event and updates the user's event list in the Firestore database.
+	 * Shows a toast message based on the success or failure of the operation.
+	 */
 
 	private void signUpForEvent() {
 		// Assuming you have a method to get the current Attendee (user)
@@ -90,6 +133,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 				})
 				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
 	}
+
+	/**
+	 * Retrieves the ID of the currently logged-in user from FirebaseAuth.
+	 * @return The current user's ID or null if no user is logged in.
+	 */
 
 	private String getCurrentUserId() {
 		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

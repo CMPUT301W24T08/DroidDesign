@@ -57,27 +57,104 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
+<<<<<<< HEAD
 
     <Button
         android:id="@+id/EditUserName"
         android:layout_width="429dp"
         android:layout_height="62dp"
         android:layout_marginTop="268dp"
+=======
+
+    <EditText
+        android:id="@+id/editUsername"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="268dp"
         android:background="@drawable/transparent_button"
-        android:gravity="start"
-        android:padding="16dp"
-        android:text="@string/user_name"
+        android:fontFamily="@font/nunitosans"
+        android:gravity="start|center_vertical"
+        android:hint="@string/user_name"
+        android:inputType="textPersonName"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="DuplicateSpeakableTextCheck" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/EditUserCompany"
+    <EditText
+        android:id="@+id/editUserCompany"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="452dp"
+        android:background="@drawable/transparent_button"
+        android:fontFamily="@font/nunitosans"
+        android:gravity="start|center_vertical"
+        android:hint="@string/company"
+        android:inputType="textPersonName"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editUserEmail"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="388dp"
+        android:background="@drawable/transparent_button"
+        android:fontFamily="@font/nunitosans"
+        android:gravity="start|center_vertical"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editUserContactNumber"
+        android:layout_width="0dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="328dp"
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
+        android:background="@drawable/transparent_button"
+        android:fontFamily="@font/nunitosans"
+        android:gravity="start|center_vertical"
+        android:hint="Contact Number"
+        android:inputType="phone"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FfFFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
         android:layout_width="match_parent"
+<<<<<<< HEAD
         android:layout_height="wrap_content"
         android:layout_marginTop="328dp"
         android:background="@drawable/transparent_button"
@@ -125,34 +202,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateSpeakableTextCheck" />
+=======
+        android:layout_height="2dp"
+        android:layout_marginTop="512dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_marginTop="448dp"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+<<<<<<< HEAD
         android:layout_marginTop="60dp"
+=======
+        android:layout_marginTop="388dp"
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+<<<<<<< HEAD
         app:layout_constraintTop_toBottomOf="@id/EditUserCompany" />
+=======
+        app:layout_constraintTop_toTopOf="parent" />
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
+<<<<<<< HEAD
         android:layout_marginTop="184dp"
+=======
+        android:layout_marginTop="330dp"
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/EditUserName" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/EditUserCompany" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="match_parent"
@@ -235,7 +336,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_semibold"
+<<<<<<< HEAD
         android:text="@string/Contact_Number"
+=======
+        android:text="Contact Number"
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -245,4 +350,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.313" />
 
+<<<<<<< HEAD
 </androidx.constraintlayout.widget.ConstraintLayout>
+=======
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginBottom="52dp"
+        android:backgroundTint="@android:color/white"
+        android:fontFamily="@font/nunitosans"
+        android:text="Save"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+>>>>>>> d581fe0c9900c3f6ca4c8c223e4c9625c7412169

@@ -33,21 +33,66 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * An activity for uploading images to Firebase Storage.
+ */
 public class ImageUploadActivity extends AppCompatActivity {
+
+    /**
+     * Request code for picking an image from the device.
+     */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    /**
+     * Button for choosing an image from the device.
+     */
     private Button mButtonChooseImage;
+
+    /**
+     * Button for uploading the selected image.
+     */
     private Button mButtonUpload;
+
+    /**
+     * EditText for entering the file name.
+     */
     private EditText mEditTextFileName;
+
+    /**
+     * ImageView for previewing the selected image.
+     */
     private ImageView mImageView;
 
-    private StorageReference mStorageRef;
-    private FirebaseFirestore mFirestoreDb;
+    /**
+     * ProgressBar for showing the upload progress of the image.
+     */
     private ProgressBar mProgressBar;
+
+    /**
+     * Reference to Firebase Storage.
+     */
+    private StorageReference mStorageRef;
+
+    /**
+     * Reference to Firestore database.
+     */
+    private FirebaseFirestore mFirestoreDb;
+
+    /**
+     * Task for handling image upload to Firebase Storage.
+     */
     private StorageTask mUploadTask;
 
+    /**
+     * URI of the selected image.
+     */
     private Uri mImageUri;
+
+
+    /**
+     * Called when the activity is created.
+     * @param savedInstanceState The saved instance state Bundle.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +116,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             }
         });
 
+
         mButtonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,11 +132,21 @@ public class ImageUploadActivity extends AppCompatActivity {
         buttonBack.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Gets the file extension from the given URI.
+     * @param uri The URI of the file.
+     * @return The file extension.
+     */
+
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
+    /**
+     * Uploads the chosen image to Firebase Storage.
+     */
 
     private void uploadFile() {
         if (mImageUri != null) {
@@ -136,12 +192,23 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Opens a file chooser to select an image.
+     */
+
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
+    /**
+     * Called when an activity launched by this activity exits, giving the requestCode and resultCode.
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

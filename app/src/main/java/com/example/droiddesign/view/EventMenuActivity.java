@@ -27,22 +27,57 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Activity representing the main menu for the event application.
+ * It provides the user with a list of events they have signed up for and allows navigation to other features.
+ */
 public class EventMenuActivity extends AppCompatActivity {
+	/**
+	 * RecyclerView for displaying the list of events.
+	 */
 	private RecyclerView eventsRecyclerView;
+
+	/**
+	 * Adapter for the events RecyclerView.
+	 */
 	private EventsAdapter eventsAdapter;
+
+	/**
+	 * List holding the events to be displayed.
+	 */
 	private List<Event> eventsList;
+
+	/**
+	 * Navigation menu for accessing different sections of the app.
+	 */
 	private NavigationView navigationMenu;
+
+	/**
+	 * Firebase Firestore instance for database interaction.
+	 */
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+	/**
+	 * User ID and role for personalizing the user experience.
+	 */
 	private String userId, userRole;
+
+	/**
+	 * List of events the user has signed up for.
+	 */
 	private List<Event> signedUpEvents;
 
+	/**
+	 * Initializes the activity, setting up UI components and event listeners.
+	 * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+	 *                           this Bundle contains the data it most recently supplied. Otherwise, it is null.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		userRole = getIntent().getStringExtra("role");
+		fetchUserRole();
 		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
@@ -65,16 +100,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		backButton.setOnClickListener(v -> finish());
 
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
-		if ("attendee".equals(userRole)) {
-			// Make the button invisible and not take up layout space
-			addEventButton.setVisibility(View.GONE);
-		} else {
-			// Set the click listener only if the user is not an attendee
-			addEventButton.setOnClickListener(view -> {
-				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
-				startActivity(intent);
-			});
-		}
 
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
@@ -124,6 +149,9 @@ public class EventMenuActivity extends AppCompatActivity {
 	}
 
 
+	/**
+	 * Sets up the RecyclerView with its layout manager and adapter.
+	 */
 	private void setupRecyclerView() {
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -138,10 +166,18 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsRecyclerView.setAdapter(eventsAdapter);
 	}
 
+	/**
+	 * Initializes the events list.
+	 * @return An empty ArrayList of Event objects.
+	 */
+
 	private List<Event> initializeEventsList() {
 		return new ArrayList<>();
 	}
 
+	/**
+	 * Toggles the visibility of the navigation menu.
+	 */
 	private void toggleNavigationMenu() {
 		if (navigationMenu.getVisibility() == View.VISIBLE) {
 			navigationMenu.setVisibility(View.GONE);
@@ -151,6 +187,9 @@ public class EventMenuActivity extends AppCompatActivity {
 	}
 
 
+	/**
+	 * Fetches the events the user has signed up for and updates the UI accordingly.
+	 */
 	private void fetchUserSignedUpEvents() {
 		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
@@ -162,6 +201,11 @@ public class EventMenuActivity extends AppCompatActivity {
 			}
 		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user", e));
 	}
+
+	/**
+	 * Fetches details for each event the user has signed up for using their IDs.
+	 * @param eventIds List of event IDs the user has signed up for.
+	 */
 
 	private void fetchEventsByIds(List<String> eventIds) {
 		signedUpEvents = new ArrayList<>();
@@ -178,12 +222,59 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Called when the activity resumes. Fetches the signed-up events again to refresh the list.
+	 */
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		fetchUserSignedUpEvents();
 	}
 
+	/**
+	 * Fetches the current user's role from Firestore and configures the UI based on the role.
+	 * This method retrieves the role information from the 'Users' collection in Firestore
+	 * using the current user's ID. Once the role is fetched, it calls {@link #configureUIBasedOnRole()}
+	 * to update the UI elements based on the user's role.
+	 */
+	private void fetchUserRole() {
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
+				userRole = documentSnapshot.getString("role");
+				configureUIBasedOnRole();
+			} else {
+				Log.e("EventMenuActivity", "Role not found for user.");
+			}
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user role", e));
+	}
+
+	/**
+	 * Configures the user interface based on the user's role.
+	 * This method checks the user's role and sets the visibility of the add event button accordingly.
+	 * If the user is an organizer, the button is made visible and clickable; otherwise, it is hidden.
+	 * This method should be called after the user's role has been determined by {@link #fetchUserRole()}.
+	 */
+	private void configureUIBasedOnRole() {
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		if ("Organizer".equalsIgnoreCase(userRole)) {
+			addEventButton.setVisibility(View.VISIBLE);
+			addEventButton.setOnClickListener(view -> {
+				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+				startActivity(intent);
+			});
+		} else {
+			addEventButton.setVisibility(View.GONE);
+		}
+	}
+
+
+
+
+	/**
+	 * Updates the UI to display the latest list of events.
+	 */
 
 	private void updateUI() {
 		eventsAdapter.setEvents(signedUpEvents);

@@ -22,10 +22,23 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * DiscoverEventsActivity presents a list of events fetched from Firestore for users to browse.
+ * It allows users to view details about each event by clicking on them in the list.
+ */
 public class DiscoverEventsActivity extends AppCompatActivity {
+
+
+
 
     private RecyclerView eventsRecyclerView;
     private EventsAdapter eventsAdapter;
+
+    /**
+     * Sets up the activity's UI, initializes the RecyclerView for displaying events, and triggers fetching of event data.
+     * @param savedInstanceState Contains data supplied by onSaveInstanceState() if the activity is being re-initialized.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +53,11 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+
+    /**
+     * Fetches events from the Firestore 'EventsDB' collection, processes the query results,
+     * and updates the UI to display the list of events.
+     */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("EventsDB")
@@ -60,6 +78,11 @@ public class DiscoverEventsActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    /**
+     * Updates the RecyclerView adapter with fetched event data and refreshes the view to display the new data.
+     * @param events A list of Event objects to be displayed in the RecyclerView.
+     */
 
     private void updateUI(List<Event> events) {
         if (!events.isEmpty()) {
