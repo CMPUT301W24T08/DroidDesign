@@ -9,10 +9,11 @@ public class Admin extends User {
 		super(userId, role);
 	}
 
-	@Override
+	
 	public HashMap<String, Object> toMap() {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
+		Object role;
 		map.put("role", role);
 		return map;
 	}
