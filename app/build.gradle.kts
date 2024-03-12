@@ -51,11 +51,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("androidx.activity:activity:1.8.2")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.5.3")
@@ -73,6 +76,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // Mockito
     testImplementation("org.mockito:mockito-core:3.11.2")
+
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1") // or a later version
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1") // or a later version
+    testImplementation ("org.mockito:mockito-core:3.11.2") // or a later version
+    testImplementation ("org.mockito:mockito-junit-jupiter:3.6.0") // or a later version
     // Firebase Firestore (if needed for mocking Firestore)
     testImplementation("com.google.firebase:firebase-firestore:24.10.3")
 

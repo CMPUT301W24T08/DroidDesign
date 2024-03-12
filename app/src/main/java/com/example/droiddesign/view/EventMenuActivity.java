@@ -1,14 +1,10 @@
 package com.example.droiddesign.view;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -17,10 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.Attendee;
 import com.example.droiddesign.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -28,25 +27,58 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Activity representing the main menu for the event application.
+ * It provides the user with a list of events they have signed up for and allows navigation to other features.
+ */
 public class EventMenuActivity extends AppCompatActivity {
+	/**
+	 * RecyclerView for displaying the list of events.
+	 */
 	private RecyclerView eventsRecyclerView;
+
+	/**
+	 * Adapter for the events RecyclerView.
+	 */
 	private EventsAdapter eventsAdapter;
-	private List<Event> eventsList; // Populate this list with the events later using firestore.
+
+	/**
+	 * List holding the events to be displayed.
+	 */
+	private List<Event> eventsList;
+
+	/**
+	 * Navigation menu for accessing different sections of the app.
+	 */
 	private NavigationView navigationMenu;
+
+	/**
+	 * Firebase Firestore instance for database interaction.
+	 */
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+	/**
+	 * User ID and role for personalizing the user experience.
+	 */
 	private String userId, userRole;
 
+	/**
+	 * List of events the user has signed up for.
+	 */
+	private List<Event> signedUpEvents;
+
+	/**
+	 * Initializes the activity, setting up UI components and event listeners.
+	 * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+	 *                           this Bundle contains the data it most recently supplied. Otherwise, it is null.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-//		userId = getIntent().getStringExtra("UserId");
-//		userRole = getIntent().getStringExtra("role");
-		// Fetch events from Firestore and populate RecyclerView
-//		addRandomEvents();
-		fetchEvents();
+		fetchUserRole();
+		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -54,194 +86,99 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
-			// Handle the event click here
 			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-			intent.putExtra("EVENT_ID", event.getEventId()); // Make sure your Event class has a method getId().
-			startActivity(intent);		});
+			intent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(intent);
+		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
-		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+		fetchUserSignedUpEvents();
 
-		menuButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				toggleNavigationMenu();
-			}
-		});
+		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
+
 		ImageButton backButton = findViewById(R.id.button_back);
-		backButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		backButton.setOnClickListener(v -> finish());
+
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
-		addEventButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
-				startActivity(intent);
-			}
+
+		addEventButton.setOnClickListener(view -> {
+			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+			startActivity(intent);
 		});
 
-		// Adjust UI elements based on the user's role
-//		adjustUIBasedOnRole(userRole, (ImageButton) addEventButton);
-		navigationMenu.inflateMenu(R.menu.navigation_drawer);
-		// Set the navigation item selection listener if needed
+		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
+		fabQuickScan.setOnClickListener(v -> {
+			// Intent to start Quick Scan Activity or any specific logic
+			Intent intent = new Intent(EventMenuActivity.this, QrCodeScanActivity.class);
+			startActivity(intent);
+		});
+
+
+		navigationMenu.getMenu().clear();
+
+		// Inflate the menu based on user role
+		if ("organizer".equals(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);
+		} else if ("admin".equals(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
+		} else { // Default to attendee if no role or attendee role
+			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
+		}
+
+		// Set the navigation item selection listener
 		navigationMenu.setNavigationItemSelectedListener(item -> {
-			// Handle navigation view item clicks here.
 			int id = item.getItemId();
-			// Logic to handle item clicks
-			Intent intent;
+			Intent intent = null;
 
 			if (id == R.id.browse_events) {
-				// Intent for the admin dashboard
-				intent = new Intent(this, EventMenuActivity.class);
-				startActivity(intent);
-			} else if (id == R.id.profile_settings) {
-				// Intent for the organizer dashboard
+				intent = new Intent(this, DiscoverEventsActivity.class);
+			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
-				startActivity(intent);
-			} else if (id == R.id.app_settings) {
-				// Intent for the attendee dashboard
+				intent.putExtra("USER_ID", userId);
+			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+			}
+
+			if (intent != null) {
 				startActivity(intent);
 			}
+
 			return true;
 		});
 	}
-//	public void addRandomEvents() {
-//		FirebaseFirestore db = FirebaseFirestore.getInstance();
-//		String[] eventNames = {"Community Cleanup", "Tech Talk", "Art Exhibition", "Book Club Meeting", "Local Concert"};
-//		String[] locations = {"Park Avenue, New York", "Tech Hub, San Francisco", "Art Gallery, Paris", "Library, Chicago", "Concert Hall, London"};
-//		String[] organizers = {"Green Earth Organization", "Tech Innovators", "Artists United", "Book Lovers Association", "Music for All"};
-//		String[] categories = {"Environmental", "Technology", "Art", "Education", "Music"};
-//
-//		Random random = new Random();
-//
-//		// Adding 3 to 5 random events
-//		int numberOfEventsToAdd = 3 + random.nextInt(3); // This will add between 3 to 5 events
-//		for (int i = 0; i < 2; i++) {
-//			Map<String, Object> event = new HashMap<>();
-//			event.put("eventID", UUID.randomUUID().toString());
-//			event.put("eventName", eventNames[random.nextInt(eventNames.length)]);
-//			event.put("eventDate", "1/3/2024"); // For simplicity, using the same date for all events
-//			event.put("geolocation", locations[random.nextInt(locations.length)]);
-//			event.put("description", "Join us for an amazing event.");
-//			event.put("startTime", "10:00 AM");
-//			event.put("endTime", "2:00 PM");
-//			event.put("organizerOwnerId", organizers[random.nextInt(organizers.length)]);
-//			event.put("participants", Arrays.asList("user1", "user2"));
-//
-//			db.collection("Events").add(event)
-//					.addOnSuccessListener(documentReference -> Log.d("AddEvents", "DocumentSnapshot added with ID: " + documentReference.getId()))
-//					.addOnFailureListener(e -> Log.w("AddEvents", "Error adding document", e));
-//		}
-//	}
-//	private void adjustUIBasedOnRole(String role, ImageButton addEventButton) {
-//		switch (role) {
-//			case "admin":
-//				// For admin, set the addEventButton to visible and load the admin menu
-//				addEventButton.setVisibility(View.VISIBLE);
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_admin); // Replace with your actual admin menu
-//				break;
-//			case "organizer":
-//				// For organizer, leave the addEventButton to visible and load the organizer menu
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_organizer); // Replace with your actual organizer menu
-//				break;
-//			case "attendee":
-//				// For attendee, set the addEventButton to gone and load the attendee menu
-//				addEventButton.setVisibility(View.GONE);
-//				navigationMenu.inflateMenu(R.menu.menu_navigation_attendee); // Replace with your actual attendee menu
-//				break;
-//		}
-//
-//	}
 
-	public void showEventInputDialog(View view) {
-		// Initialize the inflater
-		LayoutInflater inflater = getLayoutInflater();
 
-		// Inflate the custom dialog layout
-		View dialogView = inflater.inflate(R.layout.add_event_input_dialog, null);
-
-		// Get the dialog components
-		EditText eventNameInput = dialogView.findViewById(R.id.event_name_input);
-		EditText eventDescriptionInput = dialogView.findViewById(R.id.event_description_input3);
-		Button createEventButton = dialogView.findViewById(R.id.create_event_button);
-
-		// Create the AlertDialog
-		AlertDialog dialog = new AlertDialog.Builder(this)
-				.setView(dialogView)
-				.setTitle("Create New Event")
-				.create();
-
-		// Set the click listener for the create button
-		createEventButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				String eventName = String.valueOf(eventNameInput.getText());
-				String eventDescription = String.valueOf(eventDescriptionInput.getText());
-
-				// Create the event with the provided input
-				createEvent(eventName, eventDescription);
-
-				// Dismiss the dialog
-				dialog.dismiss();
-			}
-		});
-
-		// Show the dialog
-		dialog.show();
-	}
-	private void createEvent(String eventName, String eventDescription) {
-		// Get an instance of the Firestore database
-		FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-		// Create a new event object
-		Map<String, Object> event = new HashMap<>();
-		event.put("EventDetails.Name", eventName);
-		event.put("EventDetails.Description", eventDescription);
-		// Add additional fields such as start time, end time, etc.
-
-		// Add the new event to the Firestore database
-		db.collection("events").add(event)
-				.addOnSuccessListener(documentReference -> {
-					// Handle success
-					Log.d("createEvent", "DocumentSnapshot added with ID: " + documentReference.getId());
-				})
-				.addOnFailureListener(e -> {
-					// Handle the error
-					Log.w("createEvent", "Error adding document", e);
-				});
-	}
+	/**
+	 * Sets up the RecyclerView with its layout manager and adapter.
+	 */
 	private void setupRecyclerView() {
-		// Set up RecyclerView with EventsAdapter and layout manager
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-		// Assuming you have a method to initialize your events list
 		eventsList = initializeEventsList();
 
-		eventsAdapter = new EventsAdapter(eventsList, new EventsAdapter.OnItemClickListener() {
-			@Override
-			public void onItemClick(Event event) {
-				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-				intent.putExtra("EVENT_ID", event.getEventId()); // Make sure your Event class has a method getId().
-				startActivity(intent);
-			}
+		eventsAdapter = new EventsAdapter(eventsList, event -> {
+			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+			intent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(intent);
 		});
 
 		eventsRecyclerView.setAdapter(eventsAdapter);
 	}
 
+	/**
+	 * Initializes the events list.
+	 * @return An empty ArrayList of Event objects.
+	 */
+
 	private List<Event> initializeEventsList() {
-		// Initialize your events list here
 		return new ArrayList<>();
 	}
 
+	/**
+	 * Toggles the visibility of the navigation menu.
+	 */
 	private void toggleNavigationMenu() {
-		// If the navigation menu is visible, hide it. Otherwise, show it.
 		if (navigationMenu.getVisibility() == View.VISIBLE) {
 			navigationMenu.setVisibility(View.GONE);
 		} else {
@@ -249,42 +186,100 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
-	@SuppressLint("NotifyDataSetChanged")
-	private void fetchEvents() {
-		// Get reference to the events collection
-		CollectionReference eventsCollection = db.collection("events");
 
-		// Query Firestore for all events
-		eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-			// Initialize events list
-			eventsList = new ArrayList<>();
-
-			// Iterate through each document snapshot
-			for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-				// Convert document snapshot to Event object
-				Event event = documentSnapshot.toObject(Event.class);
-				if (event != null) {
-					// Add event to the events list
-					eventsList.add(event);
-				}
+	/**
+	 * Fetches the events the user has signed up for and updates the UI accordingly.
+	 */
+	private void fetchUserSignedUpEvents() {
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+			Attendee user = documentSnapshot.toObject(Attendee.class);
+			if (user != null && user.getEventsList() != null && !user.getEventsList().isEmpty()) {
+				fetchEventsByIds(user.getEventsList());
+			} else {
+				Log.w("EventMenuActivity", "User has no signed-up events or could not be fetched.");
 			}
-
-			// Populate RecyclerView with events
-			eventsAdapter = new EventsAdapter(eventsList, event -> {
-				// Handle event click here
-				Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-				intent.putExtra("EVENT_ID", event.getEventId()); // Assuming you have a method to get event ID
-				startActivity(intent);
-			});
-			eventsRecyclerView.setAdapter(eventsAdapter);
-
-			// Notify adapter that data set has changed
-			eventsAdapter.notifyDataSetChanged();
-		}).addOnFailureListener(e -> {
-			// Handle failure to fetch events
-			Log.e("EventMenuActivity", "Error fetching events", e);
-			Toast.makeText(this, "Error fetching events", Toast.LENGTH_SHORT).show();
-		});
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user", e));
 	}
 
+	/**
+	 * Fetches details for each event the user has signed up for using their IDs.
+	 * @param eventIds List of event IDs the user has signed up for.
+	 */
+
+	private void fetchEventsByIds(List<String> eventIds) {
+		signedUpEvents = new ArrayList<>();
+		for (String eventId : eventIds) {
+			db.collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+				Event event = documentSnapshot.toObject(Event.class);
+				if (event != null) {
+					signedUpEvents.add(event);
+					if (signedUpEvents.size() == eventIds.size()) {
+						updateUI();
+					}
+				}
+			}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching event", e));
+		}
+	}
+
+	/**
+	 * Called when the activity resumes. Fetches the signed-up events again to refresh the list.
+	 */
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		fetchUserSignedUpEvents();
+	}
+
+	/**
+	 * Fetches the current user's role from Firestore and configures the UI based on the role.
+	 * This method retrieves the role information from the 'Users' collection in Firestore
+	 * using the current user's ID. Once the role is fetched, it calls {@link #configureUIBasedOnRole()}
+	 * to update the UI elements based on the user's role.
+	 */
+	private void fetchUserRole() {
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
+				userRole = documentSnapshot.getString("role");
+				configureUIBasedOnRole();
+			} else {
+				Log.e("EventMenuActivity", "Role not found for user.");
+			}
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user role", e));
+	}
+
+	/**
+	 * Configures the user interface based on the user's role.
+	 * This method checks the user's role and sets the visibility of the add event button accordingly.
+	 * If the user is an organizer, the button is made visible and clickable; otherwise, it is hidden.
+	 * This method should be called after the user's role has been determined by {@link #fetchUserRole()}.
+	 */
+	private void configureUIBasedOnRole() {
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		if ("Organizer".equalsIgnoreCase(userRole)) {
+			addEventButton.setVisibility(View.VISIBLE);
+			addEventButton.setOnClickListener(view -> {
+				Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
+				startActivity(intent);
+			});
+		} else {
+			addEventButton.setVisibility(View.GONE);
+		}
+	}
+
+
+
+
+	/**
+	 * Updates the UI to display the latest list of events.
+	 */
+
+	private void updateUI() {
+		eventsAdapter.setEvents(signedUpEvents);
+		eventsAdapter.notifyDataSetChanged();
+		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
+	}
+	
 }

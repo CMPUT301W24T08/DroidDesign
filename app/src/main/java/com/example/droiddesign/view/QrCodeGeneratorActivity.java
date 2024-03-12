@@ -33,67 +33,107 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Activity for generating and uploading a QR code.
+ * This activity allows users to generate a QR code based on an input string (event ID)
+ * and upload the generated QR code image to Firebase Storage.
+ */
+
 public class QrCodeGeneratorActivity extends AppCompatActivity {
 
+    /**
+     * Firebase Storage reference for storing QR code images.
+     */
     private StorageReference mStorageRef;
-    private FirebaseFirestore mFirestoreDb;
-    private Button mButtonSaveQrCode;
-    private ImageView mImageViewQrCode;
-    private Bitmap mQrBitmap;
-    private String eventId;
 
+    /**
+     * Firestore database instance for saving QR code metadata.
+     */
+    private FirebaseFirestore mFirestoreDb;
+
+    /**
+     * Button to trigger saving the generated QR code.
+     */
+    private Button mButtonSaveQrCode;
+
+    /**
+     * Image view to display the generated QR code.
+     */
+    private ImageView mImageViewQrCode;
+
+    /**
+     * Bitmap object to hold the generated QR code image.
+     */
+    private Bitmap mQrBitmap;
+
+    /**
+     * Initializes the activity, setting up UI components and button click listeners.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code_generator);
 
+        EditText editText = findViewById(R.id.edit_text);
         Button buttonGenerate = findViewById(R.id.button_generate);
         mImageViewQrCode = findViewById(R.id.qr_code);
         mButtonSaveQrCode = findViewById(R.id.button_save_qr);
         Button buttonBack = findViewById(R.id.button_back);
 
-
-        Intent intent = getIntent();
-        eventId = intent.getStringExtra("eventId");
-
-        if (eventId == null || eventId.trim().isEmpty()) {
-            Toast.makeText(this, "Event ID is missing", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
         mStorageRef = FirebaseStorage.getInstance().getReference("qrcodes");
         mFirestoreDb = FirebaseFirestore.getInstance();
 
-        buttonGenerate.setOnClickListener(v -> {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            try {
-                if (eventId.trim().isEmpty()) {
-                    Toast.makeText(QrCodeGeneratorActivity.this, "Event ID is empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        buttonGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QRCodeWriter qrCodeWriter = new QRCodeWriter();
+                try {
+                    // Retrieve the event ID passed from AddEventSecondActivity
+                    Intent intent = getIntent();
+                    String eventId = intent.getStringExtra("eventID");
 
-                BitMatrix bitMatrix = qrCodeWriter.encode(eventId, BarcodeFormat.QR_CODE, 200, 200);
-                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                mQrBitmap = barcodeEncoder.createBitmap(bitMatrix);
-                mImageViewQrCode.setImageBitmap(mQrBitmap);
-            } catch (WriterException e) {
-                Log.e("QrCodeGenerator", "Error generating QR code", e);
+                    if (eventId == null || eventId.trim().isEmpty()) {
+                        Toast.makeText(QrCodeGeneratorActivity.this, "Event ID is missing", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Use the event ID for the QR code
+                    BitMatrix bitMatrix = qrCodeWriter.encode(eventId, BarcodeFormat.QR_CODE, 200, 200);
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    mQrBitmap = barcodeEncoder.createBitmap(bitMatrix);
+                    mImageViewQrCode.setImageBitmap(mQrBitmap);
+                } catch (WriterException e) {
+                    Log.e("QrCodeGenerator", "Error generating QR code", e);
+                }
             }
         });
 
-        mButtonSaveQrCode.setOnClickListener(v -> {
-            if (mQrBitmap != null) {
-                uploadQrCode(mQrBitmap, eventId);
-            } else {
-                Toast.makeText(QrCodeGeneratorActivity.this, "No QR Code generated", Toast.LENGTH_SHORT).show();
+
+
+
+        mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mQrBitmap != null) {
+                    uploadQrCode(mQrBitmap, editText.getText().toString());
+                } else {
+                    Toast.makeText(QrCodeGeneratorActivity.this, "No QR Code generated", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         buttonBack.setOnClickListener(v -> finish());
     }
 
-    private void uploadQrCode(Bitmap bitmap, String eventId) {
+    /**
+     * Uploads the generated QR code image to Firebase Storage and saves its metadata to Firestore.
+     * @param bitmap The bitmap image of the QR code to be uploaded.
+     * @param text The associated text to be stored along with the QR code.
+     */
+
+    private void uploadQrCode(Bitmap bitmap, String text) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
@@ -101,19 +141,41 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + ".png");
 
         fileRef.putBytes(data)
-                .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Upload upload = new Upload(eventId, uri.toString());
-                    String uploadId = mFirestoreDb.collection("qrcodes").document().getId();
-                    mFirestoreDb.collection("qrcodes").document(uploadId).set(upload)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(QrCodeGeneratorActivity.this, "QR Code saved", Toast.LENGTH_LONG).show();
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("qrCodeUrl", uri.toString());
-                                setResult(RESULT_OK, resultIntent);
-                                finish();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(QrCodeGeneratorActivity.this, "Save failed", Toast.LENGTH_SHORT).show());
-                }))
-                .addOnFailureListener(e -> Toast.makeText(QrCodeGeneratorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Upload upload = new Upload(text, uri.toString());
+                                String uploadId = mFirestoreDb.collection("qrcodes").document().getId();
+                                mFirestoreDb.collection("qrcodes").document(uploadId).set(upload)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(QrCodeGeneratorActivity.this, "QR Code saved", Toast.LENGTH_LONG).show();
+                                                Intent resultIntent = new Intent();
+                                                resultIntent.putExtra("qrCodeUrl", uri.toString());
+                                                setResult(RESULT_OK, resultIntent);
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(QrCodeGeneratorActivity.this, "Save failed", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(QrCodeGeneratorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 }

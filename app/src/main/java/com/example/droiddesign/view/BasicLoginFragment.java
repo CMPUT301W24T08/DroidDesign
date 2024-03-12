@@ -4,6 +4,7 @@ package com.example.droiddesign.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,14 +36,71 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-
+/**
+ * The BasicLoginFragment class allows users to create a new account with email, password, and role.
+ * It communicates user creation status back to the attached activity using the UserCreationListener interface.
+ */
 public class BasicLoginFragment extends DialogFragment {
+
+    /**
+     * Listener interface for communication with the activity that hosts this fragment.
+     */
+
+    interface UserCreationListener{
+        void userCreated();
+    }
+
+    /**
+     * FirebaseAuth instance to handle user authentication.
+     */
     private FirebaseAuth mAuth;
+
+    /**
+     * EditText field for the user's email input.
+     */
     private EditText email;
+
+    /**
+     * EditText field for the user's password input.
+     */
     private EditText password;
 
+
+    /**
+     * List to hold the different roles available for a user.
+     */
     private ArrayList<String> rolesList = new ArrayList<>();
 
+    /**
+     * The activity that implements UserCreationListener for callback purposes.
+     */
+    private UserCreationListener listener;
+
+
+    /**
+     * Called when the fragment is first attached to its context. Ensures that the context implements
+     * the required UserCreationListener interface.
+     *
+     * @param context The context the fragment is attached to.
+     */
+    @Override
+    public void onAttach(@NonNull Context context){
+        super.onAttach(context);
+        if(context instanceof UserCreationListener){
+            listener = (UserCreationListener) context;
+        } else {
+            throw new RuntimeException(context+" must implement UserCreationListener");
+        }
+
+    }
+
+    /**
+     * Creates the dialog instance for the login fragment, initializing the authentication handler,
+     * user input fields, and setting up the dialog interface.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     * @return The AlertDialog for user login.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -75,6 +133,14 @@ public class BasicLoginFragment extends DialogFragment {
 
     }
 
+    /**
+     * Creates a new user account with Firebase authentication and adds the user information to Firestore.
+     *
+     * @param email    The user's email address.
+     * @param password The user's chosen password.
+     * @param role     The user's selected role.
+     */
+
 
     private void createUser(String email, String password, String role){
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -101,10 +167,10 @@ public class BasicLoginFragment extends DialogFragment {
                                     break;
                             }
                             userdb.addUser(newUser);
+                            listener.userCreated();
 
 
                         }
-
 
                     }
                 });
