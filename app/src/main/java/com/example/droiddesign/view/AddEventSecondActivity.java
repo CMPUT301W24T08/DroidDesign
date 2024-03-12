@@ -1,13 +1,10 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +16,6 @@ import com.example.droiddesign.model.Event;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The AddEventSecondActivity class is responsible for collecting additional details for a new event creation process.
