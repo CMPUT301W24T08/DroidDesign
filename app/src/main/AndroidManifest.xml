@@ -33,13 +33,13 @@
         </activity>
         <activity
             android:name=".view.ImageUploadActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".view.QrCodeGeneratorActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".view.QrCodeScanActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity android:name=".view.RoleSelectionActivity" />
         <activity android:name=".view.EventMenuActivity" />
         <activity android:name=".view.EventDetailsActivity" />
