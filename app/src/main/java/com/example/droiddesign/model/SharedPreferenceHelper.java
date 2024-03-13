@@ -58,4 +58,12 @@ public class SharedPreferenceHelper {
 	public boolean isFirstTimeUser() {
 		return getUserId() == null;
 	}
+
+	/** Method to clear all stored preferences
+	 */
+	public void clearPreferences() {
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.clear();
+		editor.apply();
+	}
 }
