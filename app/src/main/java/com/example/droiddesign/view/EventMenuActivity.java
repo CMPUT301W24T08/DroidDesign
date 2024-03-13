@@ -1,12 +1,10 @@
 package com.example.droiddesign.view;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,18 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Attendee;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 /**
  * Activity representing the main menu for the event application.
  * It provides the user with a list of events they have signed up for and allows navigation to other features.
@@ -61,6 +55,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * User ID and role for personalizing the user experience.
 	 */
 	private String userId, userRole;
+	SharedPreferenceHelper prefsHelper;
 
 	/**
 	 * List of events the user has signed up for.
@@ -77,8 +72,17 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		fetchUserRole();
-		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		prefsHelper = new SharedPreferenceHelper(this);
+		String savedUserId = prefsHelper.getUserId();
+		if (savedUserId != null) {
+			// Use the userId from SharedPreferences
+			userId = savedUserId;
+			userRole = prefsHelper.getRole();
+		} else {
+			// No userId found in SharedPreferences, fetch it from FirebaseAuth
+			fetchUserRole();
+			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		}
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -126,6 +130,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 
 		// Set the navigation item selection listener
+		String finalUserId = userId;
 		navigationMenu.setNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			Intent intent = null;
@@ -134,7 +139,7 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
-				intent.putExtra("USER_ID", userId);
+				intent.putExtra("USER_ID", finalUserId);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
