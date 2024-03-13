@@ -59,6 +59,7 @@
         android:visibility="gone"
         android:background="@color/bg_dark"
         android:textColor="@color/secondary_light"
+        app:itemTextColor="@color/secondary_light"
         app:headerLayout="@layout/header_navigation_drawer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
