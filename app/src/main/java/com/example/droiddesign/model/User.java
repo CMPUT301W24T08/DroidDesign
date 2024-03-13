@@ -1,11 +1,7 @@
 package com.example.droiddesign.model;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents a generic user in the system with common attributes like user ID and role.
