@@ -8,10 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.model.User;
+import com.example.droiddesign.model.UsersDB;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -48,8 +52,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 * Constant used as a key in SharedPreferences to store and retrieve the user's ID.
 	 * This ID is used to identify the user across different sessions and activities.
 	 */
-
-	private static final String PREF_USER_ID = "defaultID";
 	SharedPreferenceHelper prefsHelper;
 
 	/**
@@ -99,13 +101,19 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 */
 
 	private void handleRoleSelection(String role) {
-		Toast.makeText(RoleSelectionActivity.this, "Handle user!", Toast.LENGTH_SHORT).show();
+		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
 		// New user scenario
 
 		// Save user profile information
 		String userId = UUID.randomUUID().toString(); // Generate a new user ID
 		prefsHelper.saveUserProfile(userId, role);
-		// Returning user scenario
+		// Now that the user profile information is saved locally, proceed to save the user to Firestore
+		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+		UsersDB userdb = new UsersDB(firestore);
+		// Create user in Firestore
+		User newUser = new UnregisteredUser(userId, role, false);
+		userdb.addUser(newUser);
+
 		navigateToEventMenu();
 
 	}
@@ -120,5 +128,65 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		finish();
 	}
 
+	public class UnregisteredUser extends User {
+		/**
+		 * The profile name of the attendee.
+		 */
+		private String profileName;
+
+		/**
+		 * The email address of the attendee.
+		 */
+		private String email;
+
+		/**
+		 * The phone number of the attendee.
+		 */
+		private String phone;
+
+		/**
+		 * The URL or path to the profile picture of the attendee.
+		 */
+		private String profilePic;
+
+		/**
+		 * A flag indicating whether geolocation features are enabled for the attendee.
+		 */
+		private boolean geolocation;
+
+		/**
+		 * A list of event IDs that this attendee is associated with.
+		 */
+		private ArrayList<String> eventsList;
+		private boolean registered;
+
+		public UnregisteredUser(String userId, String role, boolean b) {
+			super(userId, role);
+			this.registered = false;
+			this.profileName = "";
+			this.email = "";
+			this.phone = "";
+			this.profilePic = "";
+			this.geolocation = false;
+			this.eventsList = new ArrayList<>();
+		}
+
+		// Getter for registered status
+		public boolean isRegistered() {
+			return registered;
+		}
+
+		@Override
+		public HashMap<String, Object> toMap() {
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("userId", getUserId());
+			map.put("role", getRole());
+			map.put("registered", registered);
+			map.put("profilePic", profilePic);
+			map.put("geolocation", geolocation);
+			map.put("eventsList", eventsList);
+			return map;
+		}
+	}
 }
 
