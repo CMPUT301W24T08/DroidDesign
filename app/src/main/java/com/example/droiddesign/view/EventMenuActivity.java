@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,6 +73,13 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
+		eventsRecyclerView = findViewById(R.id.events_recycler_view);
+		navigationMenu = findViewById(R.id.navigation_menu);
+		ImageButton menuButton = findViewById(R.id.button_menu);
+		ImageButton backButton = findViewById(R.id.button_back);
+		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
 		if (savedUserId != null) {
@@ -84,9 +92,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		}
 
-		eventsRecyclerView = findViewById(R.id.events_recycler_view);
-		navigationMenu = findViewById(R.id.navigation_menu);
-		ImageButton menuButton = findViewById(R.id.button_menu);
 
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
@@ -100,17 +105,29 @@ public class EventMenuActivity extends AppCompatActivity {
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
 
-		ImageButton backButton = findViewById(R.id.button_back);
 		backButton.setOnClickListener(v -> finish());
 
-		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		// Check if the userRole is "attendee"
+		if ("attendee".equals(userRole)) {
+			// If userRole is "attendee", hide the addEventButton
+			addEventButton.setVisibility(View.INVISIBLE);
+			// Update the layout parameters to position the button at the bottom center
+			ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) fabQuickScan.getLayoutParams();
+			params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.fab_margin_bottom));
+			fabQuickScan.setLayoutParams(params);
 
+		} else {
+			// If userRole is not "attendee", i.e admin or organizer show the addEventButton
+			addEventButton.setVisibility(View.VISIBLE);
+		}
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
 			startActivity(intent);
 		});
 
-		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
 		fabQuickScan.setOnClickListener(v -> {
 			// Intent to start Quick Scan Activity or any specific logic
 			Intent intent = new Intent(EventMenuActivity.this, QrCodeScanActivity.class);
@@ -142,7 +159,17 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent.putExtra("USER_ID", finalUserId);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.log_out) {
+				intent = new Intent(this, LaunchScreenActivity.class);
+				// Clear stored preferences
+				prefsHelper.clearPreferences();
+				// Set userId and userRole to null
+				userId = null;
+				userRole = null;
+				startActivity(intent);
+				finish();
 			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+				intent = new Intent(this, EventMenuActivity.class);
 			}
 
 			if (intent != null) {
