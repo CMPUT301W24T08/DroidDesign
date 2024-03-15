@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.Attendee;
+import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -225,9 +225,9 @@ public class EventMenuActivity extends AppCompatActivity {
 	private void fetchUserSignedUpEvents() {
 		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
-			Attendee user = documentSnapshot.toObject(Attendee.class);
-			if (user != null && user.getEventsList() != null && !user.getEventsList().isEmpty()) {
-				fetchEventsByIds(user.getEventsList());
+			User user = documentSnapshot.toObject(User.class);
+			if (user != null && user.getSignedEventsList() != null && !user.getSignedEventsList().isEmpty()) {
+				fetchEventsByIds(user.getSignedEventsList());
 			} else {
 				Log.w("EventMenuActivity", "User has no signed-up events or could not be fetched.");
 			}
