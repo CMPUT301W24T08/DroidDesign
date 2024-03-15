@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 public class SharedPreferenceHelper {
 	private static final String PREF_NAME = "UserPrefs";
 	private static final String KEY_USER_ID = "userId";
+	private static final String KEY_EMAIL = "email";
 	private static final String KEY_ROLE = "role";
 
 	private SharedPreferences sharedPreferences;
@@ -25,13 +26,16 @@ public class SharedPreferenceHelper {
 	 * Saves the user profile information (userId and role) to SharedPreferences.
 	 * @param userId The user ID to be saved.
 	 * @param role The role to be saved.
+	 * @param email The email to be saved if loged in.
 	 */
-	public void saveUserProfile(String userId, String role) {
+	public void saveUserProfile(String userId, String role, String email) {
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString(KEY_USER_ID, userId);
+		editor.putString(KEY_EMAIL, email); // Add email to SharedPreferences if needed
 		editor.putString(KEY_ROLE, role);
 		editor.apply();
 	}
+
 
 	/**
 	 * Retrieves the user ID from SharedPreferences.
