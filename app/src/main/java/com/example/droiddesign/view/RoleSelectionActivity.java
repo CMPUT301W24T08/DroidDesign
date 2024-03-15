@@ -111,6 +111,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		// Add the user to Firestore and listen for success
 		userdb.addUser(newUser);
 
+
 		navigateToEventMenu();
 
 	}
