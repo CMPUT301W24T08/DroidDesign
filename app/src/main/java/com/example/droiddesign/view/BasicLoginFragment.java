@@ -20,9 +20,6 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.Admin;
-import com.example.droiddesign.model.Attendee;
-import com.example.droiddesign.model.Organizer;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -152,21 +149,11 @@ public class BasicLoginFragment extends DialogFragment {
                         if(task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
                             User newUser = null;
-                            switch(role) {
-                                case "Admin":
-                                    newUser = new Admin(user.getUid(), role);
-                                    break;
-                                case "Attendee":
-                                    newUser = new Attendee(user.getUid(), role);
-                                    break;
-                                case "Organizer":
-                                    newUser = new Organizer(user.getUid(), role, user.getEmail());
-                                    break;
-                                default:
-                                    newUser = new Attendee(user.getUid(), role);
-                                    break;
+                            if (user != null) {
+                                newUser = new User(user.getUid(), role);
                             }
-                            userdb.addUser(newUser);
+	                        assert newUser != null;
+	                        userdb.addUser(newUser);
                             listener.userCreated();
 
 
