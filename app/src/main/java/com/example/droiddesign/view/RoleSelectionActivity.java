@@ -16,7 +16,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Activity to allow the user to select a role (Admin, Organizer, Attendee).
@@ -104,14 +103,12 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
 		// New user scenario
 
-		// Save user profile information
-		String userId = UUID.randomUUID().toString(); // Generate a new user ID
-		prefsHelper.saveUserProfile(userId, role);
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 		UsersDB userdb = new UsersDB(firestore);
-		// Create user in Firestore
-		User newUser = new UnregisteredUser(userId, role, false);
+		// Create user in Firestore without specifying the user ID
+		User newUser = new UnregisteredUser(null, role, false);
+		// Add the user to Firestore and listen for success
 		userdb.addUser(newUser);
 
 		navigateToEventMenu();
