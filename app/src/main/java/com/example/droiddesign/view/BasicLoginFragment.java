@@ -4,32 +4,27 @@ package com.example.droiddesign.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.ArrayList;
 
@@ -151,12 +146,16 @@ public class BasicLoginFragment extends DialogFragment {
                             User newUser = null;
                             if (user != null) {
                                 newUser = new User(user.getUid(), role);
+                                String userId = user.getUid();
+                                String userEmail;
+                                userEmail = user.getEmail();
+                                // Save user profile to SharedPreferences
+                                SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(getContext());
+                                prefsHelper.saveUserProfile(userId, role, userEmail);
                             }
 	                        assert newUser != null;
 	                        userdb.addUser(newUser);
                             listener.userCreated();
-
-
                         }
 
                     }
