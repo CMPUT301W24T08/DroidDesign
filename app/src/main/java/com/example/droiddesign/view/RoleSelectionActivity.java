@@ -11,11 +11,10 @@ import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Activity to allow the user to select a role (Admin, Organizer, Attendee).
@@ -105,9 +104,17 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		FirebaseUser user = mAuth.getCurrentUser();
+		User newUser = new User(user.getUid(), role, false);
+		String userId = user.getUid();
+		String userEmail = user.getEmail();
+		// Save user profile to SharedPreferences
+		prefsHelper.saveUserProfile(userId, role, userEmail);
+
 		UsersDB userdb = new UsersDB(firestore);
 		// Create user in Firestore without specifying the user ID
-		User newUser = new UnregisteredUser(null, role, false);
+//		newUser = new User(null, role, false);
 		// Add the user to Firestore and listen for success
 		userdb.addUser(newUser);
 
@@ -126,65 +133,5 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		finish();
 	}
 
-	public class UnregisteredUser extends User {
-		/**
-		 * The profile name of the attendee.
-		 */
-		private String profileName;
-
-		/**
-		 * The email address of the attendee.
-		 */
-		private String email;
-
-		/**
-		 * The phone number of the attendee.
-		 */
-		private String phone;
-
-		/**
-		 * The URL or path to the profile picture of the attendee.
-		 */
-		private String profilePic;
-
-		/**
-		 * A flag indicating whether geolocation features are enabled for the attendee.
-		 */
-		private boolean geolocation;
-
-		/**
-		 * A list of event IDs that this attendee is associated with.
-		 */
-		private ArrayList<String> eventsList;
-		private boolean registered;
-
-		public UnregisteredUser(String userId, String role, boolean b) {
-			super(userId, role);
-			this.registered = false;
-			this.profileName = "";
-			this.email = "";
-			this.phone = "";
-			this.profilePic = "";
-			this.geolocation = false;
-			this.eventsList = new ArrayList<>();
-		}
-
-		// Getter for registered status
-		public boolean isRegistered() {
-			return registered;
-		}
-
-		@Override
-		public HashMap<String, Object> toMap() {
-			HashMap<String, Object> map = new HashMap<>();
-			map.put("userId", getUserId());
-			map.put("role", getRole());
-			map.put("registered", registered);
-			map.put("profilePic", profilePic);
-			map.put("geolocation", geolocation);
-			map.put("eventsList", eventsList);
-			return map;
-		}
-	}
 }
 
