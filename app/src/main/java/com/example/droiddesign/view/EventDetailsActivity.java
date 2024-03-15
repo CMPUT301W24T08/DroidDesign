@@ -2,17 +2,17 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.Attendee;
+import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -113,19 +113,20 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 */
 
 	private void signUpForEvent() {
-		// Assuming you have a method to get the current Attendee (user)
+		// Assuming you have a method to get the current User (user)
 		String currentUserId = getCurrentUserId(); // Implement this according to your auth logic
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
 		}
 
+		Toast.makeText(this, "SignUpEvent called"+currentUserId, Toast.LENGTH_LONG).show();
 		db.collection("Users").document(currentUserId)
 				.get()
 				.addOnSuccessListener(documentSnapshot -> {
-					Attendee user = documentSnapshot.toObject(Attendee.class);
+					User user = documentSnapshot.toObject(User.class);
 					if (user != null) {
-						user.getEventsList().add(eventId);
+						user.getSignedEventsList().add(eventId);
 						db.collection("Users").document(currentUserId).set(user.toMap())
 								.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
 								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
