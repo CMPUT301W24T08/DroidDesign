@@ -17,6 +17,10 @@ public class User {
 	 */
 	private String role;
 	/**
+	 * The registered status of user.
+	 */
+	private String registered;
+	/**
 	 * The profile name of the user.
 	 */
 	private String profileName;
@@ -65,6 +69,26 @@ public class User {
 		this.managedEventsList = new ArrayList<>();
 	}
 
+	/**
+	 * Constructs a User instance with the specified user ID, role, and registration status,
+	 * initializing user-specific fields to default values.
+	 *
+	 * @param userId    The unique identifier for the user.
+	 * @param role      The role of the user within the system.
+	 * @param registered The registration status of the user.
+	 */
+	public User(String userId, String role, boolean registered) {
+		this.userId = userId;
+		this.role = role;
+		this.registered = String.valueOf(registered);
+		this.profileName = "";
+		this.email = "";
+		this.phone = "";
+		this.profilePic = "";
+		this.geolocation = false;
+		this.signedEventsList = new ArrayList<>();
+		this.managedEventsList = new ArrayList<>();
+	}
 
 	/**
 	 * Constructs an User instance with the specified user ID and role, initializing user-specific fields to default values.
@@ -93,6 +117,7 @@ public class User {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("role", role);
+		map.put("registered", registered);
 		map.put("email", email);
 		map.put("phone", phone);
 		map.put("profileName", profileName);
@@ -136,6 +161,14 @@ public class User {
 	 */
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getRegistered() {
+		return registered;
+	}
+
+	public void setRegistered(String registered) {
+		this.registered = registered;
 	}
 
 	/**
