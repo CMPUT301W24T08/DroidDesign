@@ -55,7 +55,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * User ID and role for personalizing the user experience.
 	 */
-	private String userId, userRole;
+	private String userId, userRole, userEmail;
 	SharedPreferenceHelper prefsHelper;
 
 	/**
@@ -90,6 +90,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			// No userId found in SharedPreferences, fetch it from FirebaseAuth
 			fetchUserRole();
 			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+			prefsHelper.saveUserProfile(userId,userRole,userEmail);
 		}
 
 
@@ -108,7 +109,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		backButton.setOnClickListener(v -> finish());
 
 		// Check if the userRole is "attendee"
-		if ("attendee".equals(userRole)) {
+		if ("attendee".equalsIgnoreCase(userRole)) {
 			// If userRole is "attendee", hide the addEventButton
 			addEventButton.setVisibility(View.INVISIBLE);
 			// Update the layout parameters to position the button at the bottom center
@@ -138,9 +139,9 @@ public class EventMenuActivity extends AppCompatActivity {
 		navigationMenu.getMenu().clear();
 
 		// Inflate the menu based on user role
-		if ("organizer".equals(userRole)) {
+		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);
-		} else if ("admin".equals(userRole)) {
+		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
@@ -275,6 +276,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
 			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
 				userRole = documentSnapshot.getString("role");
+				userEmail = documentSnapshot.getString("email");
 				configureUIBasedOnRole();
 			} else {
 				Log.e("EventMenuActivity", "Role not found for user.");
