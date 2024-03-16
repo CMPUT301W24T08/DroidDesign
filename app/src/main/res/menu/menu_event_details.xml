@@ -7,7 +7,6 @@
         <item
             android:id="@+id/current_attendance_menu"
             android:title="@string/current_attendance_menu" />
-
         <item
             android:id="@+id/announcement_menu"
             android:title="@string/announcements" />
@@ -19,7 +18,7 @@
             android:title="@string/geo_check_ins" />
         <item
             android:id="@+id/share_qr_menu"
-            android:title="Share QR code" />
+            android:title="@string/share_qr_code" />
     </group>
 
 </menu>
