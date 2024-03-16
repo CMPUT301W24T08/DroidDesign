@@ -106,7 +106,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
 		} else { // Default to attendee if no role or attendee role
-			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
+			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
 		}
 
 		// Set the navigation item selection listener
