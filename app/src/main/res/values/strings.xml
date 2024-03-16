@@ -73,5 +73,11 @@
     <string name="enter_the_conclave">Enter the Conclave</string>
     <string name="what_is_your_name">What is your name?</string>
     <string name="create_account">Create Account</string>
+    <string name="skip_account_creation">Skip account creation</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="current_attendance_menu">Current Attendance</string>
+    <string name="announcements">Announcements</string>
+    <string name="sign_ups">Sign Ups</string>
+    <string name="geo_check_ins">Geo Check-Ins</string>
 
 </resources>
