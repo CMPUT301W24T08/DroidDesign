@@ -104,7 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
 		} else if ("admin".equalsIgnoreCase(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
+			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
 		}
