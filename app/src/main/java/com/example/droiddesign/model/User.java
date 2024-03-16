@@ -13,6 +13,10 @@ public class User {
 	 */
 	private String userId;
 	/**
+	 * The name of of the user if signed in.
+	 */
+	private String userName;
+	/**
 	 * The role user takes on.
 	 */
 	private String role;
@@ -29,6 +33,10 @@ public class User {
 	 * The email address of the user.
 	 */
 	private String email;
+	/**
+	 * The company address of the user.
+	 */
+	private String company;
 
 	/**
 	 * The phone number of the user.
@@ -60,8 +68,10 @@ public class User {
 	public User() {
 		this.userId = null;
 		this.role = null;
+		this.userName = "";
 		this.profileName = "";
 		this.email = "";
+		this.company = "";
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
@@ -83,6 +93,7 @@ public class User {
 		this.registered = String.valueOf(registered);
 		this.profileName = "";
 		this.email = "";
+		this.company = "";
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
@@ -99,8 +110,10 @@ public class User {
 	public User(String userId, String role) {
 		this.userId = userId;
 		this.role = role;
+		this.userName = "";
 		this.profileName = "";
 		this.email = "";
+		this.company = "";
 		this.phone = "";
 		this.profilePic = "";
 		this.geolocation = false;
@@ -116,9 +129,11 @@ public class User {
 	public HashMap<String, Object> toMap() {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("userId", userId);
+		map.put("userName", userName);
 		map.put("role", role);
 		map.put("registered", registered);
 		map.put("email", email);
+		map.put("company", company);
 		map.put("phone", phone);
 		map.put("profileName", profileName);
 		map.put("profilePic", profilePic);
@@ -143,6 +158,22 @@ public class User {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	/**
+	 * Gets the name of the user.
+	 *
+	 * @return The name of the user.
+	 */
+	public String getUserName() {
+		return userName;
+	}
+	/**
+	 * Sets the user name on creation.
+	 *
+	 * @param userName The user name to set.
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -187,6 +218,22 @@ public class User {
 	 */
 	public String getProfileName() {
 		return profileName;
+	}
+	/**
+	 * Gets the company of the user.
+	 *
+	 * @return The company address of the user.
+	 */
+	public String getCompany() {
+		return company;
+	}
+	/**
+	 * Sets the company address of the user.
+	 *
+	 * @param company The new email address to be set.
+	 */
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	/**
