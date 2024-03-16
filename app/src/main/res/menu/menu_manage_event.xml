@@ -12,7 +12,7 @@
             android:id="@+id/announcement_menu"
             android:title="@string/profile_settings" />
         <item
-            android:id="push_notification"
+            android:id="@+id/push_notification"
             android:title="@string/push_notification" />
     </group>
 
