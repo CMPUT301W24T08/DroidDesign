@@ -3,19 +3,9 @@ package com.example.droiddesign.model;
 
 import android.util.Log;
 
-
-import androidx.annotation.NonNull;
-
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-
-import org.w3c.dom.Document;
 
 import java.util.HashMap;
 
@@ -26,6 +16,7 @@ import java.util.HashMap;
 public class UsersDB {
     private final CollectionReference userCollection;
     private final FirebaseFirestore usersDB;
+    SharedPreferenceHelper prefsHelper;
 
     /**
      * Constructs a UsersDB object to interact with the Firestore users collection.
@@ -46,7 +37,7 @@ public class UsersDB {
         HashMap<String, Object> data = user.toMap();
         userCollection.document(user.getUserId())
                 .set(data)
-                .addOnSuccessListener(unused -> Log.d("Firestore", "DocumentSnapshot successfully written"))
+                .addOnSuccessListener( unused -> Log.d("Firestore", "DocumentSnapshot successfully written"))
                 .addOnFailureListener(e -> Log.d("Firestore", "DocumentSnapshot failed to write"));
     }
 
@@ -81,19 +72,8 @@ public class UsersDB {
     public void getUser(String userId, getUserCallback callback) {
         DocumentReference docRef = userCollection.document(userId);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
-            User user = null;
-            String role = documentSnapshot.getString("role");
-            switch (role) {
-                case "Admin":
-                    user = documentSnapshot.toObject(Admin.class);
-                    break;
-                case "Organizer":
-                    user = documentSnapshot.toObject(Organizer.class);
-                    break;
-                case "Attendee":
-                    user = documentSnapshot.toObject(Attendee.class);
-                    break;
-            }
+            User user = documentSnapshot.toObject(User.class);
+
             callback.onSuccess(user);
         }).addOnFailureListener(e -> callback.onFailure());
     }

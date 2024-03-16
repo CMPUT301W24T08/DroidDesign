@@ -2,15 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
-    android:id="@+id/group1" >
+        android:id="@+id/group1" >
 
         <item
-            android:id="@+id/browse_events"
-            android:title="@string/browse_events" />
-
+            android:id="@+id/browse_users"
+            android:title="@string/browse_users" />
         <item
-            android:id="@+id/profile_settings"
-            android:title="@string/profile_settings" />
+            android:id="@+id/browse_profile_pic"
+            android:title="@string/browse_profile_pictures" />
+        <item
+            android:id="@+id/browse_poster"
+            android:title="@string/browse_event_posters" />
         <item
             android:id="@+id/app_settings"
             android:title="@string/app_settings" />

@@ -2,18 +2,21 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.Attendee;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.model.User;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +34,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 	/**
 	 * Instance of FirebaseFirestore to interact with Firestore database.
 	 */
-	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+	private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+	/**
+	 * Navigation menu for accessing different sections of the app.
+	 */
+	public NavigationView navigationMenu;
+	private String userId, userRole, userEmail;
+	SharedPreferenceHelper prefsHelper;
 
 
 
@@ -44,6 +53,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
+
+		prefsHelper = new SharedPreferenceHelper(this);
+		String savedUserId = prefsHelper.getUserId();
+		if (savedUserId != null) {
+			// Use the userId from SharedPreferences
+			userId = savedUserId;
+			userRole = prefsHelper.getRole();
+		} //At this point, user details are valid
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
 		if (eventId == null || eventId.isEmpty()) {
@@ -77,12 +94,71 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		signUpButton.setOnClickListener(v -> signUpForEvent());
-	}
 
-	private void navigateBackToEventMenu() {
-		Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		startActivity(intent);
+		ImageButton menuButton = findViewById(R.id.button_menu);
+		menuButton.setOnClickListener(v -> toggleNavigationMenu());
+		navigationMenu = findViewById(R.id.navigation_menu);
+		navigationMenu.getMenu().clear();
+
+		// Inflate the menu based on user role
+		if ("organizer".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_event_details);
+		} else if ("admin".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
+		} else { // Default to attendee if no role or attendee role
+			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+		}
+
+		// Set the navigation item selection listener
+		String finalUserId = userId;
+		navigationMenu.setNavigationItemSelectedListener(item -> {
+			int id = item.getItemId();
+			Intent intent = null;
+
+			if (id == R.id.browse_events) {
+				intent = new Intent(this, DiscoverEventsActivity.class);
+			} else if (id == R.id.profile) {
+				intent = new Intent(this, ProfileSettingsActivity.class);
+				intent.putExtra("USER_ID", finalUserId);
+			} else if (id == R.id.settings) {
+				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.log_out) {
+				intent = new Intent(this, LaunchScreenActivity.class);
+				// Clear stored preferences
+				prefsHelper.clearPreferences();
+				// Set userId and userRole to null
+				userId = null;
+				userRole = null;
+				startActivity(intent);
+				finish();
+			} else if (id == R.id.current_attendance_menu) {
+				intent = new Intent(this, CurrentAttendanceFragment.class);
+			}else if (id == R.id.announcement_menu) {
+				intent = new Intent(this, SendAnnouncementFragment.class);
+			}else if (id == R.id.sign_ups_menu) {
+				intent = new Intent(this, SignUpsFragment.class);
+			}else if (id == R.id.geo_check_menu) {
+				intent = new Intent(this, GeoCheckFragment.class);
+			}else if (id == R.id.share_qr_menu) {
+				intent = new Intent(this, ShareQrFragment.class);
+			}
+
+			if (intent != null) {
+				startActivity(intent);
+			}
+
+			return true;
+		});
+	}
+	/**
+	 * Toggles the visibility of the navigation menu.
+	 */
+	private void toggleNavigationMenu() {
+		if (navigationMenu.getVisibility() == View.VISIBLE) {
+			navigationMenu.setVisibility(View.GONE);
+		} else {
+			navigationMenu.setVisibility(View.VISIBLE);
+		}
 	}
 
 	/**
@@ -113,19 +189,20 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 */
 
 	private void signUpForEvent() {
-		// Assuming you have a method to get the current Attendee (user)
+		// Assuming you have a method to get the current User (user)
 		String currentUserId = getCurrentUserId(); // Implement this according to your auth logic
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
 		}
 
+		Toast.makeText(this, "SignUpEvent called"+currentUserId, Toast.LENGTH_LONG).show();
 		db.collection("Users").document(currentUserId)
 				.get()
 				.addOnSuccessListener(documentSnapshot -> {
-					Attendee user = documentSnapshot.toObject(Attendee.class);
+					User user = documentSnapshot.toObject(User.class);
 					if (user != null) {
-						user.getEventsList().add(eventId);
+						user.getSignedEventsList().add(eventId);
 						db.collection("Users").document(currentUserId).set(user.toMap())
 								.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
 								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());

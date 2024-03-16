@@ -68,8 +68,24 @@
     <string name="Notification_Preferences">Notification Preferences</string>
     <string name="discover_events">Discover Events</string>
     <string name="Contact_Number">Contact Number</string>
+    <string name="log_out">Log out</string>
+    <string name="manage_events">Manage Events</string>
     <string name="enter_the_conclave">Enter the Conclave</string>
     <string name="what_is_your_name">What is your name?</string>
     <string name="create_account">Create Account</string>
+    <string name="skip_account_creation">Skip account creation</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="current_attendance_menu">Current Attendance</string>
+    <string name="announcements">Announcements</string>
+    <string name="sign_ups">Sign Ups</string>
+    <string name="geo_check_ins">Geo Check-Ins</string>
+    <string name="share_qr_code">Share QR code</string>
+    <string name="push_notification">Push Notification</string>
+    <string name="browse_event_posters">Browse Event Posters</string>
+    <string name="browse_profile_pictures">Browse Profile Pictures</string>
+    <string name="browse_users">Browse Users</string>
+    <string name="remove_event_poster">Remove Event Poster</string>
+    <string name="remove_event">Remove Event</string>
+    <string name="event_organizer">Event Organizer</string>
 
 </resources>

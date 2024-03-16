@@ -1,32 +1,27 @@
 package com.example.droiddesign.view;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.Attendee;
+import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 /**
  * Activity representing the main menu for the event application.
  * It provides the user with a list of events they have signed up for and allows navigation to other features.
@@ -60,7 +55,8 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * User ID and role for personalizing the user experience.
 	 */
-	private String userId, userRole;
+	private String userId, userRole, userEmail;
+	SharedPreferenceHelper prefsHelper;
 
 	/**
 	 * List of events the user has signed up for.
@@ -77,12 +73,26 @@ public class EventMenuActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
 
-		fetchUserRole();
-		userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
 		ImageButton menuButton = findViewById(R.id.button_menu);
+		ImageButton backButton = findViewById(R.id.button_back);
+		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
+		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+
+		prefsHelper = new SharedPreferenceHelper(this);
+		String savedUserId = prefsHelper.getUserId();
+		if (savedUserId != null) {
+			// Use the userId from SharedPreferences
+			userId = savedUserId;
+			userRole = prefsHelper.getRole();
+		} else {
+			// No userId found in SharedPreferences, fetch it from FirebaseAuth
+			fetchUserRole();
+			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+			prefsHelper.saveUserProfile(userId,userRole,userEmail);
+		}
+
 
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
@@ -96,17 +106,29 @@ public class EventMenuActivity extends AppCompatActivity {
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
 
-		ImageButton backButton = findViewById(R.id.button_back);
 		backButton.setOnClickListener(v -> finish());
 
-		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		// Check if the userRole is "attendee"
+		if ("attendee".equalsIgnoreCase(userRole)) {
+			// If userRole is "attendee", hide the addEventButton
+			addEventButton.setVisibility(View.INVISIBLE);
+			// Update the layout parameters to position the button at the bottom center
+			ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) fabQuickScan.getLayoutParams();
+			params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+			params.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.fab_margin_bottom));
+			fabQuickScan.setLayoutParams(params);
 
+		} else {
+			// If userRole is not "attendee", i.e admin or organizer show the addEventButton
+			addEventButton.setVisibility(View.VISIBLE);
+		}
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
 			startActivity(intent);
 		});
 
-		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
 		fabQuickScan.setOnClickListener(v -> {
 			// Intent to start Quick Scan Activity or any specific logic
 			Intent intent = new Intent(EventMenuActivity.this, QrCodeScanActivity.class);
@@ -117,15 +139,16 @@ public class EventMenuActivity extends AppCompatActivity {
 		navigationMenu.getMenu().clear();
 
 		// Inflate the menu based on user role
-		if ("organizer".equals(userRole)) {
+		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);
-		} else if ("admin".equals(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
+		} else if ("admin".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_admin_event_menu);
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
 		}
 
 		// Set the navigation item selection listener
+		String finalUserId = userId;
 		navigationMenu.setNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			Intent intent = null;
@@ -134,10 +157,20 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
-				intent.putExtra("USER_ID", userId);
+				intent.putExtra("USER_ID", finalUserId);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.log_out) {
+				intent = new Intent(this, LaunchScreenActivity.class);
+				// Clear stored preferences
+				prefsHelper.clearPreferences();
+				// Set userId and userRole to null
+				userId = null;
+				userRole = null;
+				startActivity(intent);
+				finish();
 			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+				intent = new Intent(this, EventMenuActivity.class);
 			}
 
 			if (intent != null) {
@@ -193,9 +226,9 @@ public class EventMenuActivity extends AppCompatActivity {
 	private void fetchUserSignedUpEvents() {
 		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
-			Attendee user = documentSnapshot.toObject(Attendee.class);
-			if (user != null && user.getEventsList() != null && !user.getEventsList().isEmpty()) {
-				fetchEventsByIds(user.getEventsList());
+			User user = documentSnapshot.toObject(User.class);
+			if (user != null && user.getSignedEventsList() != null && !user.getSignedEventsList().isEmpty()) {
+				fetchEventsByIds(user.getSignedEventsList());
 			} else {
 				Log.w("EventMenuActivity", "User has no signed-up events or could not be fetched.");
 			}
@@ -243,6 +276,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
 			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
 				userRole = documentSnapshot.getString("role");
+				userEmail = documentSnapshot.getString("email");
 				configureUIBasedOnRole();
 			} else {
 				Log.e("EventMenuActivity", "Role not found for user.");

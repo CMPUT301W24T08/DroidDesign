@@ -15,7 +15,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -167,6 +166,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         fabNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Pass values for event to next activity
                 // Start the AddEventSecondActivity
                 TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
                 TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
