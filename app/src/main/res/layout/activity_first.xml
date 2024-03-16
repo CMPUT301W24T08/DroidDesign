@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
@@ -46,13 +47,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/launch_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:background="@color/bg_light"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_enter"
@@ -60,18 +62,20 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="85dp"
             android:layout_marginVertical="25dp"
-            android:paddingVertical="10dp"
             android:backgroundTint="@color/white"
             android:clickable="true"
             android:focusable="true"
+            android:fontFamily="@font/opensans_semibold"
+            android:paddingVertical="10dp"
             android:text="@string/enter_the_conclave"
             android:textColor="@color/bg_dark"
-            android:fontFamily="@font/opensans_semibold"
             app:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.664"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintVertical_bias="0.315" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
