@@ -15,10 +15,10 @@
             android:title="@string/remove_event_poster" />
         <item
             android:id="@+id/remove_event"
-            android:title="Remove Event" />
+            android:title="@string/remove_event" />
         <item
             android:id="@+id/event_organizer"
-            android:title="Event Organizer" />
+            android:title="@string/event_organizer" />
     </group>
 
 </menu>
