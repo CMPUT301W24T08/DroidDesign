@@ -33,11 +33,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 	/**
 	 * Instance of FirebaseFirestore to interact with Firestore database.
 	 */
-	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+	private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 	/**
 	 * Navigation menu for accessing different sections of the app.
 	 */
-	private NavigationView navigationMenu;
+	public NavigationView navigationMenu;
 	private String userId, userRole, userEmail;
 	SharedPreferenceHelper prefsHelper;
 
@@ -94,11 +94,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		signUpButton.setOnClickListener(v -> signUpForEvent());
 
+		ImageButton menuButton = findViewById(R.id.button_menu);
+		navigationMenu = findViewById(R.id.navigation_menu);
 		navigationMenu.getMenu().clear();
 
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);//TODO: user the announcement menu
+			navigationMenu.inflateMenu(R.menu.menu_event_details);
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
 		} else { // Default to attendee if no role or attendee role
@@ -127,8 +129,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 				userRole = null;
 				startActivity(intent);
 				finish();
-			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
-				intent = new Intent(this, EventMenuActivity.class);
+			} else if (id == R.id.current_attendance_menu) {
+				intent = new Intent(this, CurrentAttendanceFragment.class);
+			}else if (id == R.id.announcement_menu) {
+				intent = new Intent(this, SendAnnouncementFragment.class);
+			}else if (id == R.id.sign_ups_menu) {
+				intent = new Intent(this, SignUpsFragment.class);
+			}else if (id == R.id.geo_check_menu) {
+				intent = new Intent(this, GeoCheckFragment.class);
+			}else if (id == R.id.share_qr_menu) {
+				intent = new Intent(this, ShareQrFragment.class);
 			}
 
 			if (intent != null) {
@@ -137,12 +147,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 			return true;
 		});
-	}
-
-	private void navigateBackToEventMenu() {
-		Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		startActivity(intent);
 	}
 
 	/**
