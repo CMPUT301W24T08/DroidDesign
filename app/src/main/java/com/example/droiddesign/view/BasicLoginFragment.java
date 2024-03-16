@@ -47,7 +47,6 @@ public class BasicLoginFragment extends DialogFragment {
      * FirebaseAuth instance to handle user authentication.
      */
     public FirebaseAuth mAuth;
-
     private EditText editUserName;
     private EditText editEmail;
     private EditText editCompany;
@@ -92,7 +91,7 @@ public class BasicLoginFragment extends DialogFragment {
             }
         }
         // Initialize views
-	    assert view != null;
+        assert view != null;
 	    editUserName = view.findViewById(R.id.edit_user_name);
         editEmail = view.findViewById(R.id.edit_email);
         editCompany = view.findViewById(R.id.edit_company);
@@ -169,8 +168,6 @@ public class BasicLoginFragment extends DialogFragment {
      * @param company    The user's email address.
      * @param phoneNumber The user's chosen password.
      */
-
-
     public void createUser(String userName, String email, String role, String company, String phoneNumber){
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         UsersDB userdb = new UsersDB(firestore);
@@ -197,11 +194,12 @@ public class BasicLoginFragment extends DialogFragment {
                             // Close the dialog
                             dismiss();
                             // Close the dialog, finish the activity, and start a new activity
-                            Intent intent = new Intent(getActivity(), EventMenuActivity.class);
-                            startActivity(intent);
-                            requireActivity().finish();
+                            if (isAdded() && getActivity() != null) {
+                                Intent intent = new Intent(getActivity(), EventMenuActivity.class);
+                                startActivity(intent);
+                                requireActivity().finish();
+                            }
                         }
-
                     }
                 });
     }

@@ -22,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 /**
  * Activity representing the main menu for the event application.
  * It provides the user with a list of events they have signed up for and allows navigation to other features.
@@ -272,7 +274,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * to update the UI elements based on the user's role.
 	 */
 	private void fetchUserRole() {
-		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
 			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
 				userRole = documentSnapshot.getString("role");
