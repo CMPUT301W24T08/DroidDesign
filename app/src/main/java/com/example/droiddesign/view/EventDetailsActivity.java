@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +34,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 * Instance of FirebaseFirestore to interact with Firestore database.
 	 */
 	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+	/**
+	 * Navigation menu for accessing different sections of the app.
+	 */
+	private NavigationView navigationMenu;
+	private String userId, userRole, userEmail;
+	SharedPreferenceHelper prefsHelper;
 
 
 
@@ -44,6 +52,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
+
+		prefsHelper = new SharedPreferenceHelper(this);
+		String savedUserId = prefsHelper.getUserId();
+		if (savedUserId != null) {
+			// Use the userId from SharedPreferences
+			userId = savedUserId;
+			userRole = prefsHelper.getRole();
+		} //At this point, user details are valid
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
 		if (eventId == null || eventId.isEmpty()) {
@@ -77,6 +93,50 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		signUpButton.setOnClickListener(v -> signUpForEvent());
+
+		navigationMenu.getMenu().clear();
+
+		// Inflate the menu based on user role
+		if ("organizer".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_organizer);//TODO: user the announcement menu
+		} else if ("admin".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_navigation_admin);
+		} else { // Default to attendee if no role or attendee role
+			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
+		}
+
+		// Set the navigation item selection listener
+		String finalUserId = userId;
+		navigationMenu.setNavigationItemSelectedListener(item -> {
+			int id = item.getItemId();
+			Intent intent = null;
+
+			if (id == R.id.browse_events) {
+				intent = new Intent(this, DiscoverEventsActivity.class);
+			} else if (id == R.id.profile) {
+				intent = new Intent(this, ProfileSettingsActivity.class);
+				intent.putExtra("USER_ID", finalUserId);
+			} else if (id == R.id.settings) {
+				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.log_out) {
+				intent = new Intent(this, LaunchScreenActivity.class);
+				// Clear stored preferences
+				prefsHelper.clearPreferences();
+				// Set userId and userRole to null
+				userId = null;
+				userRole = null;
+				startActivity(intent);
+				finish();
+			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
+				intent = new Intent(this, EventMenuActivity.class);
+			}
+
+			if (intent != null) {
+				startActivity(intent);
+			}
+
+			return true;
+		});
 	}
 
 	private void navigateBackToEventMenu() {
