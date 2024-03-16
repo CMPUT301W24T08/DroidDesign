@@ -193,11 +193,18 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsList = initializeEventsList();
 
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
-			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+			Intent intent;
+			// Check if the user is an organizer
+			if ("organizer".equalsIgnoreCase(userRole)) {
+				// If the user is an organizer, navigate to EditEventActivity
+				intent = new Intent(EventMenuActivity.this, EditEventActivity.class);
+			} else {
+				// For other roles, navigate to EventDetailsActivity
+				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+			}
 			intent.putExtra("EVENT_ID", event.getEventId());
 			startActivity(intent);
 		});
-
 		eventsRecyclerView.setAdapter(eventsAdapter);
 	}
 

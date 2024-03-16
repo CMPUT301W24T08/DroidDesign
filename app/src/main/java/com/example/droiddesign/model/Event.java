@@ -79,6 +79,10 @@ public class Event {
      * Count of current attendees signed up for the event.
      */
     private Integer attendeesCount;
+    /**
+     * List of milestone attendance numbers for the event
+     */
+    private Integer milestones;
 
     /**
      * QR code data associated with the event for easy sharing and identification.
@@ -384,6 +388,18 @@ public class Event {
      */
     public Integer getAttendeesCount() {
         return attendeesCount;
+    }
+
+    /**
+     * Retrieves the list of event attendance milestones.
+     * @return
+     */
+    public Integer getMilestones() {
+        return milestones;
+    }
+
+    public void setMilestones(Integer milestone) {
+        this.milestones = milestone;
     }
 
     /**

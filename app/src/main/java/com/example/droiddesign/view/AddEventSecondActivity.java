@@ -96,7 +96,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         event.setStartTime(intent.getStringExtra("startTime"));
         event.setEndTime(intent.getStringExtra("endTime"));
         event.setEventDate(intent.getStringExtra("startDate"));
-        event.setGeolocation(intent.getStringExtra("eventLocation"));  // Assuming geolocation is derived or identical to eventLocation.
+        event.setGeolocation(intent.getStringExtra("eventLocation"));
     }
 
     /**
