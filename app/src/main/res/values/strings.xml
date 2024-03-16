@@ -79,5 +79,6 @@
     <string name="announcements">Announcements</string>
     <string name="sign_ups">Sign Ups</string>
     <string name="geo_check_ins">Geo Check-Ins</string>
+    <string name="share_qr_code">Share QR code</string>
 
 </resources>
