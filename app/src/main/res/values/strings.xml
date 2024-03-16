@@ -84,5 +84,6 @@
     <string name="browse_event_posters">Browse Event Posters</string>
     <string name="browse_profile_pictures">Browse Profile Pictures</string>
     <string name="browse_users">Browse Users</string>
+    <string name="remove_event_poster">Remove Event Poster</string>
 
 </resources>
