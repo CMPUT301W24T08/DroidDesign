@@ -70,5 +70,8 @@
     <string name="Contact_Number">Contact Number</string>
     <string name="log_out">Log out</string>
     <string name="manage_events">Manage Events</string>
+    <string name="enter_the_conclave">Enter the Conclave</string>
+    <string name="what_is_your_name">What is your name?</string>
+    <string name="create_account">Create Account</string>
 
 </resources>
