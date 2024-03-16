@@ -5,18 +5,15 @@
         android:id="@+id/group1" >
 
         <item
-            android:id="@+id/browse_events"
-            android:title="@string/browse_events" />
+            android:id="@+id/current_attendance_menu"
+            android:title="@string/current_attendance_menu" />
 
         <item
-            android:id="@+id/profile_settings"
+            android:id="@+id/announcement_menu"
             android:title="@string/profile_settings" />
         <item
-            android:id="@+id/app_settings"
-            android:title="@string/app_settings" />
-        <item
-            android:id="@+id/log_out"
-            android:title="@string/log_out" />
+            android:id="push_notification"
+            android:title="@string/push_notification" />
     </group>
 
 </menu>
