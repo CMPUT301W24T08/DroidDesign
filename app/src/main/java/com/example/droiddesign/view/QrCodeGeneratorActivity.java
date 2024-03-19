@@ -33,14 +33,44 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Activity for generating and uploading a QR code.
+ * This activity allows users to generate a QR code based on an input string (event ID)
+ * and upload the generated QR code image to Firebase Storage.
+ */
+
 public class QrCodeGeneratorActivity extends AppCompatActivity {
 
+    /**
+     * Firebase Storage reference for storing QR code images.
+     */
     private StorageReference mStorageRef;
-    private FirebaseFirestore mFirestoreDb;
-    private Button mButtonSaveQrCode;
-    private ImageView mImageViewQrCode;
-    private Bitmap mQrBitmap; // To hold the generated QR code
 
+    /**
+     * Firestore database instance for saving QR code metadata.
+     */
+    private FirebaseFirestore mFirestoreDb;
+
+    /**
+     * Button to trigger saving the generated QR code.
+     */
+    private Button mButtonSaveQrCode;
+
+    /**
+     * Image view to display the generated QR code.
+     */
+    private ImageView mImageViewQrCode;
+
+    /**
+     * Bitmap object to hold the generated QR code image.
+     */
+    private Bitmap mQrBitmap;
+
+    /**
+     * Initializes the activity, setting up UI components and button click listeners.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +111,8 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         });
 
 
+
+
         mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +126,12 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
 
         buttonBack.setOnClickListener(v -> finish());
     }
+
+    /**
+     * Uploads the generated QR code image to Firebase Storage and saves its metadata to Firestore.
+     * @param bitmap The bitmap image of the QR code to be uploaded.
+     * @param text The associated text to be stored along with the QR code.
+     */
 
     private void uploadQrCode(Bitmap bitmap, String text) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

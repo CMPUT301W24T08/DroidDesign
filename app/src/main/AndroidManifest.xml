@@ -33,20 +33,22 @@
         </activity>
         <activity
             android:name=".view.ImageUploadActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".view.QrCodeGeneratorActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".view.QrCodeScanActivity"
-            android:exported="true"></activity>
-        <activity android:name=".view.RoleSelectionActivity" />
-        <activity android:name=".view.EventMenuActivity" />
+            android:exported="true" />
+        <activity android:name=".view.RoleSelectionActivity" android:exported="true"/>
+        <activity android:name=".view.EventMenuActivity" android:exported="true"/>
         <activity android:name=".view.EventDetailsActivity" />
         <activity android:name=".view.AppSettingsActivity" />
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
-        <activity android:name=".view.AddEventSecondActivity" />
+        <activity android:name=".view.AddEventSecondActivity"/>
+        <activity android:name=".view.EditEventActivity"/>
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
