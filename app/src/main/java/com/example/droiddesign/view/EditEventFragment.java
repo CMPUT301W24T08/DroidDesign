@@ -121,17 +121,6 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
      * @param event Event object containing the details to be displayed.
      */
     private void populateEventDetails(Event event) {
-        eventName = view.findViewById(R.id.event_name_input);
-        startDateButton = view.findViewById(R.id.button_start_date);
-        endDateButton = view.findViewById(R.id.button_end_date);
-        startTimeButton = view.findViewById(R.id.button_start_time);
-        endTimeButton = view.findViewById(R.id.button_end_time);
-        eventPoster = view.findViewById(R.id.button_event_poster);
-        locationPreview = view.findViewById(R.id.location_preview);
-        eventDescription = view.findViewById(R.id.edit_text_event_description);
-        maxAttendees = view.findViewById(R.id.edit_text_num_attendees);
-        milestones = view.findViewById(R.id.edit_text_milestone);
-
         eventName.setText(event.getEventName());
         startDateButton.setText(event.getEventDate());
         startTimeButton.setText(event.getStartTime());
@@ -153,7 +142,7 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
      */
     private void showDatePickerDialog() {
         DialogFragment datePicker = new DatePickerFragment();
-        datePicker.show(getSupportFragmentManager(), "datePicker");
+        datePicker.show(getChildFragmentManager(), "datePicker");
     }
 
     /**
