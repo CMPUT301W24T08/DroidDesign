@@ -197,7 +197,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			// Check if the user is an organizer
 			if ("organizer".equalsIgnoreCase(userRole)) {
 				// If the user is an organizer, navigate to EditEventActivity
-				intent = new Intent(EventMenuActivity.this, EditEventActivity.class);
+				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
 			} else {
 				// For other roles, navigate to EventDetailsActivity
 				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
