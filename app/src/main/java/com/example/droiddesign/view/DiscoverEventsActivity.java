@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
-
 import com.example.droiddesign.model.Event;
-import com.example.droiddesign.view.EventsAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +27,6 @@ import java.util.List;
  * It allows users to view details about each event by clicking on them in the list.
  */
 public class DiscoverEventsActivity extends AppCompatActivity {
-
-
-
 
     private RecyclerView eventsRecyclerView;
     private EventsAdapter eventsAdapter;
