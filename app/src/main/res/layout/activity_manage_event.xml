@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
-    tools:context="com.example.droiddesign.view.EventMenuActivity">
+    tools:context="com.example.droiddesign.view.ManageEventActivity">
 
     <ImageView
         android:layout_width="845dp"
@@ -16,43 +16,17 @@
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/events_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/top_menu_bar">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:text="Created events"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_event_created"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="300dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:text="Signed up events"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_event_signed_up"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/top_menu_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
+        app:layout_constraintVertical_bias="0.108" />
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_menu"
@@ -84,11 +58,11 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/text_upcoming_events"
+            android:id="@+id/text_manage_events"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_semibold"
-            android:text="@string/manage_events"
+            android:text="@string/created_events"
             android:textColor="@color/secondary_light"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
