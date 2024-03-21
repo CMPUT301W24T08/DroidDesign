@@ -1,15 +1,17 @@
 package com.example.droiddesign.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class EditEventActivity extends AppCompatActivity implements DatePickerFragment.DatePickerListener {
+public class EditEventFragment extends Fragment implements DatePickerFragment.DatePickerListener {
     private Event event;
     private Button backButton, saveButton;
     private String eventId;
@@ -33,34 +35,33 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
     private EditText eventName, maxAttendees, milestones, eventDescription;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_event);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
 
         // Set up buttons and view
-        ImageButton backButton = findViewById(R.id.back_button);
-        Button saveButton = findViewById(R.id.button_save);
-        EditText eventNameInput = findViewById(R.id.event_name_input);
-        Button startDateButton = findViewById(R.id.button_start_date);
-        Button endDateButton = findViewById(R.id.button_end_date);
-        Button startTimeButton = findViewById(R.id.button_start_time);
-        Button endTimeButton = findViewById(R.id.button_end_time);
-        ImageButton eventPosterButton = findViewById(R.id.button_event_poster);
-        ImageButton locationPreviewButton = findViewById(R.id.location_preview);
-        EditText eventDescription = findViewById(R.id.edit_text_event_description);
-        EditText numAttendees = findViewById(R.id.edit_text_num_attendees);
-        EditText milestone = findViewById(R.id.edit_text_milestone);
+        ImageButton backButton = view.findViewById(R.id.back_button);
+        Button saveButton = view.findViewById(R.id.button_save);
+        eventName = view.findViewById(R.id.event_name_input);
+        startDateButton = view.findViewById(R.id.button_start_date);
+        endDateButton = view.findViewById(R.id.button_end_date);
+        startTimeButton = view.findViewById(R.id.button_start_time);
+        endTimeButton = view.findViewById(R.id.button_end_time);
+        ImageButton eventPosterButton = view.findViewById(R.id.button_event_poster);
+        ImageButton locationPreviewButton = view.findViewById(R.id.location_preview);
+        eventDescription = view.findViewById(R.id.edit_text_event_description);
+        maxAttendees = view.findViewById(R.id.edit_text_num_attendees);
+        milestones = view.findViewById(R.id.edit_text_milestone);
 
         // Hide end date button by default
-        TextView endDateText = findViewById(R.id.text_end_date);
-        endDateButton = findViewById(R.id.button_end_date);
+        TextView endDateText = view.findViewById(R.id.text_end_date);
+        endDateButton = view.findViewById(R.id.button_end_date);
         endDateText.setVisibility(View.INVISIBLE);
         endDateButton.setVisibility(View.INVISIBLE);
 
-        eventId = getIntent().getStringExtra("EVENT_ID");
+        eventId = getArguments().getString("EVENT_ID");
         if (eventId == null || eventId.isEmpty()) {
-            Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
-            finish();
+            Toast.makeText(requireContext(), "Event ID is missing.", Toast.LENGTH_LONG).show();
+            requireActivity().finish();
         }
 
         Event.loadFromFirestore(eventId, new Event.FirestoreCallback() {
@@ -69,7 +70,7 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
                 if (event != null) {
                     populateEventDetails(event);
                 } else {
-                    Toast.makeText(EditEventActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -77,18 +78,24 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                requireActivity().finish();
             }
         });
 
-        startTimeButton.setOnClickListener(v -> {
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "startTimePicker");
+        startTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(requireFragmentManager(), "startTimePicker");
+            }
         });
 
-        endTimeButton.setOnClickListener(v -> {
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "endTimePicker");
+        endTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(requireFragmentManager(), "endTimePicker");
+            }
         });
 
         startDateButton.setOnClickListener(new View.OnClickListener() {
@@ -105,9 +112,7 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
             }
         });
 
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
+        return view;
     }
 
 
@@ -116,16 +121,16 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
      * @param event Event object containing the details to be displayed.
      */
     private void populateEventDetails(Event event) {
-        eventName = findViewById(R.id.event_name_input);
-        startDateButton = findViewById(R.id.button_start_date);
-        endDateButton = findViewById(R.id.button_end_date);
-        startTimeButton = findViewById(R.id.button_start_time);
-        endTimeButton = findViewById(R.id.button_end_time);
-        eventPoster = findViewById(R.id.button_event_poster);
-        locationPreview = findViewById(R.id.location_preview);
-        eventDescription = findViewById(R.id.edit_text_event_description);
-        maxAttendees = findViewById(R.id.edit_text_num_attendees);
-        milestones = findViewById(R.id.edit_text_milestone);
+        eventName = view.findViewById(R.id.event_name_input);
+        startDateButton = view.findViewById(R.id.button_start_date);
+        endDateButton = view.findViewById(R.id.button_end_date);
+        startTimeButton = view.findViewById(R.id.button_start_time);
+        endTimeButton = view.findViewById(R.id.button_end_time);
+        eventPoster = view.findViewById(R.id.button_event_poster);
+        locationPreview = view.findViewById(R.id.location_preview);
+        eventDescription = view.findViewById(R.id.edit_text_event_description);
+        maxAttendees = view.findViewById(R.id.edit_text_num_attendees);
+        milestones = view.findViewById(R.id.edit_text_milestone);
 
         eventName.setText(event.getEventName());
         startDateButton.setText(event.getEventDate());
@@ -216,7 +221,7 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
             // Update the existing Event object in Firestore
             event.updateEventInFirestore(updatedFields);
         } else {
-            Toast.makeText(this, "Event data is not loaded yet or is null.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Event data is not loaded yet or is null.", Toast.LENGTH_SHORT).show();
         }
     }
 }
