@@ -1,5 +1,7 @@
 package com.example.droiddesign.model;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -510,6 +512,29 @@ public class Event {
     }
 
     /**
+     * Updates multiple fields of an event in Firestore.
+     *
+     * This method takes a map of field names and their new values and updates these fields in the Firestore document corresponding to this event.
+     * If the update is successful, a confirmation message is displayed to the user. In case of failure, an error message is shown.
+     *
+     * @param updatedFields A map containing the field names as keys and their new values as the map values.
+     */
+    public void updateEventInFirestore(Map<String, Object> updatedFields) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (this.eventId != null && !updatedFields.isEmpty()) {
+            db.collection(COLLECTION_PATH).document(this.eventId).update(updatedFields)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("UpdateEvent", "Event successfully updated in Firestore.");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("UpdateEvent", "Error updating event in Firestore.", e);
+                    });
+        } else {
+            Log.e("UpdateEvent", "Event ID is null or fields to update are empty.");
+        }
+    }
+
+    /**
      * Converts the current event object into a map representation, suitable for Firestore storage.
      *
      * @return A map containing key-value pairs representing the event's properties.
@@ -566,6 +591,4 @@ public class Event {
          */
         void onCallback(Event event);
     }
-
-
 }

@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment;
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,8 +28,8 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
     private String eventId;
     private Button startDateButton, endDateButton, startTimeButton, endTimeButton;
     private ImageButton eventPoster, locationPreview;
-    private Calendar startTimeCalendar = Calendar.getInstance();
-    private Calendar endTimeCalendar = Calendar.getInstance();
+    private final Calendar startTimeCalendar = Calendar.getInstance();
+    private final Calendar endTimeCalendar = Calendar.getInstance();
     private EditText eventName, maxAttendees, milestones, eventDescription;
 
     @Override
@@ -172,6 +171,27 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
         startDateButton.setText(dateString);
     }
 
+    /**
+     * Saves the edited event details by retrieving the updated values from the UI components and updating the existing
+     * Event object in Firestore. The updated event details include the event name, description, maximum number of attendees,
+     * start date, start time, and end time. These details are extracted from the respective UI components, compiled into a map,
+     * and then used to update the Event object in Firestore.
+     * <p>
+     * If the Event object is not yet loaded or is null (indicating the event data is not available), a toast message is displayed
+     * to inform the user that the event data is not loaded or is null.
+     * <p>
+     * Note: This method is private and intended to be called within the class it is defined in, typically in response to a UI
+     * action such as pressing a "Save" button after editing event details.
+     * <p>
+     * Preconditions:
+     * - UI components for event name, description, max attendees, start date, start time, and end time must be initialized and accessible.
+     * <p>
+     * Postconditions:
+     * - If the Event object is not null, the event is updated in Firestore with the new details.
+     * - If the Event object is null, a toast message is shown to the user indicating the data is not available.
+     * <p>
+     * TODO: Implement milestones properly as part of the event update process.
+     */
     private void saveEditedEvent() {
         // Retrieve the updated event details from the UI components
         String updatedEventName = eventName.getText().toString();
@@ -189,18 +209,14 @@ public class EditEventActivity extends AppCompatActivity implements DatePickerFr
         updatedFields.put("eventDate", updatedStartDate);
         updatedFields.put("startTime", updatedStartTime);
         updatedFields.put("endTime", updatedEndTime);
-        // TODO properly implement milestones
+        // TODO: Properly implement milestones
 
-        // Update the existing Event object in Firestore using the eventId
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").document(eventId)
-                .update(updatedFields)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(EditEventActivity.this, "Event updated successfully!", Toast.LENGTH_SHORT).show();
-                    // Optionally close the activity or navigate the user elsewhere
-                    finish();
-                })
-                .addOnFailureListener(e -> Toast.makeText(EditEventActivity.this, "Error updating event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        // Check if the event object is not null
+        if (event != null) {
+            // Update the existing Event object in Firestore
+            event.updateEventInFirestore(updatedFields);
+        } else {
+            Toast.makeText(this, "Event data is not loaded yet or is null.", Toast.LENGTH_SHORT).show();
+        }
     }
-
 }
