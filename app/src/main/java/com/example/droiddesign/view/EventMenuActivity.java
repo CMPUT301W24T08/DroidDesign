@@ -100,6 +100,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
+			toggleNavigationMenu();
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
@@ -169,6 +170,7 @@ public class EventMenuActivity extends AppCompatActivity {
 				// Set userId and userRole to null
 				userId = null;
 				userRole = null;
+				toggleNavigationMenu();
 				startActivity(intent);
 				finish();
 			} else if ("organizer".equalsIgnoreCase(userRole) && id == R.id.nav_manage_events) {
@@ -176,6 +178,7 @@ public class EventMenuActivity extends AppCompatActivity {
 			}
 
 			if (intent != null) {
+				toggleNavigationMenu();
 				startActivity(intent);
 			}
 
