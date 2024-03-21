@@ -171,8 +171,8 @@ public class EventMenuActivity extends AppCompatActivity {
 				userRole = null;
 				startActivity(intent);
 				finish();
-			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
-				intent = new Intent(this, EventMenuActivity.class);
+			} else if ("organizer".equalsIgnoreCase(userRole) && id == R.id.nav_manage_events) {
+				intent = new Intent(this, ManageEventActivity.class);
 			}
 
 			if (intent != null) {
@@ -195,13 +195,14 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent;
 			// Check if the user is an organizer
-			if ("organizer".equalsIgnoreCase(userRole)) {
-				// If the user is an organizer, navigate to EditEventActivity
-				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
-			} else {
-				// For other roles, navigate to EventDetailsActivity
-				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-			}
+//			if ("organizer".equalsIgnoreCase(userRole)) {
+//				// If the user is an organizer, navigate to EditEventActivity
+//				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
+//			} else {
+//				// For other roles, navigate to EventDetailsActivity
+//				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+//			}
+			intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
 			startActivity(intent);
 		});
