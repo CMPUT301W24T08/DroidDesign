@@ -101,6 +101,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 		navigationMenu = findViewById(R.id.navigation_menu);
 		navigationMenu.getMenu().clear();
 
+		findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
+		findViewById(R.id.sign_up_button).setVisibility(View.GONE);
+		findViewById(R.id.send_button).setVisibility(View.GONE);
+		findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
@@ -113,26 +117,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 					// Check if eventId is in user.manageEventList
 					boolean isEventManaged = user.getManagedEventsList().contains(eventId);
 					if (isEventManaged) {
-						findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
-						findViewById(R.id.sign_up_button).setVisibility(View.GONE);
 						findViewById(R.id.send_button).setVisibility(View.VISIBLE);
 						findViewById(R.id.announcement_edit_text).setVisibility(View.VISIBLE);
 					} else {
 						findViewById(R.id.edit_event_details_button).setVisibility(View.VISIBLE);
 						findViewById(R.id.sign_up_button).setVisibility(View.VISIBLE);
-						findViewById(R.id.send_button).setVisibility(View.GONE);
-						findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
 			}}});
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
-			findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
-			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
-			findViewById(R.id.send_button).setVisibility(View.GONE);
-			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
-			findViewById(R.id.send_button).setVisibility(View.GONE);
-			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+			findViewById(R.id.edit_event_details_button).setVisibility(View.VISIBLE);
+			findViewById(R.id.sign_up_button).setVisibility(View.VISIBLE);
 		}
 
 		// Set the navigation item selection listener
