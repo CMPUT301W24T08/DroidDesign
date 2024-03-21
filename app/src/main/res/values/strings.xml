@@ -87,5 +87,6 @@
     <string name="remove_event_poster">Remove Event Poster</string>
     <string name="remove_event">Remove Event</string>
     <string name="event_organizer">Event Organizer</string>
+    <string name="description">Description</string>
 
 </resources>

@@ -141,6 +141,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 			}else if (id == R.id.share_qr_menu) {
 				intent = new Intent(this, ShareQrFragment.class);
+			}else if (id == R.id.remove_event_menu){
+				// get event and remove event id from managelist of User TODO: implementation
+			}else if (id == R.id.remove_event_poster_menu){
+				// get event id and remove the poster of the event.poster  TODO: implementation
+			}else if(id == R.id.edit_event_details_menu){
+				intent = new Intent(this, EditEventFragment.class);
 			}
 
 			if (intent != null) {
