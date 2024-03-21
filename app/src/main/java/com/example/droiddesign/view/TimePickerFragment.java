@@ -10,8 +10,19 @@ import androidx.fragment.app.DialogFragment;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+/**
+ * Fragment class that presents a time picker dialog to the user.
+ * It allows users to select a specific time and communicates that selection back to the hosting activity.
+ */
+
 public class TimePickerFragment extends DialogFragment
                     implements TimePickerDialog.OnTimeSetListener {
+
+    /**
+     * Creates and returns an instance of TimePickerDialog with the current time set as default.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     * @return A new instance of TimePickerDialog.
+     */
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -19,6 +30,15 @@ public class TimePickerFragment extends DialogFragment
 
         return new TimePickerDialog(getActivity(), this, hour, minute, true);
     }
+
+    /**
+     * Callback for when the user sets a time in the TimePicker.
+     * Delegates the action to the activity, passing the hour and minute set by the user.
+     * @param view The view associated with this listener.
+     * @param hourOfDay The hour that was set.
+     * @param minute The minute that was set.
+     */
+
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

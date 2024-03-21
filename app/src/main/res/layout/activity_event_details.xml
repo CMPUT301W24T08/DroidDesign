@@ -70,6 +70,7 @@
             app:srcCompat="@drawable/left_chevron"/>
 
         <ImageButton
+            android:id="@+id/button_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/bg_dark"
@@ -104,7 +105,7 @@
         android:layout_marginStart="50dp"
         android:backgroundTint="@color/white"
         android:fontFamily="@font/opensans_semibold"
-        android:text="@string/edit_event_details"
+        android:text="Go Back To Menu Page"
         android:textColor="@color/bg_dark"
         app:cornerRadius="12.5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -112,6 +113,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/event_details_top_bar"
         app:layout_constraintVertical_bias="0.9" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sign_up_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/white"
+        android:fontFamily="@font/opensans_semibold"
+        android:text="Sign up"
+        android:textColor="@color/bg_dark"
+        app:cornerRadius="12.5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_event_details_button" />
 
     <TextView
         android:id="@+id/event_description"
@@ -195,5 +212,24 @@
         app:layout_constraintBottom_toTopOf="@+id/image_map_preview"
         app:layout_constraintHorizontal_bias=".69"
         app:layout_constraintVertical_bias="1"/>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_menu"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:layout_gravity="end"
+        android:visibility="visible"
+        android:background="@color/bg_dark"
+        android:textColor="@color/secondary_light"
+        app:itemTextColor="@color/secondary_light"
+        app:headerLayout="@layout/header_navigation_drawer"
+        android:layout_marginTop="160dp"
+        android:paddingTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

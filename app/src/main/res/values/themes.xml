@@ -5,6 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/bg_dark</item>
         <item name="colorSecondary">@color/bg_dark</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.DroidDesign" parent="Base.Theme.DroidDesign" />

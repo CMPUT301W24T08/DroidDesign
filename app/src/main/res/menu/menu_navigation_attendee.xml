@@ -5,9 +5,6 @@
         android:id="@+id/group_attendee" >
 
         <item
-            android:id="@+id/nav_view_events"
-            android:title="View Events for attendee"/>
-        <item
             android:id="@+id/browse_events"
             android:title="@string/browse_events" />
 
@@ -17,6 +14,9 @@
         <item
             android:id="@+id/settings"
             android:title="@string/Settings" />
+        <item
+            android:id="@+id/log_out"
+            android:title="@string/log_out" />
     </group>
 
 </menu>
