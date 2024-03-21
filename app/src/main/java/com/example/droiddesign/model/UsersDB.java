@@ -81,7 +81,7 @@ public class UsersDB {
     /**
      * Callback interface for fetching a user from Firestore.
      */
-    interface getUserCallback {
+    public interface getUserCallback {
         /**
          * Called when the user is successfully fetched from Firestore.
          *
