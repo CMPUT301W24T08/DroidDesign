@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +29,7 @@ public class ManageEventActivity extends AppCompatActivity {
 	private RecyclerView recyclerViewEventSignedUp;
 	private EventsAdapter eventAdapter;
 	private EventsAdapter eventSignedUpAdapter;
-	List<Event> managedEvents = new ArrayList<>();
-	List<Event> signedUpEvents = new ArrayList<>();
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +57,23 @@ public class ManageEventActivity extends AppCompatActivity {
 		String userId = prefsHelper.getUserId();
 
 		CollectionReference manageListRef = db.collection("Users").document(userId).collection("managedEventsList");
+//		Toast.makeText(ManageEventActivity.this, "Accessing managed EventsList collection", Toast.LENGTH_SHORT).show();
 		manageListRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 			@Override
 			public void onComplete(@NonNull Task<QuerySnapshot> task) {
 				if (task.isSuccessful()) {
-
+					List<Event> managedEvents = new ArrayList<>();
 					for (QueryDocumentSnapshot document : task.getResult()) {
 						Event event = document.toObject(Event.class);
+						Toast.makeText(ManageEventActivity.this, "Accessing signed EventsList collection", Toast.LENGTH_SHORT).show();
 						managedEvents.add(event);
 					}
 					// Update the managed events UI
 					updateManagedEventsUI(managedEvents);
+					// Logging the managed events
+					for (Event event : managedEvents) {
+						Log.d("ManageEventActivity", "Managed Event: " + event.toString());
+					}
 				} else {
 					Log.w("ManageEventActivity", "Error getting managed events.", task.getException());
 				}
@@ -80,8 +86,10 @@ public class ManageEventActivity extends AppCompatActivity {
 			@Override
 			public void onComplete(@NonNull Task<QuerySnapshot> task) {
 				if (task.isSuccessful()) {
+					List<Event> signedUpEvents = new ArrayList<>();
 					for (QueryDocumentSnapshot document : task.getResult()) {
 						Event event = document.toObject(Event.class);
+						Toast.makeText(ManageEventActivity.this, "Accessing signed EventsList collection", Toast.LENGTH_SHORT).show();
 						signedUpEvents.add(event);
 					}
 					// Update the signed up events UI
@@ -94,26 +102,25 @@ public class ManageEventActivity extends AppCompatActivity {
 	}
 
 	private void updateManagedEventsUI(List<Event> managedEvents) {
-		if (!managedEvents.isEmpty()) {
-			eventAdapter = new EventsAdapter(managedEvents, event -> {
-				Intent detailIntent = new Intent(ManageEventActivity.this, EventDetailsActivity.class);
-				detailIntent.putExtra("EVENT_ID", event.getEventId());
-				startActivity(detailIntent);
-				finish();
-			});
-			recyclerViewEvent.setAdapter(eventAdapter);
-		}
+
+		eventAdapter = new EventsAdapter(managedEvents, event -> {
+			Intent detailIntent = new Intent(ManageEventActivity.this, EventDetailsActivity.class);
+			detailIntent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(detailIntent);
+			finish();
+		});
+		recyclerViewEvent.setAdapter(eventAdapter);
 	}
 
 	private void updateSignedUpEventsUI(List<Event> signedUpEvents) {
-		if (!signedUpEvents.isEmpty()) {
-			eventSignedUpAdapter = new EventsAdapter(signedUpEvents, event -> {
-				Intent detailIntent = new Intent(ManageEventActivity.this, EventDetailsActivity.class);
-				detailIntent.putExtra("EVENT_ID", event.getEventId());
-				startActivity(detailIntent);
-				finish();
-			});
-			recyclerViewEventSignedUp.setAdapter(eventSignedUpAdapter);
-		}
+
+		eventSignedUpAdapter = new EventsAdapter(signedUpEvents, event -> {
+			Intent detailIntent = new Intent(ManageEventActivity.this, EventDetailsActivity.class);
+			detailIntent.putExtra("EVENT_ID", event.getEventId());
+			startActivity(detailIntent);
+			finish();
+		});
+		recyclerViewEventSignedUp.setAdapter(eventSignedUpAdapter);
+
 	}
 }
