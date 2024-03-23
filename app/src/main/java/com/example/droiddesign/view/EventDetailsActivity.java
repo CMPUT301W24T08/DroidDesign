@@ -19,6 +19,7 @@ import com.example.droiddesign.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * Activity class that presents the details of an event.
@@ -103,10 +104,35 @@ public class EventDetailsActivity extends AppCompatActivity {
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
+
+			// Check if eventId is in user.manageEventList
+			DocumentReference userRef = db.collection("Users").document(userId);
+			userRef.get().addOnSuccessListener(documentSnapshot -> {
+				if (documentSnapshot.exists()) {
+					User user = documentSnapshot.toObject(User.class);
+					// Check if eventId is in user.manageEventList
+					boolean isEventManaged = user.getManagedEventsList().contains(eventId);
+					if (isEventManaged) {
+						findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
+						findViewById(R.id.sign_up_button).setVisibility(View.GONE);
+						findViewById(R.id.send_button).setVisibility(View.VISIBLE);
+						findViewById(R.id.announcement_edit_text).setVisibility(View.VISIBLE);
+					} else {
+						findViewById(R.id.edit_event_details_button).setVisibility(View.VISIBLE);
+						findViewById(R.id.sign_up_button).setVisibility(View.VISIBLE);
+						findViewById(R.id.send_button).setVisibility(View.GONE);
+						findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+			}}});
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
+			findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
+			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
+			findViewById(R.id.send_button).setVisibility(View.GONE);
+			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+			findViewById(R.id.send_button).setVisibility(View.GONE);
+			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
 		}
 
 		// Set the navigation item selection listener
@@ -141,6 +167,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 			}else if (id == R.id.share_qr_menu) {
 				intent = new Intent(this, ShareQrFragment.class);
+			}else if (id == R.id.remove_event_menu){
+				// get event and remove event id from managelist of User TODO: implementation
+			}else if (id == R.id.remove_event_poster_menu){
+				// get event id and remove the poster of the event.poster  TODO: implementation
+			}else if(id == R.id.edit_event_details_menu){
+				intent = new Intent(this, EditEventFragment.class);
 			}
 
 			if (intent != null) {

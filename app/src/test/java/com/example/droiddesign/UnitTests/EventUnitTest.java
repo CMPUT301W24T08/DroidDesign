@@ -56,8 +56,8 @@ public class EventUnitTest {
 		event.setAttendeesCount(testInteger);
 		assertEquals(testInteger, event.getAttendeesCount());
 
-		event.setQrCode(testString);
-		assertEquals(testString, event.getQrCode());
+		event.setShareQrCode(testString);
+		assertEquals(testString, event.getShareQrCode());
 
 	}
 }

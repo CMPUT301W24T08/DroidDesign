@@ -13,7 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
@@ -40,6 +44,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
      */
 
     private Event event;
+    /**
+     * Instance of FirebaseFirestore to interact with Firestore database.
+     */
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     /**
      * Initializes the activity for the second step of adding a new event.
@@ -137,9 +146,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
             if (requestCode == UPLOAD_IMAGE_REQUEST) {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
-                String qrCodeUrl = data.getStringExtra("qrCodeUrl");
-                Log.d("AddEventSecondActivity", "QR Code URL: " + qrCodeUrl);
-                event.setQrCode(qrCodeUrl);
+                String shareQrUrl = data.getStringExtra("shareQrUrl");
+                String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
+                event.setShareQrCode(shareQrUrl);
+                event.setCheckInQrCode(checkInQrUrl);
             }
         }
     }
@@ -169,12 +180,22 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
         event.saveToFirestore();
 
+
+        // Add user event to their managedEventsList
+        SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
+        String currentUserId = prefsHelper.getUserId();
+        DocumentReference userRef = db.collection("Users").document(currentUserId);
+        userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()));
+
         Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show();
-        finish();
 
         Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
         detailsIntent.putExtra("EVENT_ID", event.getEventId());
         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(detailsIntent);
+
+        finish();
+
     }
+
 }
