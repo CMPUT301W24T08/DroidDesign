@@ -13,7 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
@@ -40,6 +44,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
      */
 
     private Event event;
+    /**
+     * Instance of FirebaseFirestore to interact with Firestore database.
+     */
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /**
      * Initializes the activity for the second step of adding a new event.
@@ -177,6 +185,42 @@ public class AddEventSecondActivity extends AppCompatActivity {
         Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
         detailsIntent.putExtra("EVENT_ID", event.getEventId());
         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Add user event to their list
+        SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
+        String currentUserId = prefsHelper.getUserId();
+        setAttributeValue(currentUserId, "managedEventsList",event.getEventId());
         startActivity(detailsIntent);
+    }
+
+    private void setAttributeValue(String userId, String attribute, Object value) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("Users").document(userId);
+
+        // Implement the logic to set attribute value based on attribute name
+        if (attribute.equals("userName")) {
+            userRef.update("userName", value);
+        } else if (attribute.equals("role")) {
+            userRef.update("role", value);
+        } else if (attribute.equals("managedEventsList")) {
+            if (value instanceof String) {
+                userRef.update("managedEventsList", FieldValue.arrayUnion(value));
+            }
+        } else if (attribute.equals("signedEventsList")) {
+            if (value instanceof String) {
+                userRef.update("signedEventsList", FieldValue.arrayUnion(value));
+            }
+        }
+        // TODO remove later, but they are currently to remember to add other attr
+//		map.put("userId", userId);
+//		map.put("userName", userName);
+//		map.put("role", role);
+//		map.put("registered", registered);
+//		map.put("email", email);
+//		map.put("company", company);
+//		map.put("phone", phone);
+//		map.put("profileName", profileName);
+//		map.put("profilePic", profilePic);
+//		map.put("signedEventsList", signedEventsList);
+//		map.put("managedEventsList", managedEventsList);
     }
 }
