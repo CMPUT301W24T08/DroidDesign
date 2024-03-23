@@ -109,8 +109,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
 
-		backButton.setOnClickListener(v -> finish());
-
 		// Check if the userRole is "attendee"
 		if ("attendee".equalsIgnoreCase(userRole)) {
 			// If userRole is "attendee", hide the addEventButton
