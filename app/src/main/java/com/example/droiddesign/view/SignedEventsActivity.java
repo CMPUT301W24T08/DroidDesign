@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,27 +13,23 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageEventActivity extends AppCompatActivity {
+public class SignedEventsActivity extends AppCompatActivity {
 
     private RecyclerView eventsRecyclerView;
     private EventsAdapter eventsAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private List<String> managedEventsIds;
-    private List<Event> managedEventsList = new ArrayList<>();
+    private List<String> signedEventsIds;
+    private List<Event> signedEventsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_event);
+        setContentView(R.layout.activity_signed_events);
 
         eventsRecyclerView = findViewById(R.id.events_recycler_view);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -42,10 +37,10 @@ public class ManageEventActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> finish());
 
-        fetchManagedEventsIds();
+        fetchSignedEventsIds();
     }
 
-    private void fetchManagedEventsIds() {
+    private void fetchSignedEventsIds() {
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
         String currentUserId = prefsHelper.getUserId();
         db.collection("Users").document(currentUserId)
@@ -53,32 +48,32 @@ public class ManageEventActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         User user = task.getResult().toObject(User.class);
-                        if (user != null && user.getManagedEventsList() != null) {
-                            managedEventsIds = user.getManagedEventsList();
+                        if (user != null && user.getSignedEventsList() != null) {
+                            signedEventsIds = user.getSignedEventsList();
                             fetchEventsDetails();
                         }
                     } else {
-                        Log.w("ManageEventActivity", "Error getting managed events list.", task.getException());
+                        Log.w("SignedEventsActivity", "Error getting signed events list.", task.getException());
                     }
                 });
     }
 
     private void fetchEventsDetails() {
-        if (managedEventsIds != null && !managedEventsIds.isEmpty()) {
-            for (String eventId : managedEventsIds) {
+        if (signedEventsIds != null && !signedEventsIds.isEmpty()) {
+            for (String eventId : signedEventsIds) {
                 db.collection("EventsDB").document(eventId)
                         .get()
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful() && task.getResult() != null) {
                                 Event event = task.getResult().toObject(Event.class);
                                 if (event != null) {
-                                    managedEventsList.add(event);
-                                    if (managedEventsList.size() == managedEventsIds.size()) {
-                                        updateUI(managedEventsList);
+                                    signedEventsList.add(event);
+                                    if (signedEventsList.size() == signedEventsIds.size()) {
+                                        updateUI(signedEventsList);
                                     }
                                 }
                             } else {
-                                Log.w("ManageEventsActivity", "Error fetching event details.", task.getException());
+                                Log.w("SignedEventsActivity", "Error fetching event details.", task.getException());
                             }
                         });
             }
@@ -87,8 +82,9 @@ public class ManageEventActivity extends AppCompatActivity {
 
     private void updateUI(List<Event> events) {
         eventsAdapter = new EventsAdapter(events, event -> {
-            Intent detailIntent = new Intent(ManageEventActivity.this, EventDetailsActivity.class);
+            Intent detailIntent = new Intent(SignedEventsActivity.this, EventDetailsActivity.class);
             detailIntent.putExtra("EVENT_ID", event.getEventId());
+            detailIntent.putExtra("ORIGIN", "SignedEventsActivity");
             startActivity(detailIntent);
         });
         eventsRecyclerView.setAdapter(eventsAdapter);
