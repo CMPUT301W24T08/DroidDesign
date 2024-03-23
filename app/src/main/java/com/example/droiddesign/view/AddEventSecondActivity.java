@@ -191,6 +191,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
         Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
         detailsIntent.putExtra("EVENT_ID", event.getEventId());
+        detailsIntent.putExtra("ORIGIN", "AddEventSecondActivity");
         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(detailsIntent);
 
