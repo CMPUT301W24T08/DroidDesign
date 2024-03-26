@@ -85,9 +85,7 @@ public class AddProfilePictureActivity extends AppCompatActivity {
                     EventBus.getDefault().post(new MessageEvent(imageUrl)); // Send the new image URL
                     finish();
                 }))
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show());
     }
 
     @Override

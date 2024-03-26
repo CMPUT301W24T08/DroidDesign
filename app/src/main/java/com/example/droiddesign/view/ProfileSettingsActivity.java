@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
-import com.example.droiddesign.controller.MessageEvent;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,15 +24,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.UUID;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private EditText editUsername, editUserEmail, editUserContactNumber, editUserCompany, editDisplayUserName, editDisplayUserCompany;
-    private Button saveButton, editProfilePicButton, deleteProfilePicButton;
-    private ImageButton backButton;
+    private Button saveButton;
     private ImageView profileImageView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -45,7 +42,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     private String imageUrl;
 
-    private boolean isImageSaved = false;
 
     String userId;
 
@@ -73,8 +69,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         editDisplayUserName= findViewById(R.id.UserDisplayName);
         editDisplayUserCompany = findViewById(R.id.UserCompanyDisplay);
         profileImageView = findViewById(R.id.profile_image_view);
-        editProfilePicButton = findViewById(R.id.edit_image_button);
-        deleteProfilePicButton = findViewById(R.id.delete_image_button);
+        Button editProfilePicButton = findViewById(R.id.edit_image_button);
+        Button deleteProfilePicButton = findViewById(R.id.delete_image_button);
 
         deleteProfilePicButton.setOnClickListener(v -> {
 
@@ -170,7 +166,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         // Initialize Buttons
         Button editProfileButton = findViewById(R.id.edit_profile_button);
         saveButton = findViewById(R.id.buttonSave);
-        backButton = findViewById(R.id.button_back);
+        ImageButton backButton = findViewById(R.id.button_back);
 
         // Set initial state of EditTexts to be non-editable
         setEditingEnabled(false);
@@ -259,7 +255,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         fileRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    isImageSaved = true;
                     imageUrl = uri.toString();
                     profilePicUrl = imageUrl;
                     String userId = currentUser.getUid();
