@@ -79,12 +79,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
             if (currentUser != null) {
                 db.collection("Users").document(currentUser.getUid())
                         .update("profilePic", avatarUrl)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(ProfileSettingsActivity.this, "Profile picture removed.", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(ProfileSettingsActivity.this, "Failed to remove profile picture.", Toast.LENGTH_SHORT).show();
-                        });
+                        .addOnSuccessListener(aVoid -> Toast.makeText(ProfileSettingsActivity.this, "Profile picture removed.", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(ProfileSettingsActivity.this, "Failed to remove profile picture.", Toast.LENGTH_SHORT).show());
             }
         });
 
@@ -268,9 +264,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                             });
 
                 }))
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show());
     }
 
 
