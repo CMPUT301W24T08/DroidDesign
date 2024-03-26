@@ -182,16 +182,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="80dp"
-        android:contentDescription="@string/placeholderimage"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/image_placeholder" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/UserDisplayName"
+        app:layout_constraintVertical_bias="0.114">
+
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/organizer"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="2dp" />
+
+        <Button
+            android:id="@+id/edit_image_button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|end"
+            android:text="+"
+            android:textColor="@color/white"
+            android:elevation="6dp" />
+    </FrameLayout>
 
 
     <TextView

@@ -69,22 +69,29 @@ public class BasicLoginFragment extends DialogFragment {
      * The activity that implements UserCreationListener for callback purposes.
      */
 
+
     private UserCreationListener listener;
     private SharedPreferenceHelper prefsHelper;
     private String profilePicUrl;
 
     private ActivityResultLauncher<Intent> mStartForResult;
 
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this); // Register EventBus in onStart
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
+//    public void onStart() {
+//        super.onStart();
+//        if (!isRegisteredWithEventBus) {
+//            EventBus.getDefault().register(this);
+//            Log.d("EventBusDebug", "EventBus registered in onStart");
+//            isRegisteredWithEventBus = true;
+//        }
+//    }
+//
+//    @Override
+//    public void onStop() {
+//
+//        //EventBus.getDefault().unregister(this);
+//        Log.d("EventBusDebug", "EventBus unregistered in onStop");
+//        super.onStop();
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
@@ -130,6 +137,7 @@ public class BasicLoginFragment extends DialogFragment {
         Button createAccountButton = view.findViewById(R.id.button_create_account);
         Button skipButton = view.findViewById(R.id.skip_account_creation);
         Button profilePicButton = view.findViewById(R.id.button_profile_picture);
+        EventBus.getDefault().register(this);
 
 
         // Set up the role spinner
