@@ -96,7 +96,6 @@ public class AddProfilePictureActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK && data != null) {
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
-            //saveProfilePicture();  // This will save the new profile picture and update Firebase
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
         } else {
