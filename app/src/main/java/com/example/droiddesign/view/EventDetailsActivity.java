@@ -2,7 +2,6 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,7 +40,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 * Navigation menu for accessing different sections of the app.
 	 */
 	public NavigationView navigationMenu;
-	private String userId, userRole, userEmail;
+	private String userId, userRole;
 	SharedPreferenceHelper prefsHelper;
 
 	private boolean isUserSignedUp;
@@ -125,16 +124,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 			return;
 		}
 
-		Event.loadFromFirestore(eventId, new Event.FirestoreCallback() {
-			@Override
-			public void onCallback(Event event) {
-				if (event != null) {
-					populateEventDetails(event);
-				} else {
-					Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
-				}
-			}
-		});
+		Event.loadFromFirestore(eventId, event -> {
+            if (event != null) {
+                populateEventDetails(event);
+            } else {
+                Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
+            }
+        });
 
 
 
@@ -169,10 +165,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 				Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
 			}
 		});
-
-
-
-
 
 
 		// Set the navigation item selection listener

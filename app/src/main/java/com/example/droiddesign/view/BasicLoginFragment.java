@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +15,30 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.controller.MessageEvent;
+import com.example.droiddesign.controller.SharedViewModel;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * The BasicLoginFragment class allows users to create a new account with email, password, and role.
@@ -52,15 +63,34 @@ public class BasicLoginFragment extends DialogFragment {
     private EditText editCompany;
     private EditText editPhoneNumber;
     private Spinner roleSpinner;
-    private Button createAccountButton;
-    private Button skipButton;
 
 
     /**
      * The activity that implements UserCreationListener for callback purposes.
      */
+
     private UserCreationListener listener;
     private SharedPreferenceHelper prefsHelper;
+    private String profilePicUrl;
+
+    private ActivityResultLauncher<Intent> mStartForResult;
+
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this); // Register EventBus in onStart
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        profilePicUrl = event.getMessage();
+        Log.d("BasicLoginFragment", "Received profile picture URL: " + profilePicUrl);
+    }
 
 
     /**
@@ -78,8 +108,8 @@ public class BasicLoginFragment extends DialogFragment {
             throw new RuntimeException(context+" must implement UserCreationListener");
         }
         prefsHelper = new SharedPreferenceHelper(requireContext());
-
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -97,8 +127,9 @@ public class BasicLoginFragment extends DialogFragment {
         editCompany = view.findViewById(R.id.edit_company);
         editPhoneNumber = view.findViewById(R.id.edit_phone_number);
         roleSpinner = view.findViewById(R.id.spinner_role);
-        createAccountButton = view.findViewById(R.id.button_create_account);
-        skipButton = view.findViewById(R.id.skip_account_creation);
+        Button createAccountButton = view.findViewById(R.id.button_create_account);
+        Button skipButton = view.findViewById(R.id.skip_account_creation);
+        Button profilePicButton = view.findViewById(R.id.button_profile_picture);
 
 
         // Set up the role spinner
@@ -108,41 +139,44 @@ public class BasicLoginFragment extends DialogFragment {
         roleSpinner.setAdapter(adapter);
 
         // Set click listener for create account button
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get user input from EditText fields
-                String userName = editUserName.getText().toString().trim();
-                String email = editEmail.getText().toString().trim();
-                String company = editCompany.getText().toString().trim();
-                String phoneNumber = editPhoneNumber.getText().toString().trim();
-                String role = roleSpinner.getSelectedItem().toString();
+        createAccountButton.setOnClickListener(v -> {
+            // Get user input from EditText fields
+            String userName = editUserName.getText().toString().trim();
+            String email = editEmail.getText().toString().trim();
+            String company = editCompany.getText().toString().trim();
+            String phoneNumber = editPhoneNumber.getText().toString().trim();
+            String role = roleSpinner.getSelectedItem().toString();
 
-                // Perform validation or other operations with the user input TODO: maybe error checking
-                // ...
-                // Call the createUser method to authenticate with Firebase and save the user details to Firestore
-                createUser(userName, email, role, company, phoneNumber);
-                // Show a toast message as an example
-                Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+            // Perform validation or other operations with the user input TODO: maybe error checking
+            // ...
+            // Call the createUser method to authenticate with Firebase and save the user details to Firestore
+            createUser(userName, email, role, company, phoneNumber);
+            // Show a toast message as an example
+            Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
 
-                // Close the dialog
-                dismiss();
-            }
+            // Close the dialog
+            dismiss();
         });
 
+
+        profilePicButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AddProfilePictureActivity.class);
+            intent.putExtra("image_url", profilePicUrl);
+            startActivity(intent);
+        });
+
+
         // Set click listener for skip button
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the activity and start a new activity
-                Intent intent = new Intent(getActivity(), RoleSelectionActivity.class);
-                startActivity(intent);
-                requireActivity().finish();//getActivity().finish();
-            }
+        skipButton.setOnClickListener(v -> {
+            // Finish the activity and start a new activity
+            Intent intent = new Intent(getActivity(), RoleSelectionActivity.class);
+            startActivity(intent);
+            requireActivity().finish();//getActivity().finish();
         });
 
         return view;
     }
+
 
     /**
      * Creates the dialog instance for the login fragment, initializing the authentication handler,
@@ -185,10 +219,12 @@ public class BasicLoginFragment extends DialogFragment {
                                 newUser.setRegistered(String.valueOf(true));
                                 newUser.setCompany(company);
                                 newUser.setPhone(phoneNumber);
+                                newUser.setProfilePic(profilePicUrl);
                                 // Save user profile to SharedPreferences
                                 prefsHelper.saveUserProfile(user.getUid(), role, email);
                             }
-	                        assert newUser != null;
+
+                            assert newUser != null;
 	                        userdb.addUser(newUser);
                             listener.userCreated();
                             // Close the dialog
