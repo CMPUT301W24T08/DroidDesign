@@ -175,13 +175,13 @@ public class AddEventSecondActivity extends AppCompatActivity {
             Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        event.saveToFirestore();
-
-
         // Add user event to their managedEventsList
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
         String currentUserId = prefsHelper.getUserId();
+        event.setOrganizerOwnerId(currentUserId);
+        event.saveToFirestore();
+
+
         DocumentReference userRef = db.collection("Users").document(currentUserId);
         userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()));
 
