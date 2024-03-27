@@ -16,7 +16,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignUpsActivity extends AppCompatActivity {
+public class SignUpsFragment extends AppCompatActivity {
 	private RecyclerView attendanceListView;
 	private RecyclerView.Adapter attendanceListAdapter;
 
@@ -56,7 +56,7 @@ public class SignUpsActivity extends AppCompatActivity {
 				}
 				attendanceListAdapter.notifyDataSetChanged();
 			} else {
-				Toast.makeText(SignUpsActivity.this, "Failed to load attendance list.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Failed to load attendance list.", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
