@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
