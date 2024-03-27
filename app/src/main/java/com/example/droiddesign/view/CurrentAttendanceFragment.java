@@ -1,46 +1,48 @@
 package com.example.droiddesign.view;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentAttendanceFragment extends Fragment {
-	private ListView attendanceListView;
-	private ArrayAdapter<String> attendanceListAdapter;
-	private List<String> attendanceList;
+public class CurrentAttendanceFragment extends AppCompatActivity {
+	private RecyclerView attendanceListView;
+	private RecyclerView.Adapter attendanceListAdapter;
 
+	private List<String> attendanceList;
+	private String eventId;
 	private FirebaseFirestore firestore;
 	private CollectionReference attendeeListRef;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		firestore = FirebaseFirestore.getInstance();
-		attendeeListRef = firestore.collection("EventsDB").document("eventid").collection("attendeeList");
-		attendanceList = new ArrayList<>();
-		attendanceListAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, attendanceList);
-		retrieveAttendanceList();
-	}
+		setContentView(R.layout.fragment_current_attendance);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_current_attendance, container, false);
-		attendanceListView = view.findViewById(R.id.attendance_list_view);
+		// Initialize Firestore and the references
+		firestore = FirebaseFirestore.getInstance();
+		eventId = getIntent().getStringExtra("EVENT_ID");
+		attendeeListRef = firestore.collection("EventsDB").document(eventId).collection("attendeeList");
+
+		// Initialize the RecyclerView
+		attendanceListView = findViewById(R.id.attendance_list_recycler_view);
+		attendanceListView.setLayoutManager(new LinearLayoutManager(this));
+		attendanceList = new ArrayList<>();
+		attendanceListAdapter = new UserListAdapter(attendanceList);
 		attendanceListView.setAdapter(attendanceListAdapter);
-		return view;
+
+		retrieveAttendanceList();
 	}
 
 	private void retrieveAttendanceList() {
@@ -53,6 +55,8 @@ public class CurrentAttendanceFragment extends Fragment {
 					}
 				}
 				attendanceListAdapter.notifyDataSetChanged();
+			} else {
+				Toast.makeText(this, "Failed to load attendance list.", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
