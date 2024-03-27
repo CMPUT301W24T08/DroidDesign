@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -54,25 +57,59 @@ public class DiscoverEventsActivity extends AppCompatActivity {
      * Fetches events from the Firestore 'EventsDB' collection, processes the query results,
      * and updates the UI to display the list of events.
      */
+
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("EventsDB")
+        String currentUserId = getCurrentUserId();
+        if (currentUserId == null) {
+            return; // Handle the case where the user is not logged in
+        }
+
+        db.collection("Users").document(currentUserId)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<Event> fetchedEvents = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Event event = document.toObject(Event.class);
-                                fetchedEvents.add(event);
-                            }
-                            updateUI(fetchedEvents);
-                        } else {
-                            Log.w("DiscoverEventsActivity", "Error getting documents.", task.getException());
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    User user = documentSnapshot.toObject(User.class);
+                    if (user != null) {
+                        List<String> signedUpEvents = user.getSignedEventsList();
+
+                        db.collection("EventsDB")
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        List<Event> fetchedEvents = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Event event = document.toObject(Event.class);
+                                            if (!signedUpEvents.contains(event.getEventId())) {
+                                                fetchedEvents.add(event);
+                                            }
+                                        }
+                                        updateUI(fetchedEvents);
+                                    } else {
+                                        Log.w("DiscoverEventsActivity", "Error getting documents.", task.getException());
+                                    }
+                                });
                     }
-                });
+                })
+                .addOnFailureListener(e -> Log.w("DiscoverEventsActivity", "Error fetching user data", e));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchEvents();
+    }
+
+    /**
+     * Retrieves the ID of the currently logged-in user from FirebaseAuth.
+     * @return The current user's ID or null if no user is logged in.
+     */
+    private String getCurrentUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid(); // Return the user ID if a user is logged in
+        } else {
+            return null; // Return null if no user is logged in
+        }
     }
 
     /**

@@ -72,16 +72,25 @@ dependencies {
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation ("androidx.multidex:multidex:2.0.1")
     implementation ("com.google.android.gms:play-services-base:18.3.0")
-    // JUnit
+
+
     testImplementation("junit:junit:4.13.2")
-    // Mockito
     testImplementation("org.mockito:mockito-core:3.11.2")
 
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1") // or a later version
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1") // or a later version
     testImplementation ("org.mockito:mockito-core:3.11.2") // or a later version
     testImplementation ("org.mockito:mockito-junit-jupiter:3.6.0") // or a later version
-    // Firebase Firestore (if needed for mocking Firestore)
-    testImplementation("com.google.firebase:firebase-firestore:24.10.3")
+
+    testImplementation("com.google.firebase:firebase-firestore:24.11.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("com.github.dhaval2404:imagepicker:2.1")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation ("com.github.Drjacky:ImagePicker:2.3.22")
+    implementation ("org.greenrobot:eventbus:3.1.1")
+
+
+
 
 }

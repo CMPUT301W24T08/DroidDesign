@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
@@ -10,9 +9,10 @@
         android:id="@+id/logo_large"
         android:layout_width="845dp"
         android:layout_height="845dp"
-        android:layout_marginTop="296dp"
+        android:layout_marginTop="297dp"
         android:contentDescription="@string/biglogo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
@@ -143,39 +143,15 @@
 
 
     <View
-        android:id="@+id/EditUserCompany"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="328dp"
-        android:background="@drawable/transparent_button"
-        android:gravity="start"
-        android:padding="16dp"
-        android:text="@string/company"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="DuplicateSpeakableTextCheck" />
-
-
-    <Button
-        android:id="@+id/EditUserContactNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2dp"
         android:layout_marginTop="512dp"
-        android:background="@drawable/transparent_button"
-        android:gravity="start"
-        android:padding="16dp"
-        android:text="@string/Contact_Number"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="DuplicateSpeakableTextCheck" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <View
         android:layout_width="match_parent"
@@ -187,41 +163,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="388dp"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/EditUserCompany"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="330dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.53"/>
-
 
     <View
         android:layout_width="match_parent"
@@ -232,24 +181,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="80dp"
-        android:contentDescription="@string/placeholderimage"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/UserDisplayName"
+        app:layout_constraintVertical_bias="0.114">
 
 
-    <TextView
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/organizer"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="2dp" />
+
+        <Button
+            android:id="@+id/edit_image_button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|end"
+            android:text="+"
+            android:textColor="@color/white"
+            android:elevation="6dp" />
+
+        <Button
+            android:id="@+id/delete_image_button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|start"
+            android:text="−"
+            android:textColor="@color/white"
+            android:elevation="6dp" />
+    </FrameLayout>
+
+
+    <EditText
         android:id="@+id/UserDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_semibold"
         android:text="@string/user_name"
+        android:hint="@string/user_name"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -259,12 +236,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.114" />
 
-    <TextView
+    <EditText
         android:id="@+id/UserCompanyDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_semibold"
         android:text="@string/company"
+        android:hint="@string/company"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -273,36 +251,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.176" />
-
-    <TextView
-        android:id="@+id/UserEmailDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_semibold"
-        android:text="@string/email"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.26"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.313" />
-
-    <TextView
-        android:id="@+id/UserContactNumberDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_semibold"
-        android:text="@string/Contact_Number"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.893"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.313" />
 
     <Button
         android:id="@+id/buttonSave"
@@ -322,4 +270,3 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
