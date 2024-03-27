@@ -20,6 +20,9 @@
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
         <activity
+            android:name=".view.AddProfilePictureActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.SignedEventsActivity"
             android:exported="false" />
         <activity
@@ -49,11 +52,14 @@
         <activity
             android:name=".view.EventMenuActivity"
             android:exported="true" />
-        <activity android:name=".view.EventDetailsActivity" />
+        <activity android:name=".view.EventDetailsActivity" android:exported="true"/>
         <activity android:name=".view.AppSettingsActivity" />
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
         <activity android:name=".view.AddEventSecondActivity" />
+        <activity android:name=".view.CurrentAttendanceFragment" />
+        <activity android:name=".view.SignUpsFragment" />
+        <activity android:name=".view.SendAnnouncementFragment" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"

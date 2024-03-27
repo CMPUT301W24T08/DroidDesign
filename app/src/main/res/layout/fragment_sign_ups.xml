@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_edittext_dark"
+    android:background="@drawable/gradient_background"
     tools:context="com.example.droiddesign.view.DiscoverEventsActivity">
 
     <ImageView
@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/organizer_message_recyclerview"
+        android:id="@+id/signup_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:layout_constraintVertical_bias="0.01" >
+        app:layout_constraintVertical_bias="0.108" >
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_semibold"
-            android:text="@string/announcements"
+            android:text="@string/sign_ups"
             android:textColor="@color/secondary_light"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +75,7 @@
             app:layout_constraintVertical_bias="0.65" />
 
         <ImageButton
-            android:id="@+id/back_button"
+            android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/bg_dark"
@@ -90,54 +90,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <RelativeLayout
-        android:id="@+id/only_owner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- Other UI components of activity -->
-
-        <LinearLayout
-            android:id="@+id/input_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:background="@color/bg_dark_transparent_35"
-            android:padding="16dp">
-
-            <EditText
-                android:id="@+id/title_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textColorHint="@color/card_bg_light_transparent"
-                android:background="@color/bg_dark_transparent_97"
-                android:padding="7dp"
-                android:hint="Title"/>
-
-            <EditText
-                android:id="@+id/message_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textColorHint="@color/card_bg_light_transparent"
-                android:background="@color/bg_dark_transparent_97"
-                android:padding="7dp"
-                android:hint="Message"
-                android:inputType="textMultiLine"/>
-
-            <Button
-                android:id="@+id/send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:text="Send Announcement"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
-        </LinearLayout>
-    </RelativeLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
