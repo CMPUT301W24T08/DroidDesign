@@ -62,6 +62,9 @@ public class Event {
      */
     private String organizerOwnerId;
 
+    private HashMap<String, Integer> checkedInUsers = new HashMap<>();
+
+
     /**
      * Identifier for the image poster associated with the event.
      */
@@ -114,6 +117,8 @@ public class Event {
     /**
      * Default constructor used for data retrieval from Firestore.
      */
+
+
     public Event() {}
 
 
@@ -534,6 +539,26 @@ public class Event {
         }
     }
 
+    public void checkInUser(String userId) {
+        Integer count = checkedInUsers.getOrDefault(userId, 0);
+        checkedInUsers.put(userId, count + 1);
+
+
+        Log.d("checkInUser", "Checking in user: " + userId + " with count: " + (count + 1));
+        updateFirestore("checkedInUsers", checkedInUsers);
+    }
+
+    public HashMap<String, Integer> getCheckedInUsers() {
+        return checkedInUsers;
+    }
+
+    public void setCheckedInUsers(HashMap<String, Integer> checkedInUsers) {
+        this.checkedInUsers = checkedInUsers;
+        updateFirestore("checkedInUsers", checkedInUsers);
+    }
+
+
+
     /**
      * Converts the current event object into a map representation, suitable for Firestore storage.
      *
@@ -557,6 +582,8 @@ public class Event {
         map.put("qrCode", qrCode);
         map.put("attendeeList", attendeeList);
         map.put("organizerMessages", organizerMessages);
+        map.put("checkedInUsers", checkedInUsers);
+
         return map;
     }
 
