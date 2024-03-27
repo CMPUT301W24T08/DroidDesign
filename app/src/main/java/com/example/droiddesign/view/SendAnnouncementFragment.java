@@ -16,10 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -116,8 +114,7 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 
 		// Save the message under OrganizerMessages of the specific event
 		firestore.collection("EventsDB").document(eventId)
-				.collection("OrganizerMessages")
-				.add(messageMap)
+				.update("organizerMessages", FieldValue.arrayUnion(messageMap))
 				.addOnSuccessListener(documentReference -> {
 					// Clear the input fields after successful save
 					titleEditText.setText("");
@@ -132,20 +129,25 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 
 	private void fetchAnnouncements() {
 		firestore.collection("EventsDB").document(eventId)
-				.collection("OrganizerMessages")
-				.orderBy("date", Query.Direction.DESCENDING)
 				.get()
-				.addOnCompleteListener(task -> {
-					if (task.isSuccessful() && task.getResult() != null) {
-						for (DocumentSnapshot document : task.getResult()) {
-							announcementList.add(document.getData());
+				.addOnSuccessListener(documentSnapshot -> {
+					if (documentSnapshot.exists() && documentSnapshot.contains("organizerMessages")) {
+						List<Map<String, Object>> unsortedMessages = (List<Map<String, Object>>) documentSnapshot.get("organizerMessages");
+						if (unsortedMessages != null) {
+							// Sort messages by date in descending order
+							List<Map<String, Object>> sortedMessages = new ArrayList<>(unsortedMessages);
+							sortedMessages.sort((map1, map2) -> ((String) map2.get("date")).compareTo((String) map1.get("date")));
+
+							// Now use sortedMessages to update your RecyclerView
+							announcementList.clear();
+							announcementList.addAll(sortedMessages);
+							announcementAdapter.notifyDataSetChanged();
 						}
-						announcementAdapter.notifyDataSetChanged();
-					} else {
-						// Handle failure
 					}
-				});
+				})
+				.addOnFailureListener(e -> Log.e("FetchAnnouncementsError", "Error loading announcements", e));
 	}
+
 	private void refreshActivity() {
 		Intent intent = new Intent(this, SendAnnouncementFragment.class);
 		intent.putExtra("EVENT_ID", eventId); // Pass the event ID back to the activity
