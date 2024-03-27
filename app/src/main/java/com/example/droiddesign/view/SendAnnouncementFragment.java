@@ -147,9 +147,9 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 				});
 	}
 	private void refreshActivity() {
-		Intent intent = new Intent(this, EventDetailsActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		Intent intent = new Intent(this, SendAnnouncementFragment.class);
 		intent.putExtra("EVENT_ID", eventId); // Pass the event ID back to the activity
+		finish();
 		startActivity(intent);
 	}
 
