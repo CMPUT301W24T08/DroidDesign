@@ -90,6 +90,7 @@
     <string name="description">Description</string>
     <string name="created_events">Created Events</string>
     <string name="signed_up_events">Signed Up Events</string>
+    <string name="_1">1</string>
 
 
 </resources>

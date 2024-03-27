@@ -24,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-
 import java.util.UUID;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
