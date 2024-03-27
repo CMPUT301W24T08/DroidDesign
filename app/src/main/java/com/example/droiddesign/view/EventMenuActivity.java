@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -78,9 +79,11 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
 		ImageButton menuButton = findViewById(R.id.button_menu);
-		ImageButton backButton = findViewById(R.id.button_back);
 		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
+		TextView textViewEvents = findViewById(R.id.text_upcoming_events);
+
+
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -95,20 +98,25 @@ public class EventMenuActivity extends AppCompatActivity {
 			prefsHelper.saveUserProfile(userId,userRole,userEmail);
 		}
 
+		if ("Organizer".equalsIgnoreCase(userRole)) {
+			textViewEvents.setText(R.string.created_events);
+		} else if ("Attendee".equalsIgnoreCase(userRole)) {
+			textViewEvents.setText(R.string.upcoming_events);
+		}
+
 
 		eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
+			toggleNavigationMenu();
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
-		fetchUserSignedUpEvents();
+		fetchEvents();
 
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		setupRecyclerView();
-
-		backButton.setOnClickListener(v -> finish());
 
 		// Check if the userRole is "attendee"
 		if ("attendee".equalsIgnoreCase(userRole)) {
@@ -169,13 +177,15 @@ public class EventMenuActivity extends AppCompatActivity {
 				// Set userId and userRole to null
 				userId = null;
 				userRole = null;
+				toggleNavigationMenu();
 				startActivity(intent);
 				finish();
-			} else if ("organizer".equals(userRole) && id == R.id.nav_manage_events) {
-				intent = new Intent(this, EventMenuActivity.class);
+			} else if ("organizer".equalsIgnoreCase(userRole) && id == R.id.nav_manage_events) {
+				intent = new Intent(this, SignedEventsActivity.class);
 			}
 
 			if (intent != null) {
+				toggleNavigationMenu();
 				startActivity(intent);
 			}
 
@@ -195,13 +205,14 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent;
 			// Check if the user is an organizer
-			if ("organizer".equalsIgnoreCase(userRole)) {
-				// If the user is an organizer, navigate to EditEventActivity
-				intent = new Intent(EventMenuActivity.this, EditEventActivity.class);
-			} else {
-				// For other roles, navigate to EventDetailsActivity
-				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-			}
+//			if ("organizer".equalsIgnoreCase(userRole)) {
+//				// If the user is an organizer, navigate to EditEventActivity
+//				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
+//			} else {
+//				// For other roles, navigate to EventDetailsActivity
+//				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
+//			}
+			intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
 			startActivity(intent);
 		});
@@ -232,17 +243,35 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Fetches the events the user has signed up for and updates the UI accordingly.
 	 */
-	private void fetchUserSignedUpEvents() {
+	private void fetchEvents() {
 		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
 			User user = documentSnapshot.toObject(User.class);
-			if (user != null && user.getSignedEventsList() != null && !user.getSignedEventsList().isEmpty()) {
-				fetchEventsByIds(user.getSignedEventsList());
+			if (user != null) {
+				List<String> eventIdsToFetch;
+				switch (userRole.toLowerCase()) {
+					case "organizer":
+						eventIdsToFetch = user.getManagedEventsList();
+						break;
+					case "attendee":
+						eventIdsToFetch = user.getSignedEventsList();
+						break;
+					default:
+						Log.w("EventMenuActivity", "Unrecognized user role: " + userRole);
+						return;
+				}
+
+				if (eventIdsToFetch != null && !eventIdsToFetch.isEmpty()) {
+					fetchEventsByIds(eventIdsToFetch);
+				} else {
+					Log.w("EventMenuActivity", "No events to fetch for user role: " + userRole);
+				}
 			} else {
-				Log.w("EventMenuActivity", "User has no signed-up events or could not be fetched.");
+				Log.w("EventMenuActivity", "User data could not be fetched.");
 			}
-		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user", e));
+		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user data", e));
 	}
+
 
 	/**
 	 * Fetches details for each event the user has signed up for using their IDs.
@@ -271,7 +300,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		fetchUserSignedUpEvents();
+		fetchEvents();
 	}
 
 	/**

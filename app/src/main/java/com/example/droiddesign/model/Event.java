@@ -87,9 +87,9 @@ public class Event {
     private Integer milestones;
 
     /**
-     * QR code data associated with the event for easy sharing and identification.
+     * QR code URL associated with the event for easy sharing and identification.
      */
-    private String qrCode;
+    private String shareQrCode, checkInQrCode;
 
     /**
      * List of user IDs for attendees who have signed up for the event.
@@ -132,9 +132,10 @@ public class Event {
      * @param description A description of the event.
      * @param signupLimit The maximum number of attendees allowed for the event.
      * @param attendeesCount The current number of attendees signed up for the event.
-     * @param qrCode The QR code data associated with the event.
+     * @param shareQrCode The QR code data associated with sharing the event.
+     * @param checkInQrCode The QR code associated with checking in to the event.
      */
-    public Event(String eventId, String eventName, String eventDate, String eventLocation, String startTime, String endTime, String geolocation, String organizerOwnerId, String imagePosterId, String description, Integer signupLimit, Integer attendeesCount, String qrCode) {
+    public Event(String eventId, String eventName, String eventDate, String eventLocation, String startTime, String endTime, String geolocation, String organizerOwnerId, String imagePosterId, String description, Integer signupLimit, Integer attendeesCount, String shareQrCode, String checkInQrCode) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -147,7 +148,8 @@ public class Event {
         this.description = description;
         this.signupLimit = signupLimit;
         this.attendeesCount = attendeesCount;
-        this.qrCode = qrCode;
+        this.shareQrCode = shareQrCode;
+        this.checkInQrCode = checkInQrCode;
     }
 
 // Getters and setters with JavaDoc comments
@@ -419,8 +421,8 @@ public class Event {
      *
      * @return The QR code string.
      */
-    public String getQrCode() {
-        return qrCode;
+    public String getShareQrCode() {
+        return shareQrCode;
     }
 
     /**
@@ -428,9 +430,14 @@ public class Event {
      *
      * @param qrCode The new QR code for the event.
      */
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
-        updateFirestore("qrCode", qrCode);
+    public void setShareQrCode(String qrCode) {
+        this.shareQrCode = qrCode;
+        updateFirestore("shareQrCode", qrCode);
+    }
+
+    public void setCheckInQrCode(String qrCode) {
+        this.checkInQrCode = qrCode;
+        updateFirestore("checkInQrCode", qrCode);
     }
 
     /**
@@ -547,14 +554,14 @@ public class Event {
         map.put("eventLocation", eventLocation);
         map.put("startTime", startTime);
         map.put("endTime", endTime);
-        map.put("date", date);
         map.put("geolocation", geolocation);
         map.put("organizerOwnerId", organizerOwnerId);
         map.put("imagePosterId", imagePosterId);
         map.put("description", description);
         map.put("signupLimit", signupLimit);
         map.put("attendeesCount", attendeesCount);
-        map.put("qrCode", qrCode);
+        map.put("shareQrCode", shareQrCode);
+        map.put("checkInQrCode", checkInQrCode);
         map.put("attendeeList", attendeeList);
         map.put("organizerMessages", organizerMessages);
         return map;

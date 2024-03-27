@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
-    tools:context="com.example.droiddesign.view.DiscoverEventsActivity">
+    tools:context="com.example.droiddesign.view.SignedEventsActivity">
 
     <ImageView
         android:layout_width="845dp"
@@ -58,11 +58,11 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/text_upcoming_events"
+            android:id="@+id/text_manage_events"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_semibold"
-            android:text="@string/discover_events"
+            android:text="@string/upcoming_events"
             android:textColor="@color/secondary_light"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"

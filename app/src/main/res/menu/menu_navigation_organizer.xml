@@ -5,7 +5,7 @@
 
         <item
             android:id="@+id/nav_manage_events"
-            android:title="@string/manage_events" />
+            android:title="@string/signed_up_events" />
         <item
             android:id="@+id/browse_events"
             android:title="@string/browse_events" />

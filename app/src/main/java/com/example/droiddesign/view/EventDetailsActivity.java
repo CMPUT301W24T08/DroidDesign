@@ -2,6 +2,7 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,6 +20,7 @@ import com.example.droiddesign.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * Activity class that presents the details of an event.
@@ -42,6 +44,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 	private String userId, userRole, userEmail;
 	SharedPreferenceHelper prefsHelper;
 
+	private boolean isUserSignedUp;
+
 
 
 	/**
@@ -53,6 +57,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
+		String origin = getIntent().getStringExtra("ORIGIN");
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -61,6 +66,57 @@ public class EventDetailsActivity extends AppCompatActivity {
 			userId = savedUserId;
 			userRole = prefsHelper.getRole();
 		} //At this point, user details are valid
+
+		ImageButton menuButton = findViewById(R.id.button_menu);
+		menuButton.setOnClickListener(v -> toggleNavigationMenu());
+		navigationMenu = findViewById(R.id.navigation_menu);
+		navigationMenu.getMenu().clear();
+
+		// Inflate the menu based on user role
+		if ("organizer".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_event_details);
+
+			// Check if eventId is in user.manageEventList
+			DocumentReference userRef = db.collection("Users").document(userId);
+			userRef.get().addOnSuccessListener(documentSnapshot -> {
+				if (documentSnapshot.exists()) {
+					User user = documentSnapshot.toObject(User.class);
+					if (user != null) {
+						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
+						if ("organizer".equalsIgnoreCase(userRole)) {
+							navigationMenu.inflateMenu(R.menu.menu_event_details);
+							findViewById(R.id.edit_event_details_button).setVisibility(isEventManaged ? View.GONE : View.VISIBLE);
+							findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
+							findViewById(R.id.send_button).setVisibility(isEventManaged ? View.VISIBLE : View.GONE);
+							findViewById(R.id.announcement_edit_text).setVisibility(isEventManaged ? View.VISIBLE : View.GONE);
+						} else if ("admin".equalsIgnoreCase(userRole)) {
+							navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
+							findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
+							findViewById(R.id.sign_up_button).setVisibility(View.GONE);
+							findViewById(R.id.send_button).setVisibility(View.GONE);
+							findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+						} else { // Default to attendee if no role or attendee role
+							navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+							findViewById(R.id.send_button).setVisibility(View.GONE);
+							findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+							findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : View.VISIBLE);
+						}
+					}
+				}
+			});
+
+		} else if ("admin".equalsIgnoreCase(userRole)) {
+			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
+			findViewById(R.id.edit_event_details_button).setVisibility(View.GONE);
+			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
+			findViewById(R.id.send_button).setVisibility(View.GONE);
+			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+
+		} else { // Default to attendee if no role or attendee role
+			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+			findViewById(R.id.send_button).setVisibility(View.GONE);
+			findViewById(R.id.announcement_edit_text).setVisibility(View.GONE);
+		}
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
 		if (eventId == null || eventId.isEmpty()) {
@@ -80,8 +136,21 @@ public class EventDetailsActivity extends AppCompatActivity {
 			}
 		});
 
+
+
+
 		ImageButton backButton = findViewById(R.id.back_button);
-		backButton.setOnClickListener(v -> finish());
+		backButton.setOnClickListener(v -> {
+			if ("AddEventSecondActivity".equals(origin)) {
+				Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
+				startActivity(intent);
+			} else {
+				finish();
+			}
+		});
+
+
+
 
 		Button goToMenuButton = findViewById(R.id.edit_event_details_button);
 		goToMenuButton.setOnClickListener(v -> {
@@ -93,21 +162,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 		Button signUpButton = findViewById(R.id.sign_up_button);
-		signUpButton.setOnClickListener(v -> signUpForEvent());
+		signUpButton.setOnClickListener(v -> {
+			if (!isUserSignedUp) {
+				signUpForEvent();
+			} else {
+				Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
+			}
+		});
 
-		ImageButton menuButton = findViewById(R.id.button_menu);
-		menuButton.setOnClickListener(v -> toggleNavigationMenu());
-		navigationMenu = findViewById(R.id.navigation_menu);
-		navigationMenu.getMenu().clear();
 
-		// Inflate the menu based on user role
-		if ("organizer".equalsIgnoreCase(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_event_details);
-		} else if ("admin".equalsIgnoreCase(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
-		} else { // Default to attendee if no role or attendee role
-			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
-		}
+
+
+
 
 		// Set the navigation item selection listener
 		String finalUserId = userId;
@@ -141,6 +207,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 			}else if (id == R.id.share_qr_menu) {
 				intent = new Intent(this, ShareQrFragment.class);
+			}else if (id == R.id.remove_event_menu){
+				// get event and remove event id from managelist of User TODO: implementation
+			}else if (id == R.id.remove_event_poster_menu){
+				// get event id and remove the poster of the event.poster  TODO: implementation
+			}else if(id == R.id.edit_event_details_menu){
+				intent = new Intent(this, EditEventFragment.class);
 			}
 
 			if (intent != null) {
@@ -190,13 +262,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 	private void signUpForEvent() {
 		// Assuming you have a method to get the current User (user)
+		isUserSignedUp = true;
 		String currentUserId = getCurrentUserId(); // Implement this according to your auth logic
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		Toast.makeText(this, "SignUpEvent called"+currentUserId, Toast.LENGTH_LONG).show();
+
 		db.collection("Users").document(currentUserId)
 				.get()
 				.addOnSuccessListener(documentSnapshot -> {
