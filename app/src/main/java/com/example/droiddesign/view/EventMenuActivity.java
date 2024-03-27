@@ -164,6 +164,10 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if (id == R.id.log_out) {
 				intent = new Intent(this, LaunchScreenActivity.class);
+			} else if (id == R.id.browse_users) {
+				intent = new Intent(this, AdminListUsersActivity.class);
+
+
 				// Clear stored preferences
 				prefsHelper.clearPreferences();
 				// Set userId and userRole to null
@@ -311,8 +315,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			addEventButton.setVisibility(View.GONE);
 		}
 	}
-
-
 
 
 	/**
