@@ -146,9 +146,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
             if (requestCode == UPLOAD_IMAGE_REQUEST) {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
-                String qrCodeUrl = data.getStringExtra("qrCodeUrl");
-                Log.d("AddEventSecondActivity", "QR Code URL: " + qrCodeUrl);
-                event.setQrCode(qrCodeUrl);
+                String shareQrUrl = data.getStringExtra("shareQrUrl");
+                String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
+                event.setShareQrCode(shareQrUrl);
+                event.setCheckInQrCode(checkInQrUrl);
             }
         }
     }

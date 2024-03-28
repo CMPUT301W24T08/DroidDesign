@@ -11,7 +11,7 @@ public class Upload {
     /**
      * Default constructor required for calls to DataSnapshot.getValue(Upload.class).
      */
-    public Upload() {
+    public Upload(String qrId, String string, String eventId, String eventName, String type) {
     }
 
     /**

@@ -115,7 +115,6 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
         return view;
     }
 
-
     /**
      * Populates the event details in the activity's UI components.
      * @param event Event object containing the details to be displayed.
