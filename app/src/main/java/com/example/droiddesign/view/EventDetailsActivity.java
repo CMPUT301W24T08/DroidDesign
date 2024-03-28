@@ -201,7 +201,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 						.addOnFailureListener(e -> {
 							Toast.makeText(this, "Failed to delete event.", Toast.LENGTH_SHORT).show();
 						});
-
+				finish();
 			}
 
 			if (intent != null) {
