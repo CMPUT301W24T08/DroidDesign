@@ -82,7 +82,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 					User user = documentSnapshot.toObject(User.class);
 					if (user != null) {
 						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
-						navigationMenu.inflateMenu(R.menu.menu_event_details);
 						findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
 					}
 				}
@@ -102,6 +101,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 			finish();
 			return;
 		}
+
+		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
+
 
 		Event.loadFromFirestore(eventId, event -> {
             if (event != null) {
@@ -153,12 +155,32 @@ public class EventDetailsActivity extends AppCompatActivity {
 			} else if (id == R.id.share_qr_menu) {
 				intent = new Intent(this, ShareQrFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
-			}else if (id == R.id.remove_event_menu){
+			} else if (id == R.id.remove_event_menu){
 				// get event and remove event id from managelist of User TODO: implementation slide to delete
-			}else if (id == R.id.remove_event_poster_menu){
+			} else if (id == R.id.remove_event_poster_menu){
 				// get event id and remove the poster of the event.poster  TODO: implementation
-			}else if(id == R.id.edit_event_details_menu){
+			} else if(id == R.id.edit_event_details_menu){
 				intent = new Intent(this, EditEventFragment.class);
+			} else if (id == R.id.remove_event_poster){
+				eventRef.update("imagePosterId", null)
+						.addOnSuccessListener(aVoid -> {
+							Toast.makeText(this, "Event poster removed successfully.", Toast.LENGTH_SHORT).show();
+							recreate();
+						})
+						.addOnFailureListener(e -> {
+							Toast.makeText(this, "Failed to remove event poster.", Toast.LENGTH_SHORT).show();
+						});
+
+			} else if (id == R.id.remove_event){
+				eventRef.delete()
+						.addOnSuccessListener(aVoid -> {
+							Toast.makeText(this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
+							finish(); // Close the activity or navigate as needed
+						})
+						.addOnFailureListener(e -> {
+							Toast.makeText(this, "Failed to delete event.", Toast.LENGTH_SHORT).show();
+						});
+
 			}
 
 			if (intent != null) {
@@ -169,6 +191,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 			return true;
 		});
 	}
+
 	/**
 	 * Toggles the visibility of the navigation menu.
 	 */
