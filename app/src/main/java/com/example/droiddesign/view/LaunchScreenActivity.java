@@ -56,17 +56,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
 
     }
 
-    /**
-     * Creates an unregistered user in the system with a unique user ID and navigates to the RoleSelectionActivity.
-     */
-    private void createUnregisteredUser() {
-        Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-
-
 
     /**
      * Callback triggered when a new user is successfully created. This navigates the user to the EventMenuActivity.

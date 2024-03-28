@@ -122,7 +122,7 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 					Toast.makeText(this, "Message sent successfully.", Toast.LENGTH_SHORT).show();
 					// After sending the message, refresh the activity to show updated data
 					refreshActivity();
-					notifyAttendees();
+					notifyAttendees(title);
 				})
 				.addOnFailureListener(e -> Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show());
 	}
@@ -155,7 +155,7 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 		startActivity(intent);
 	}
 
-	private void notifyAttendees() {
+	private void notifyAttendees(String title) {
 		firestore.collection("EventsDB").document(eventId).get()
 				.addOnSuccessListener(documentSnapshot -> {
 					List<String> attendeeList = (List<String>) documentSnapshot.get("attendeeList");
@@ -164,6 +164,7 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 							// Assuming there's a 'Notifications' collection for each user where we can add a new notification
 							Map<String, Object> notificationData = new HashMap<>();
 							notificationData.put("message", "New announcement from the organizer!");
+							notificationData.put("title", title);
 							notificationData.put("eventId", eventId);
 							notificationData.put("timestamp", FieldValue.serverTimestamp()); // Use server timestamp for consistency
 
