@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +29,9 @@ import java.util.Map;
 
 public class SendAnnouncementFragment extends AppCompatActivity {
 	private Button sendButton;
-	private EditText titleEditText;
-	private EditText messageEditText;
+	private TextView titleEditText;
+	private TextView messageEditText;
+	private TextView dateEditText;
 	private FirebaseFirestore firestore;
 	private CollectionReference attendeeListRef;
 	private RecyclerView announcementsRecyclerView;
@@ -53,7 +54,6 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 
 		// Inflate the button based on user role
 		findViewById(R.id.send_button).setVisibility("organizer".equalsIgnoreCase(userRole) ? View.VISIBLE : View.GONE );
-		findViewById(R.id.send_button).setVisibility("organizer".equalsIgnoreCase(userRole)  ? View.VISIBLE : View.GONE);
 
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
