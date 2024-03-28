@@ -1,6 +1,9 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
@@ -21,6 +25,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Activity class that presents the details of an event.
  * It retrieves the event data from Firestore based on the passed event ID and allows the user to sign up for the event.
@@ -150,14 +163,15 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.share_qr_menu) {
-				// Retrieve the QR code URL from the event
+				// Retrieve the QR code URI from the event
 				Event.loadFromFirestore(eventId, event -> {
 					if (event != null) {
-						String shareQrUrl = event.getShareQrCode();
-						if (shareQrUrl != null && !shareQrUrl.isEmpty()) {
+						String shareQrUri = event.getShareQrCode();
+						if (shareQrUri != null && !shareQrUri.isEmpty()) {
+							// Create an Intent to share the image
 							Intent shareIntent = new Intent(Intent.ACTION_SEND);
-							shareIntent.setType("text/plain");
-							shareIntent.putExtra(Intent.EXTRA_TEXT, shareQrUrl);
+							shareIntent.setType("image/png");
+							shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(shareQrUri));
 
 							// Create a chooser intent
 							Intent chooserIntent = Intent.createChooser(shareIntent, "Share QR code");
