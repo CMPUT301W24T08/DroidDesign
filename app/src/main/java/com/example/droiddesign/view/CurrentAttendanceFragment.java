@@ -1,6 +1,7 @@
 package com.example.droiddesign.view;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,6 +44,11 @@ public class CurrentAttendanceFragment extends AppCompatActivity {
 		attendanceListView.setAdapter(attendanceListAdapter);
 
 		retrieveAttendanceList();
+
+		ImageButton backButton = findViewById(R.id.back_button);
+		backButton.setOnClickListener(v -> {
+			finish();
+		});
 	}
 
 	private void retrieveAttendanceList() {
