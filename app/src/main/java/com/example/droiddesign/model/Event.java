@@ -582,6 +582,7 @@ public class Event {
         map.put("imagePosterId", imagePosterId);
         map.put("description", description);
         map.put("signupLimit", signupLimit);
+        map.put("milestone", milestones);
         map.put("attendeesCount", attendeesCount);
         map.put("shareQrCode", shareQrCode);
         map.put("checkInQrCode", checkInQrCode);

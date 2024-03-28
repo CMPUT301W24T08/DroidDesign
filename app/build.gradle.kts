@@ -92,7 +92,8 @@ dependencies {
     implementation ("com.github.Drjacky:ImagePicker:2.3.22")
     implementation ("org.greenrobot:eventbus:3.1.1")
 
-
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation("com.squareup.okhttp3:okhttp:")
 
 
 
