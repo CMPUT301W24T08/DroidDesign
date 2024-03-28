@@ -241,34 +241,34 @@ public class EventDetailsActivity extends AppCompatActivity {
 	private void signUpForEvent() {
 		// Assuming you have a method to get the current User (user)
 		isUserSignedUp = true;
-		String currentUserId = getCurrentUserId(); // Implement this according to your auth logic
-		if (currentUserId == null || currentUserId.isEmpty()) {
-			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
-			return;
-		}
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-		db.collection("Users").document(currentUserId)
+		db.collection("EventsDB").document(eventId)
 				.get()
-				.addOnSuccessListener(documentSnapshot -> {
-					User user = documentSnapshot.toObject(User.class);
-					if (user != null) {
-						user.getSignedEventsList().add(eventId);
-						db.collection("Users").document(currentUserId).set(user.toMap())
-								.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
-								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
+				.addOnSuccessListener(eventDocumentSnapshot -> {
+					Event event = eventDocumentSnapshot.toObject(Event.class);
+					if (event != null && event.getAttendeeList().size() < event.getSignupLimit()) {
+						// There's room to sign up, now fetch the user and update their signedEventsList
+						db.collection("Users").document(currentUserId)
+								.get()
+								.addOnSuccessListener(userDocumentSnapshot -> {
+									User user = userDocumentSnapshot.toObject(User.class);
+									if (user != null) {
+										user.getSignedEventsList().add(eventId);
+										db.collection("Users").document(currentUserId).set(user.toMap())
+												.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
+												.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
+									}
+								})
+								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
+					} else {
+						// Event is full, show a toast message
+						Toast.makeText(EventDetailsActivity.this, "Event is full.", Toast.LENGTH_SHORT).show();
 					}
 				})
-				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
-	}
+				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch event data.", Toast.LENGTH_SHORT).show());
 
-	/**
-	 * Retrieves the ID of the currently logged-in user from FirebaseAuth.
-	 * @return The current user's ID or null if no user is logged in.
-	 */
 
-	private String getCurrentUserId() {
-		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-		return (user != null) ? user.getUid() : null;
 	}
 }
