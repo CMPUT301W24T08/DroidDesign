@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
+import com.example.droiddesign.model.Event;
+import com.google.firebase.auth.FirebaseAuth;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -65,8 +67,18 @@ public class QrCodeScanActivity extends AppCompatActivity {
     private void setResult(String contents) {
         Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
         intent.putExtra("EVENT_ID", contents);
+
+        Event.loadFromFirestore(contents, event -> {
+            if (event != null) {
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                event.checkInUser(userId);
+
+            }
+        });
+
         startActivity(intent);
     }
+
 
     /**
      * Initializes the QR code scanner options and starts the camera.

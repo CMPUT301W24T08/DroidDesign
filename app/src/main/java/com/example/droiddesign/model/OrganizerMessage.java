@@ -89,4 +89,3 @@ public class OrganizerMessage {
 		this.imageUploadedPictureID = imageUploadedPictureID;
 	}
 }
-
