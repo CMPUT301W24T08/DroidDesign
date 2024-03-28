@@ -542,8 +542,6 @@ public class Event {
     public void checkInUser(String userId) {
         Integer count = checkedInUsers.getOrDefault(userId, 0);
         checkedInUsers.put(userId, count + 1);
-
-
         Log.d("checkInUser", "Checking in user: " + userId + " with count: " + (count + 1));
         updateFirestore("checkedInUsers", checkedInUsers);
     }

@@ -32,6 +32,8 @@ public class OrganizerMessage {
 		this.text = text;
 		this.imageUploadedPictureID = imageUploadedPictureID;
 	}
+	// No-argument constructor required for Firebase deserialization
+	public OrganizerMessage() {}
 
 	/**
 	 * Retrieves the date when the message was posted.
@@ -87,4 +89,3 @@ public class OrganizerMessage {
 		this.imageUploadedPictureID = imageUploadedPictureID;
 	}
 }
-

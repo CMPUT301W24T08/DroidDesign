@@ -72,6 +72,7 @@ public class QrCodeScanActivity extends AppCompatActivity {
             if (event != null) {
                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 event.checkInUser(userId);
+
             }
         });
 

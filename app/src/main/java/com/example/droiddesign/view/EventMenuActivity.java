@@ -168,6 +168,10 @@ public class EventMenuActivity extends AppCompatActivity {
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
 				intent.putExtra("USER_ID", finalUserId);
+			} else if (id == R.id.browse_users){
+				intent = new Intent(this, AdminBrowseUsersActivity.class);
+			} else if (id == R.id.admin_browse_events) {
+				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if (id == R.id.log_out) {

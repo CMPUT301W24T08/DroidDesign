@@ -127,11 +127,10 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 * Navigates to the EventMenuActivity.
 	 * Passes the role and user ID as intent extras for use in the next activity.
 	 */
-		private void navigateToEventMenu() {
+	private void navigateToEventMenu() {
 		Intent intent = new Intent(RoleSelectionActivity.this, EventMenuActivity.class);
 		startActivity(intent);
 		finish();
 	}
 
 }
-

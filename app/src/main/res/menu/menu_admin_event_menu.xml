@@ -11,8 +11,8 @@
             android:id="@+id/browse_profile_pic"
             android:title="@string/browse_profile_pictures" />
         <item
-            android:id="@+id/browse_poster"
-            android:title="@string/browse_event_posters" />
+            android:id="@+id/admin_browse_events"
+            android:title="Browse Events" />
         <item
             android:id="@+id/app_settings"
             android:title="@string/app_settings" />
