@@ -21,12 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/top_menu_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/top_menu_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:layout_constraintVertical_bias="0.108" >
+        app:layout_constraintTop_toBottomOf="@+id/count_layout"
+        app:layout_constraintVertical_bias="0.024">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -35,20 +35,24 @@
         android:id="@+id/count_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:paddingStart="17dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_edittext_dark2"
+        android:outlineSpotShadowColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/top_menu_bar">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_light"
+            android:textStyle="bold"
             android:text="Milestone"
             android:textSize="20dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_light"
+            android:textStyle="bold"
             android:text="Check ins"
             android:textSize="20dp"/>
     </LinearLayout>
@@ -68,16 +72,40 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:textColor="@color/secondary_light"
+            android:textStyle="bold"
             android:textSize="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/milestone_textview"
+            android:text="/"
+            android:textColor="@color/secondary_light"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"/>
+        <TextView
+            android:id="@+id/total_sign_up_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/milestone_textview"
+            android:text="0"
+            android:textColor="@color/secondary_light"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginLeft="30dp"/>
 
         <TextView
             android:id="@+id/check_ins_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/milestone_textview"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="87dp"
             android:text="0"
             android:textColor="@color/secondary_light"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
 
     </RelativeLayout>
 
