@@ -101,7 +101,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                     .document(userId)
                     .delete()
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Profile deleted successfully.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileSettingsActivity.this, "Profile deleted successfully.", Toast.LENGTH_SHORT).show();
                         finish();
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Error deleting profile.", Toast.LENGTH_SHORT).show());
