@@ -66,14 +66,22 @@
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
         <activity android:name=".view.AddEventSecondActivity" />
-        <activity android:name=".view.CurrentAttendanceFragment" />
-        <activity android:name=".view.SignUpsFragment" />
         <activity android:name=".view.SendAnnouncementFragment" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
-    </application>
+
+        <service
+            android:name=".controller.FireMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+</application>
 
 </manifest>
