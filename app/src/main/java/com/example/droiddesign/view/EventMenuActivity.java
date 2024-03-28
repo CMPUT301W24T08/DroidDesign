@@ -226,6 +226,7 @@ public class EventMenuActivity extends AppCompatActivity {
 //			}
 			intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
+			intent.putExtra("ORIGIN", "EventMenuActivity");
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);

@@ -2,6 +2,7 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Activity class that presents the details of an event.
  * It retrieves the event data from Firestore based on the passed event ID and allows the user to sign up for the event.
@@ -47,6 +52,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 
+
 	/**
 	 * Initializes the activity, sets the content view, and initiates the process to fetch and display event details.
 	 * Sets up the interaction logic for UI elements like back button and sign up button.
@@ -55,8 +61,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+
 		setContentView(R.layout.activity_event_details);
 		String origin = getIntent().getStringExtra("ORIGIN");
+
+		eventId = getIntent().getStringExtra("EVENT_ID");
+		if (eventId == null || eventId.isEmpty()) {
+			Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -65,6 +81,27 @@ public class EventDetailsActivity extends AppCompatActivity {
 			userId = savedUserId;
 			userRole = prefsHelper.getRole();
 		} //At this point, user details are valid
+
+
+
+		Button signUpButton = findViewById(R.id.sign_up_button);
+		DocumentReference userRef = db.collection("Users").document(userId);
+		userRef.get().addOnSuccessListener(documentSnapshot -> {
+			if (documentSnapshot.exists()) {
+				User user = documentSnapshot.toObject(User.class);
+				if (user != null) {
+					boolean isEventManaged = user.getManagedEventsList().contains(eventId);
+					if ("SignedEventsActivity".equals(origin) || isEventManaged || "EventMenuActivity".equals(origin)) {
+						Log.d("EventDetailsActivity", "Origin: " + origin);
+						signUpButton.setVisibility(View.GONE);
+					} else {
+						signUpButton.setVisibility(View.VISIBLE);
+					}
+				}
+			}
+		});
+
+
 
 		ImageButton menuButton = findViewById(R.id.button_menu);
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
@@ -75,17 +112,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
 
-			// Check if eventId is in user.manageEventList
-			DocumentReference userRef = db.collection("Users").document(userId);
-			userRef.get().addOnSuccessListener(documentSnapshot -> {
-				if (documentSnapshot.exists()) {
-					User user = documentSnapshot.toObject(User.class);
-					if (user != null) {
-						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
-						findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
-					}
-				}
-			});
 
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
@@ -95,12 +121,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
 		}
 
-		eventId = getIntent().getStringExtra("EVENT_ID");
-		if (eventId == null || eventId.isEmpty()) {
-			Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
+
 
 		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
 
@@ -125,12 +146,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 		});
 
 
-		Button signUpButton = findViewById(R.id.sign_up_button);
+
 		signUpButton.setOnClickListener(v -> {
 			if (!isUserSignedUp) {
 				signUpForEvent();
 			} else {
-				Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -231,28 +252,63 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 */
 
 	private void signUpForEvent() {
-		// Assuming you have a method to get the current User (user)
+
 		isUserSignedUp = true;
-		String currentUserId = getCurrentUserId(); // Implement this according to your auth logic
+		String currentUserId = getCurrentUserId(); // Ensure this method gets the current user ID
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
 		}
 
-
-		db.collection("Users").document(currentUserId)
+		// First, check the event details to see if signing up is possible
+		db.collection("EventsDB").document(eventId)
 				.get()
-				.addOnSuccessListener(documentSnapshot -> {
-					User user = documentSnapshot.toObject(User.class);
-					if (user != null) {
-						user.getSignedEventsList().add(eventId);
-						db.collection("Users").document(currentUserId).set(user.toMap())
-								.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
-								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
+				.addOnSuccessListener(eventDocument -> {
+					if (eventDocument.exists()) {
+						Event event = eventDocument.toObject(Event.class);
+						if (event != null) {
+							List<String> attendeeList = event.getAttendeeList() != null ? event.getAttendeeList() : new ArrayList<>();
+
+
+							if (event.getSignupLimit() == null || event.getSignupLimit() <= 0 || attendeeList.size() < event.getSignupLimit()) {
+
+								// Add the current user to the attendee list and update the event
+								attendeeList.add(currentUserId);
+								db.collection("EventsDB").document(eventId)
+										.update("attendeeList", attendeeList)
+										.addOnSuccessListener(aVoid -> {
+
+											// Fetch and update the user's signed events list
+											db.collection("Users").document(currentUserId)
+													.get()
+													.addOnSuccessListener(userDocument -> {
+														User user = userDocument.toObject(User.class);
+														if (user != null) {
+															List<String> signedEvents = user.getSignedEventsList() != null ? user.getSignedEventsList() : new ArrayList<>();
+															signedEvents.add(eventId);
+															db.collection("Users").document(currentUserId)
+																	.update("signedEventsList", signedEvents)
+																	.addOnSuccessListener(aVoidUser -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
+																	.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to update user's signed events.", Toast.LENGTH_SHORT).show());
+														}
+													})
+													.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
+										})
+										.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to update event attendees.", Toast.LENGTH_SHORT).show());
+							} else {
+								Toast.makeText(this, "Signup limit reached.", Toast.LENGTH_LONG).show();
+							}
+						} else {
+							Toast.makeText(this, "Event data is invalid.", Toast.LENGTH_LONG).show();
+						}
+					} else {
+						Toast.makeText(this, "Event does not exist.", Toast.LENGTH_LONG).show();
 					}
 				})
-				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
+				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch event data.", Toast.LENGTH_SHORT).show());
+
 	}
+
 
 	/**
 	 * Retrieves the ID of the currently logged-in user from FirebaseAuth.
