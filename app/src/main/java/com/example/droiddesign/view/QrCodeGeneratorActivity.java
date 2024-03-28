@@ -69,7 +69,6 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code_generator);
 
-        EditText editText = findViewById(R.id.edit_text);
         Button buttonGenerate = findViewById(R.id.button_generate);
         /**
          * Image view to display the generated QR code.
@@ -128,7 +127,6 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         Bitmap bitmap = qrCode.getmQrBitmap();
         String qrId = qrCode.getQrId();
         String eventId = qrCode.getEventId();
-        String eventName = qrCode.getEventName();
         String type = qrCode.getType();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -145,9 +143,8 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 // Assuming 'Upload' class has been updated to include new fields
-                                UploadQR upload = new UploadQR(uri.toString(), qrId, eventId, eventName, type);
-                                String uploadId = mFirestoreDb.collection("qrcodes").document().getId();
-                                mFirestoreDb.collection("qrcodes").document(uploadId).set(upload)
+                                UploadQR upload = new UploadQR(uri.toString(), eventId, type);
+                                mFirestoreDb.collection("qrcodes").document(qrId).set(upload)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -156,8 +153,10 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                                                 // Differentiating the result based on the QR code type
                                                 if ("share".equalsIgnoreCase(type)) {
                                                     resultIntent.putExtra("shareQrUrl", uri.toString());
+                                                    resultIntent.putExtra("shareQrId", qrId);
                                                 } else if ("check_in".equalsIgnoreCase(type)) {
                                                     resultIntent.putExtra("checkInQrUrl", uri.toString());
+                                                    resultIntent.putExtra("checkInId", qrId);
                                                 }
                                                 setResult(RESULT_OK, resultIntent);
                                                 finish();

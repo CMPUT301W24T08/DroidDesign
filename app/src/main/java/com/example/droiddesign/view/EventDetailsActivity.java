@@ -82,7 +82,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 					User user = documentSnapshot.toObject(User.class);
 					if (user != null) {
 						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
-						navigationMenu.inflateMenu(R.menu.menu_event_details);
 						findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
 					}
 				}
@@ -103,7 +102,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 			return;
 		}
 
-		Event.loadFromFirestore(eventId, event -> {
+		 Event.loadFromFirestore(eventId, event -> {
             if (event != null) {
                 populateEventDetails(event);
             } else {
@@ -151,8 +150,26 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.share_qr_menu) {
-				intent = new Intent(this, ShareQrFragment.class);
-				intent.putExtra("EVENT_ID", eventId);
+				// Retrieve the QR code URL from the event
+				Event.loadFromFirestore(eventId, event -> {
+					if (event != null) {
+						String shareQrUrl = event.getShareQrCode();
+						if (shareQrUrl != null && !shareQrUrl.isEmpty()) {
+							Intent shareIntent = new Intent(Intent.ACTION_SEND);
+							shareIntent.setType("text/plain");
+							shareIntent.putExtra(Intent.EXTRA_TEXT, shareQrUrl);
+
+							// Create a chooser intent
+							Intent chooserIntent = Intent.createChooser(shareIntent, "Share QR code");
+
+							// Start the activity for result
+							startActivity(chooserIntent);
+						} else {
+							Toast.makeText(EventDetailsActivity.this, "QR code not available for this event.", Toast.LENGTH_SHORT).show();
+						}
+						toggleNavigationMenu();
+					}
+				});
 			}else if (id == R.id.remove_event_menu){
 				// get event and remove event id from managelist of User TODO: implementation slide to delete
 			}else if (id == R.id.remove_event_poster_menu){
