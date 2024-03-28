@@ -147,10 +147,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
                 String shareQrUrl = data.getStringExtra("shareQrUrl");
+                String shareQrId = data.getStringExtra("shareQrId");
                 String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                String checkInQrId = data.getStringExtra("checkInId");
                 Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
-                event.setShareQrCode(shareQrUrl);
-                event.setCheckInQrCode(checkInQrUrl);
+                event.setShareQrCode(shareQrUrl, shareQrId);
+                event.setCheckInQrCode(checkInQrUrl, checkInQrId);
             }
         }
     }
@@ -167,14 +169,18 @@ public class AddEventSecondActivity extends AppCompatActivity {
         event.setDescription(eventDescription);
 
         TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
+        TextView milestoneTextView = findViewById(R.id.input_number_milestone);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
+        String milestoneString = milestoneTextView.getText().toString().trim();
         Log.d("AddEvent", "Max Attendees String: '" + maxAttendeesString + "'");
 
         try {
             int maxAttendees = Integer.parseInt(maxAttendeesString);
+            int milestone = Integer.parseInt(milestoneString);
             event.setSignupLimit(maxAttendees);
+            event.setSignupLimit(milestone);
         } catch (NumberFormatException e) {
-            Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEventSecondActivity.this, "No number for maximum attendees and milestone", Toast.LENGTH_SHORT).show();
             return;
         }
         // Add user event to their managedEventsList
@@ -196,7 +202,5 @@ public class AddEventSecondActivity extends AppCompatActivity {
         startActivity(detailsIntent);
 
         finish();
-
     }
-
 }

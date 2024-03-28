@@ -20,6 +20,15 @@
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
         <activity
+            android:name=".view.AdminBrowseUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.SignedUpUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.CurrentAttendanceActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.AddProfilePictureActivity"
             android:exported="false" />
         <activity
@@ -57,14 +66,29 @@
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
         <activity android:name=".view.AddEventSecondActivity" />
-        <activity android:name=".view.CurrentAttendanceFragment" />
-        <activity android:name=".view.SignUpsFragment" />
         <activity android:name=".view.SendAnnouncementFragment" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
-    </application>
+
+        <service
+            android:name=".model.MyFirebaseMessagingService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".model.MyFirebaseInstanceIDService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+
+</application>
 
 </manifest>

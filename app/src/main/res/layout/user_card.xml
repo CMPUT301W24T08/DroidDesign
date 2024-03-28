@@ -24,7 +24,7 @@
             app:layout_constraintLeft_toRightOf="@id/profile_image_view">
 
             <TextView
-                android:id="@+id/text_event_name"
+                android:id="@+id/text_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
@@ -34,7 +34,7 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/text_location"
+                android:id="@+id/text_company"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
@@ -57,6 +57,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/check_in_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

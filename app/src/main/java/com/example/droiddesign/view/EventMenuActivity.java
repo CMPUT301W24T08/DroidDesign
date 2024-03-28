@@ -20,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
 		TextView textViewEvents = findViewById(R.id.text_upcoming_events);
 
-
+		getFCMToken();
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -168,6 +169,10 @@ public class EventMenuActivity extends AppCompatActivity {
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
 				intent.putExtra("USER_ID", finalUserId);
+			} else if (id == R.id.browse_users){
+				intent = new Intent(this, AdminBrowseUsersActivity.class);
+			} else if (id == R.id.admin_browse_events) {
+				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
 			} else if (id == R.id.log_out) {
@@ -342,8 +347,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	}
 
 
-
-
 	/**
 	 * Updates the UI to display the latest list of events.
 	 */
@@ -353,5 +356,16 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsAdapter.notifyDataSetChanged();
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
-	
+
+	void getFCMToken(){
+		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+			if(task.isSuccessful()){
+				String token = task.getResult();
+				db.collection("Users").document(userId).update("token",token)
+						.addOnSuccessListener(aVoid -> Log.d("UpdateToken", "Token successfully updated for user: " + userId))
+						.addOnFailureListener(e -> Log.e("UpdateToken", "Error updating token", e));
+			}
+		});
+	}
+
 }

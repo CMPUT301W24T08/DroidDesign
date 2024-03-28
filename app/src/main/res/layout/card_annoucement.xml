@@ -16,7 +16,7 @@
             android:id="@+id/chat_card_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="@string/time_1hr"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textStyle="bold"/>
 
@@ -25,8 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/chat_card_title"
+            android:text="@string/announcements"
             android:layout_marginTop="4dp"
-            android:text="Message content here"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:textSize="9sp"
+            android:textSize="11sp"
             android:layout_marginTop="4dp"
             android:text="YYYY-MM-DD"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
