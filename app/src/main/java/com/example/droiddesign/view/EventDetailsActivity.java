@@ -139,13 +139,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 			Intent intent = null;
 
 			if (id == R.id.current_attendance_menu) {
-				intent = new Intent(this, CurrentAttendanceFragment.class);
+				intent = new Intent(this, CurrentAttendanceActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.announcement_menu) {
 				intent = new Intent(this, SendAnnouncementFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			}else if (id == R.id.sign_ups_menu) {
-				intent = new Intent(this, SignUpsFragment.class);
+				intent = new Intent(this, SignedUpUsersActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.geo_check_menu) {
 				intent = new Intent(this, GeoCheckFragment.class);
