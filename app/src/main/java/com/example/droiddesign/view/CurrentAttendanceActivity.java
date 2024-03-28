@@ -1,20 +1,18 @@
 package com.example.droiddesign.view;
+
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
-
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.User;
-import com.example.droiddesign.view.UserListAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +39,10 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventId = getIntent().getStringExtra("EVENT_ID");
 
-
-
+        // What you need to track current attendance and milestone
+        TextView milestoneTextView = findViewById(R.id.milestone_textview);
+        TextView totalSignUpTextView = findViewById(R.id.total_sign_up_textview);
+        TextView checkInsTextView = findViewById(R.id.check_ins_textview);
         attendanceListView = findViewById(R.id.attendance_list_recycler_view);
         attendanceListView.setLayoutManager(new LinearLayoutManager(this));
 
