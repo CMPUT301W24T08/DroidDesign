@@ -1,8 +1,6 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
@@ -22,20 +19,11 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Activity class that presents the details of an event.
@@ -125,7 +113,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 			// Check if eventId is in user.manageEventList
-			DocumentReference userRef = db.collection("Users").document(userId);
 			userRef.get().addOnSuccessListener(documentSnapshot -> {
 				if (documentSnapshot.exists()) {
 					User user = documentSnapshot.toObject(User.class);
@@ -300,7 +287,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 	private void signUpForEvent() {
 
 		isUserSignedUp = true;
-		String currentUserId = getCurrentUserId(); // Ensure this method gets the current user ID
+		String currentUserId = userId;// Ensure this method gets the current user ID
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;

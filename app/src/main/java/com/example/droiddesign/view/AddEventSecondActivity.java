@@ -180,7 +180,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
             event.setSignupLimit(milestone);
         } catch (NumberFormatException e) {
             event.setSignupLimit(null);
-            event.setSignupLimit(null);
+            event.setSignupLimit(null);}
         if (!maxAttendeesString.isEmpty()) {
             try {
                 int maxAttendees = Integer.parseInt(maxAttendeesString);
