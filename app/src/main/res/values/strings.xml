@@ -59,7 +59,7 @@
     <string name="blue_square">Blue Square</string>
     <string name="Description">Description</string>
     <string name="Sign_Up">Sign Up For Event</string>
-    <string name="current_attendance">X out of Y participants have arrived.</string>
+    <string name="current_attendance">Current Attendance.</string>
     <string name="event_poster">Event Poster</string>
     <string name="finish">Finish</string>
     <string name="Profile">Profile</string>
@@ -82,14 +82,19 @@
     <string name="share_qr_code">Share QR code</string>
     <string name="push_notification">Push Notification</string>
     <string name="browse_event_posters">Browse Event Posters</string>
-    <string name="browse_profile_pictures">Browse Profile Pictures</string>
-    <string name="browse_users">Browse Users</string>
+    <string name="browse_profiles">Browse Profiles</string>
+    <string name="browse_Images">Browse Images</string>
     <string name="remove_event_poster">Remove Event Poster</string>
     <string name="remove_event">Remove Event</string>
     <string name="event_organizer">Event Organizer</string>
     <string name="description">Description</string>
     <string name="created_events">Created Events</string>
     <string name="signed_up_events">Signed Up Events</string>
+    <string name="_1">1</string>
+    <string name="users">Users</string>
+    <string name="milestone">Milestone</string>
+    <string name="blank_numbers">_ _ _</string>
+    <string name="images">Images</string>
 
 
 </resources>

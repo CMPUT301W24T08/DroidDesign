@@ -42,6 +42,7 @@ public class User {
 	 * The phone number of the user.
 	 */
 	private String phone;
+	private String token;
 
 	/**
 	 * The URL or path to the profile picture of the user.
@@ -271,6 +272,14 @@ public class User {
 	 */
 	public String getPhone() {
 		return phone;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	/**

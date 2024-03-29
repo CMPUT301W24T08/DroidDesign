@@ -1,5 +1,7 @@
 package com.example.droiddesign.view;
 
-public class GeoCheckFragment {
+import androidx.fragment.app.Fragment;
+
+public class GeoCheckFragment extends Fragment {
 	//TODO implementation
 }

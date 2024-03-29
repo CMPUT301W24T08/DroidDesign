@@ -56,35 +56,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
 
     }
 
-    /**
-     * Creates an unregistered user in the system with a unique user ID and navigates to the RoleSelectionActivity.
-     */
-    private void createUnregisteredUser() {
-        Intent intent = new Intent(LaunchScreenActivity.this, RoleSelectionActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-//    /**
-//     * Authenticates a user with the provided username and password.
-//     * @param username The username inputted by the user.
-//     * @param password The password inputted by the user.
-//     */
-    // Method to authenticate user
-//    private void authenticateUser(String username, String password) {
-//        mAuth.signInWithEmailAndPassword(username, password)
-//                .addOnCompleteListener(this, task -> {
-//                    if (task.isSuccessful()) {
-//                        Toast.makeText(LaunchScreenActivity.this, "Authentication successful!", Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(this, EventMenuActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    } else {
-//                        Toast.makeText(LaunchScreenActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
-
 
     /**
      * Callback triggered when a new user is successfully created. This navigates the user to the EventMenuActivity.
