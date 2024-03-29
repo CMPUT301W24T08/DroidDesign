@@ -43,11 +43,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 		// Also if you intend on generating your own notifications as a result of a received FCM
 		// message, here is where that should be initiated. See sendNotification method below.
-		sendNotification(remoteMessage.getFrom( ), remoteMessage.getNotification( ).getBody( ));
+		sendNotification(remoteMessage.getFrom( ), remoteMessage.getNotification( ).getTitle( ));
 		sendNotification(remoteMessage.getNotification( ).getTitle( ));
 	}
 
 	private void sendNotification(String from, String body) {
+		Intent intent = new Intent(this, EventDetailsActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+				PendingIntent.FLAG_IMMUTABLE);
 		new Handler(Looper.getMainLooper( )).post(new Runnable( ) {
 			@Override
 			public void run() {
@@ -75,7 +79,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 	}
 
 	private void sendNotification(String messageBody) {
-		Log.d("FCM", "2 SENT NOTIFICATION: ");
 		Intent intent = new Intent(this, EventDetailsActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
