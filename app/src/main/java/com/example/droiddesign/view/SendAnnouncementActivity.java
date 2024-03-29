@@ -203,54 +203,54 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Log.e("NotifyAttendees", "Failed to get attendee list for event: " + eventId));
 	}
 	private void sendNotificationsToTokens(String title, List<String> tokens) {
+		final String eventName;
+		FirebaseFirestore.getInstance().collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+			eventName = documentSnapshot.getString("eventName");
+		});
+		
 		// Prepare the payload
 		JSONObject payload = new JSONObject();
 		try {
 			JSONObject notification = new JSONObject();
-			notification.put("title", "New message from " + eventId);
+			notification.put("title", "New message from " + eventName);
 			notification.put("body", title);
 
 			payload.put("registration_ids", new JSONArray(tokens));
 			payload.put("notification", notification);
+
+			// Define the MediaType for the request body
+			MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+			RequestBody requestBody = RequestBody.create(JSON, payload.toString());
+
+			// Build the request
+			Request request = new Request.Builder()
+					.url("https://fcm.googleapis.com/fcm/send")
+					.addHeader("Authorization", "key=AAAA1Lwwer4:APA91bHuSelA6Mkvst7R_BZ7Vf2ot9gafIXbpW0e3NyVLAIN60xpGuRRc_QjM0jPYyIT0J4PxBejgGQOo5NuRLfOZn_M9C4m6Pl9uv_CTwKgKRimllR_00ZsVtTHghZ86yAxGuXGUGiE")
+					.post(requestBody)
+					.build();
+
+			// Create a new OkHttpClient instance
+			OkHttpClient client = new OkHttpClient();
+
+			// Asynchronously send the request
+			client.newCall(request).enqueue(new Callback() {
+				@Override
+				public void onFailure(okhttp3.Call call, IOException e) {
+					Log.e("sendNotificationsToTokens", "Failed to send notifications", e);
+				}
+				@Override
+				public void onResponse(okhttp3.Call call, Response response) throws IOException {
+					if (!response.isSuccessful()) {
+						Log.e("sendNotificationsToTokens", "Failed to send notifications: " + response);
+					} else {
+						Log.d("sendNotificationsToTokens", "Notifications sent successfully");
+					}
+				}
+
+			});
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return;
 		}
-
-		// Define the MediaType for the request body
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		// Create the request body
-		RequestBody requestBody = RequestBody.create(JSON, payload.toString());
-
-		// Build the request
-		Request request = new Request.Builder()
-				.url("https://fcm.googleapis.com/fcm/send")
-				.addHeader("Authorization", "key=AAAA1Lwwer4:APA91bHuSelA6Mkvst7R_BZ7Vf2ot9gafIXbpW0e3NyVLAIN60xpGuRRc_QjM0jPYyIT0J4PxBejgGQOo5NuRLfOZn_M9C4m6Pl9uv_CTwKgKRimllR_00ZsVtTHghZ86yAxGuXGUGiE")
-				.post(requestBody)
-				.build();
-
-		// Create a new OkHttpClient instance
-		OkHttpClient client = new OkHttpClient();
-
-		// Asynchronously send the request
-		client.newCall(request).enqueue(new Callback() {
-			@Override
-			public void onFailure(okhttp3.Call call, IOException e) {
-				Log.e("sendNotificationsToTokens", "Failed to send notifications", e);
-			}
-
-			@Override
-			public void onResponse(okhttp3.Call call, Response response) throws IOException {
-				if (!response.isSuccessful()) {
-					// Handle the failure
-					Log.e("sendNotificationsToTokens", "Failed to send notifications: " + response);
-				} else {
-					// Handle success
-					Log.d("sendNotificationsToTokens", "Notifications sent successfully");
-				}
-			}
-
-		});
 	}
 
 
