@@ -178,8 +178,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
             event.setSignupLimit(maxAttendees);
             event.setSignupLimit(milestone);
         } catch (NumberFormatException e) {
-            Toast.makeText(AddEventSecondActivity.this, "No number for maximum attendees and milestone", Toast.LENGTH_SHORT).show();
-            return;
+            event.setSignupLimit(null);
+            event.setSignupLimit(null);
         }
         // Add user event to their managedEventsList
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
