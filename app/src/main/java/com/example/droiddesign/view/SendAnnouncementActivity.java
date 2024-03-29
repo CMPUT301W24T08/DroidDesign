@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -38,30 +38,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.Headers;
-import retrofit2.http.POST;
 
 public class SendAnnouncementActivity extends AppCompatActivity {
 	private Button sendButton;
 	private TextView titleEditText;
 	private TextView messageEditText;
-	private TextView dateEditText;
 	private FirebaseFirestore firestore;
-	private CollectionReference attendeeListRef;
 	private RecyclerView announcementsRecyclerView;
 	private AnnouncementAdapter announcementAdapter;
 	private List<Map<String, Object>> announcementList = new ArrayList<>();
 	private String userId, userRole,eventId;
 	SharedPreferenceHelper prefsHelper;
-	private APIService apiService;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fragment_send_announcement);
+		setContentView(R.layout.activity_send_announcement);
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
 		if (savedUserId != null) {
@@ -72,12 +63,6 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 
 		// Inflate the button based on user role
 		findViewById(R.id.send_button).setVisibility("organizer".equalsIgnoreCase(userRole) ? View.VISIBLE : View.GONE );
-		// Initialize Retrofit and APIService
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("https://fcm.googleapis.com/")
-				.addConverterFactory(GsonConverterFactory.create())
-				.build();
-		apiService = retrofit.create(APIService.class);
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
 		if (eventId == null || eventId.isEmpty()) {
@@ -87,7 +72,6 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		}
 
 		firestore = FirebaseFirestore.getInstance();
-		attendeeListRef = firestore.collection("EventsDB").document(eventId).collection("attendeeList");
 		firestore.collection("EventsDB").document(eventId)
 				.get()
 				.addOnSuccessListener(documentSnapshot -> {
@@ -149,6 +133,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show());
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	private void fetchAnnouncements() {
 		firestore.collection("EventsDB").document(eventId)
 				.get()
@@ -193,7 +178,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 											tokens.add(token);
 											if (tokens.size() == attendeeList.size()) {
 												// All tokens are collected, send them to your server/cloud function to dispatch notifications
-												sendNotificationsToTokens(title, tokens);
+												sendNotificationsToTokens(title, tokens, documentSnapshot.get("eventName").toString());
 											}
 										}
 									});
@@ -202,17 +187,12 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				})
 				.addOnFailureListener(e -> Log.e("NotifyAttendees", "Failed to get attendee list for event: " + eventId));
 	}
-	private void sendNotificationsToTokens(String title, List<String> tokens) {
-		final String eventName;
-		FirebaseFirestore.getInstance().collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
-			eventName = documentSnapshot.getString("eventName");
-		});
-		
+	private void sendNotificationsToTokens(String title, List<String> tokens, String eventName) {
 		// Prepare the payload
 		JSONObject payload = new JSONObject();
 		try {
 			JSONObject notification = new JSONObject();
-			notification.put("title", "New message from " + eventName);
+			notification.put("title", "New Announcement from "+eventName);
 			notification.put("body", title);
 
 			payload.put("registration_ids", new JSONArray(tokens));
@@ -253,49 +233,20 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		}
 	}
 
-
-	public interface APIService {
-		@Headers({
-				"Content-Type:application/json",
-				"Authorization:key=YOUR_SERVER_KEY" // Replace YOUR_SERVER_KEY with your actual server key from Firebase Console
-		})
-		@POST("fcm/send")
-		Call<MyResponse> sendNotifcation(@Body NotificationSender sender);
+	public void fetchEventName(FirebaseFirestore firestore, String eventId, EventNameCallback callback) {
+		firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
+			if (task.isSuccessful() && task.getResult() != null) {
+				String eventName = task.getResult().getString("name"); // Assuming the field name for event name is "name"
+				callback.onEventName(eventName);
+			} else {
+				Log.e("fetchEventName", "Failed to fetch event name");
+				callback.onEventName(null);
+			}
+		});
 	}
 
-	public class MyResponse {
-		public int success;
-	}
-	public class Data {
-		private String title;
-		private String message;
-
-		public Data(String title, String message) {
-			this.title = title;
-			this.message = message;
-		}
-
-		// Getters and Setters
-		public String getTitle() { return title; }
-		public void setTitle(String title) { this.title = title; }
-		public String getMessage() { return message; }
-		public void setMessage(String message) { this.message = message; }
-	}
-
-	public class NotificationSender {
-		public Data data;
-		public String to;
-
-		public NotificationSender(Data data, String to) {
-			this.data = data;
-			this.to = to;
-		}
-
-		// Getters and Setters
-		public Data getData() { return data; }
-		public void setData(Data data) { this.data = data; }
-		public String getTo() { return to; }
-		public void setTo(String to) { this.to = to; }
+	public interface EventNameCallback {
+		void onEventName(String eventName);
 	}
 
 }
