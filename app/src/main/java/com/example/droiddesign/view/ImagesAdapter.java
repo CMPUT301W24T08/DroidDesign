@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
-import java.util.List;
+import com.example.droiddesign.model.ImageItem;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
 
@@ -36,6 +36,12 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 		Glide.with(context)
 				.load(imageItem.getImageUrl())
 				.into(holder.imageView);
+
+		holder.imageView.setOnClickListener(v -> {
+			if (context instanceof BrowseImagesActivity) {
+				((BrowseImagesActivity) context).showImageDialog(imageItem);
+			}
+		});
 	}
 
 	@Override
@@ -48,7 +54,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
 		ViewHolder(View itemView) {
 			super(itemView);
-			imageView = itemView.findViewById(R.id.image_view);
+			imageView = itemView.findViewById(R.id.imageView);
 		}
 	}
 }

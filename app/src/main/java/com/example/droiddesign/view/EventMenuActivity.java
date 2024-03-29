@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,6 +84,8 @@ public class EventMenuActivity extends AppCompatActivity {
 		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
 		TextView textViewEvents = findViewById(R.id.text_upcoming_events);
+		CardView adminCard = findViewById(R.id.admin_card);
+		adminCard.setVisibility(View.GONE);
 
 		updateTokenIfNeeded();
 
@@ -103,6 +106,12 @@ public class EventMenuActivity extends AppCompatActivity {
 			textViewEvents.setText(R.string.created_events);
 		} else if ("Attendee".equalsIgnoreCase(userRole)) {
 			textViewEvents.setText(R.string.upcoming_events);
+			addEventButton.setVisibility(View.INVISIBLE);
+		} else {
+			textViewEvents.setText(R.string.administration);
+			adminCard.setVisibility(View.VISIBLE);
+			addEventButton.setVisibility(View.INVISIBLE);
+			fabQuickScan.setVisibility(View.INVISIBLE);
 		}
 
 
@@ -121,8 +130,7 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		// Check if the userRole is "attendee"
 		if ("attendee".equalsIgnoreCase(userRole)) {
-			// If userRole is "attendee", hide the addEventButton
-			addEventButton.setVisibility(View.INVISIBLE);
+
 			// Update the layout parameters to position the button at the bottom center
 			ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) fabQuickScan.getLayoutParams();
 			params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
@@ -131,9 +139,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			params.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.fab_margin_bottom));
 			fabQuickScan.setLayoutParams(params);
 
-		} else {
-			// If userRole is not "attendee", i.e admin or organizer show the addEventButton
-			addEventButton.setVisibility(View.VISIBLE);
 		}
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
@@ -175,6 +180,8 @@ public class EventMenuActivity extends AppCompatActivity {
 				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.browse_images) {
+				intent = new Intent(this, BrowseImagesActivity.class);
 			} else if (id == R.id.log_out) {
 				intent = new Intent(this, LaunchScreenActivity.class);
 				// Clear stored preferences

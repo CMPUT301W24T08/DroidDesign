@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -30,7 +31,9 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
 
         // Initialize the adapter with the users list
         usersListAdapter = new UserListAdapter(users, null, user -> {
-            // Handle user item click event, if necessary
+            Intent detailIntent = new Intent(AdminBrowseUsersActivity.this, ProfileSettingsActivity.class);
+            detailIntent.putExtra("USER_ID", user.getUserId());
+            startActivity(detailIntent);
         });
         usersRecyclerView.setAdapter(usersListAdapter);
 
@@ -40,6 +43,11 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> {
             finish();
         });
+    }
+
+    protected void onResume() {
+        super.onResume();
+        fetchAllUsers();
     }
 
     private void fetchAllUsers() {

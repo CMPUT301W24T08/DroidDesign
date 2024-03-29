@@ -147,10 +147,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
                 String shareQrUrl = data.getStringExtra("shareQrUrl");
+                String shareQrId = data.getStringExtra("shareQrId");
                 String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                String checkInQrId = data.getStringExtra("checkInId");
                 Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
-                event.setShareQrCode(shareQrUrl);
-                event.setCheckInQrCode(checkInQrUrl);
+                event.setShareQrCode(shareQrUrl, shareQrId);
+                event.setCheckInQrCode(checkInQrUrl, checkInQrId);
             }
         }
     }
@@ -170,7 +172,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
         TextView milestoneTextView = findViewById(R.id.input_number_milestone);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
         String milestoneString = milestoneTextView.getText().toString().trim();
-        Log.d("AddEvent", "Max Attendees String: '" + maxAttendeesString + "'");
 
         try {
             int maxAttendees = Integer.parseInt(maxAttendeesString);
@@ -180,7 +181,16 @@ public class AddEventSecondActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             event.setSignupLimit(null);
             event.setSignupLimit(null);
+        if (!maxAttendeesString.isEmpty()) {
+            try {
+                int maxAttendees = Integer.parseInt(maxAttendeesString);
+                event.setSignupLimit(maxAttendees);
+            } catch (NumberFormatException e) {
+                Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
+
         // Add user event to their managedEventsList
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
         String currentUserId = prefsHelper.getUserId();
@@ -200,7 +210,5 @@ public class AddEventSecondActivity extends AppCompatActivity {
         startActivity(detailsIntent);
 
         finish();
-
     }
-
 }

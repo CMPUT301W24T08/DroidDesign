@@ -113,6 +113,8 @@ public class Event {
      * Firestore reference to this specific event, used transiently and not stored in the database.
      */
     private transient DocumentReference eventRef;
+    private String checkInQrId;
+    private String shareQrId;
 
     /**
      * Default constructor used for data retrieval from Firestore.
@@ -433,16 +435,21 @@ public class Event {
     /**
      * Sets the QR code for the event and updates the corresponding field in Firestore.
      *
-     * @param qrCode The new QR code for the event.
+     * @param qrCodeUrl The new QR code URL for the event.
+     * @param qrCodeId The id for the qr code
      */
-    public void setShareQrCode(String qrCode) {
-        this.shareQrCode = qrCode;
-        updateFirestore("shareQrCode", qrCode);
+    public void setShareQrCode(String qrCodeUrl, String qrCodeId) {
+        this.shareQrCode = qrCodeUrl;
+        this.shareQrId = qrCodeId;
+        updateFirestore("shareQrCode", qrCodeUrl);
+        updateFirestore("shareQrId", qrCodeId);
     }
 
-    public void setCheckInQrCode(String qrCode) {
-        this.checkInQrCode = qrCode;
-        updateFirestore("checkInQrCode", qrCode);
+    public void setCheckInQrCode(String qrCodeUrl, String qrCodeId) {
+        this.checkInQrCode = qrCodeUrl;
+        this.checkInQrId = qrCodeId;
+        updateFirestore("checkInQrCode", qrCodeUrl);
+        updateFirestore("checkInQrId", qrCodeId);
     }
 
     /**
@@ -585,7 +592,9 @@ public class Event {
         map.put("milestone", milestones);
         map.put("attendeesCount", attendeesCount);
         map.put("shareQrCode", shareQrCode);
+        map.put("shareQrId", shareQrId);
         map.put("checkInQrCode", checkInQrCode);
+        map.put("checkInQrId", checkInQrId);
         map.put("attendeeList", attendeeList);
         map.put("organizerMessages", organizerMessages);
         map.put("checkedInUsers", checkedInUsers);

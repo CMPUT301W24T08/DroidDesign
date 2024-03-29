@@ -41,6 +41,9 @@
             android:name=".view.DiscoverEventsActivity"
             android:exported="false" />
         <activity
+            android:name=".view.BrowseImagesActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.LaunchScreenActivity"
             android:exported="true">
             <intent-filter>
@@ -64,7 +67,9 @@
         <activity
             android:name=".view.EventMenuActivity"
             android:exported="true" />
-        <activity android:name=".view.EventDetailsActivity" android:exported="true"/>
+        <activity
+            android:name=".view.EventDetailsActivity"
+            android:exported="true" />
         <activity android:name=".view.AppSettingsActivity" />
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
@@ -75,17 +80,15 @@
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
-
         <service
             android:name=".model.notificationPackage.MyFirebaseMessagingService"
             android:exported="true"
             android:directBootAware="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-
-</application>
+    </application>
 
 </manifest>

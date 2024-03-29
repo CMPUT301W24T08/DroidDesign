@@ -9,10 +9,9 @@
         android:id="@+id/logo_large"
         android:layout_width="845dp"
         android:layout_height="845dp"
-        android:layout_marginTop="297dp"
+        android:layout_marginTop="296dp"
         android:contentDescription="@string/biglogo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
@@ -49,6 +48,23 @@
         android:backgroundTint="@android:color/white"
         android:fontFamily="@font/nunitosans"
         android:text="@string/edit_profile"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/delete_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="96dp"
+        android:layout_marginBottom="108dp"
+        android:backgroundTint="@android:color/white"
+        android:fontFamily="@font/nunitosans"
+        android:text="@string/delete_user_profile"
         android:textColor="@android:color/black"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -235,6 +251,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.114" />
+
 
     <EditText
         android:id="@+id/UserCompanyDisplay"

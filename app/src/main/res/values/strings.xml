@@ -85,7 +85,7 @@
     <string name="browse_profiles">Browse Profiles</string>
     <string name="browse_Images">Browse Images</string>
     <string name="remove_event_poster">Remove Event Poster</string>
-    <string name="remove_event">Remove Event</string>
+    <string name="remove_event">Delete Event</string>
     <string name="event_organizer">Event Organizer</string>
     <string name="description">Description</string>
     <string name="created_events">Created Events</string>
@@ -95,6 +95,11 @@
     <string name="milestone">Milestone</string>
     <string name="blank_numbers">_ _ _</string>
     <string name="images">Images</string>
+    <string name="browse_users">Browse Users</string>
+    <string name="administration">Administration</string>
+    <string name="admin_roles_description">As an Administrator, harness your control:\n\n    - Remove events at will\n    - Delete profiles as necessary\n    - Manage image content with precision\n    - Browse events, profiles, and images effortlessly\n\nThe top right menu bar is your friend.</string>
+    <string name="delete_user_profile">Delete User Profile</string>
+    <string name="proffile_pic_note">Edit or remove profile picture using the options on the image.</string>
     <string name="default_notification_channel_id">your_notification_channel_id</string>
 
 
