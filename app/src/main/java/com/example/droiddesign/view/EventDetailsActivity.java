@@ -94,6 +94,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+			findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : View.VISIBLE);
 		}
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
