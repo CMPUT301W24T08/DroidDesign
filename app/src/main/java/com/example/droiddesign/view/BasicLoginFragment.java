@@ -225,6 +225,12 @@ public class BasicLoginFragment extends DialogFragment {
                                 newUser.setRegistered(String.valueOf(true));
                                 newUser.setCompany(company);
                                 newUser.setPhone(phoneNumber);
+
+                                if (profilePicUrl == null || profilePicUrl.isEmpty()) {
+                                    String initials = getInitials(userName);
+                                    profilePicUrl = "https://ui-avatars.com/api/?name=" + initials + "&background=random";
+                                }
+
                                 newUser.setProfilePic(profilePicUrl);
                                 // Save user profile to SharedPreferences
                                 prefsHelper.saveUserProfile(user.getUid(), role, email);
@@ -245,4 +251,21 @@ public class BasicLoginFragment extends DialogFragment {
                     }
                 });
     }
+
+    private String getInitials(String userName) {
+        if (userName == null || userName.isEmpty()) {
+            return "XX"; // Return some default initials
+        }
+
+        String[] nameParts = userName.split(" ");
+        String initials = "";
+        for (String part : nameParts) {
+            if (!part.isEmpty()) {
+                initials += part.charAt(0);
+            }
+        }
+
+        return initials.toUpperCase();
+    }
+
 }

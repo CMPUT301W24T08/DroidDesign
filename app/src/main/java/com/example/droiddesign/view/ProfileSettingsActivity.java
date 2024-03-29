@@ -1,5 +1,7 @@
 package com.example.droiddesign.view;
 
+import static java.security.AccessController.getContext;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +32,7 @@ import java.util.UUID;
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private EditText editUsername, editUserEmail, editUserContactNumber, editUserCompany, editDisplayUserName, editDisplayUserCompany;
-    private Button saveButton;
+    private Button saveButton, editProfilePicButton, deleteProfilePicButton, editProfileButton, deleteProfileButton;
     private ImageView profileImageView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -38,6 +41,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     String profilePicUrl;
     private StorageReference mStorageRef;
+
+    SharedPreferenceHelper prefsHelper;
 
     private String imageUrl;
 
@@ -52,14 +57,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_settings);
 
-        db = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        userId = currentUser.getUid();
-        avatarUrl = "https://robohash.org/" + userId;
-
-        mStorageRef = FirebaseStorage.getInstance().getReference("profile-pics");
-
-
         // Initialize EditText fields
         editUsername = findViewById(R.id.editUsername);
         editUserEmail = findViewById(R.id.editUserEmail);
@@ -68,8 +65,50 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         editDisplayUserName= findViewById(R.id.UserDisplayName);
         editDisplayUserCompany = findViewById(R.id.UserCompanyDisplay);
         profileImageView = findViewById(R.id.profile_image_view);
-        Button editProfilePicButton = findViewById(R.id.edit_image_button);
-        Button deleteProfilePicButton = findViewById(R.id.delete_image_button);
+        editProfilePicButton = findViewById(R.id.edit_image_button);
+        deleteProfilePicButton = findViewById(R.id.delete_image_button);
+        editProfileButton = findViewById(R.id.edit_profile_button);
+        deleteProfileButton = findViewById(R.id.delete_profile);
+        saveButton = findViewById(R.id.buttonSave);
+        ImageButton backButton = findViewById(R.id.button_back);
+        deleteProfileButton.setVisibility(View.GONE);
+
+        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        userId = currentUser.getUid();
+
+        prefsHelper = new SharedPreferenceHelper(this);
+        String savedUserId = prefsHelper.getUserId();
+        String userRole = prefsHelper.getRole();;
+
+
+        if ("Admin".equalsIgnoreCase(userRole)) {
+            userId = getIntent().getStringExtra("USER_ID");
+            editProfileButton.setVisibility(View.GONE);
+            editProfilePicButton.setVisibility(View.GONE);
+            deleteProfileButton.setVisibility(View.VISIBLE);
+
+        } else {
+            userId = savedUserId;
+        }
+
+        avatarUrl = "https://robohash.org/" + userId;
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("profile-pics");
+
+        deleteProfileButton.setOnClickListener(v -> {
+            db.collection("Users")
+                    .document(userId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(ProfileSettingsActivity.this, "Profile deleted successfully.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(this, "Error deleting profile.", Toast.LENGTH_SHORT).show());
+        });
+
+
+
 
         deleteProfilePicButton.setOnClickListener(v -> {
 
@@ -159,9 +198,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 
         // Initialize Buttons
-        Button editProfileButton = findViewById(R.id.edit_profile_button);
-        saveButton = findViewById(R.id.buttonSave);
-        ImageButton backButton = findViewById(R.id.button_back);
+
 
         // Set initial state of EditTexts to be non-editable
         setEditingEnabled(false);

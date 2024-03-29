@@ -6,4 +6,9 @@
         <item>Admin</item>
         <!-- Add more items as needed -->
     </string-array>
+
+    <string-array name="image_types">
+        <item>User Profile Pics</item>
+        <item>Event Posters</item>
+    </string-array>
 </resources>
