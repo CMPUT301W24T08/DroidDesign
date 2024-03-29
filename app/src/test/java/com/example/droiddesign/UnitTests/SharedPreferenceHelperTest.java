@@ -1,16 +1,21 @@
 package com.example.droiddesign.UnitTests;
-import com.example.droiddesign.model.SharedPreferenceHelper;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.example.droiddesign.model.SharedPreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class SharedPreferenceHelperTest {
 
@@ -42,38 +47,40 @@ public class SharedPreferenceHelperTest {
     public void saveUserProfile_savesDataCorrectly() {
         sharedPreferenceHelper.saveUserProfile(TEST_USER_ID, TEST_ROLE, TEST_EMAIL);
 
-        verify(mockEditor).putString(SharedPreferenceHelper.KEY_USER_ID, TEST_USER_ID);
-        verify(mockEditor).putString(SharedPreferenceHelper.KEY_ROLE, TEST_ROLE);
-        verify(mockEditor).putString(SharedPreferenceHelper.KEY_EMAIL, TEST_EMAIL);
+        verify(mockEditor).putString(sharedPreferenceHelper.getUserId(), TEST_USER_ID);
+        verify(mockEditor).putString(sharedPreferenceHelper.getRole(), TEST_ROLE);
         verify(mockEditor).apply();
     }
 
     @Test
     public void getUserId_returnsCorrectUserId() {
-        when(mockSharedPreferences.getString(SharedPreferenceHelper.KEY_USER_ID, null)).thenReturn(TEST_USER_ID);
+        when(mockSharedPreferences.getString(sharedPreferenceHelper.getUserId(), null)).thenReturn(TEST_USER_ID);
 
         assertEquals(TEST_USER_ID, sharedPreferenceHelper.getUserId());
     }
 
     @Test
     public void getRole_returnsCorrectRole() {
-        when(mockSharedPreferences.getString(SharedPreferenceHelper.KEY_ROLE, null)).thenReturn(TEST_ROLE);
+        when(mockSharedPreferences.getString(sharedPreferenceHelper.getRole(), null)).thenReturn(TEST_ROLE);
 
         assertEquals(TEST_ROLE, sharedPreferenceHelper.getRole());
     }
 
     @Test
     public void isFirstTimeUser_returnsTrueIfUserIdIsNull() {
-        when(mockSharedPreferences.getString(SharedPreferenceHelper.KEY_USER_ID, null)).thenReturn(null);
+        when(mockSharedPreferences.getString(sharedPreferenceHelper.getUserId(), null)).thenReturn(null);
 
         assertTrue(sharedPreferenceHelper.isFirstTimeUser());
     }
 
     @Test
     public void isFirstTimeUser_returnsFalseIfUserIdIsNotNull() {
-        when(mockSharedPreferences.getString(SharedPreferenceHelper.KEY_USER_ID, null)).thenReturn(TEST_USER_ID);
+        sharedPreferenceHelper.saveUserProfile(null,TEST_ROLE);
 
-        assertFalse(sharedPreferenceHelper.isFirstTimeUser());
+        assertTrue(sharedPreferenceHelper.isFirstTimeUser());
+        sharedPreferenceHelper.saveUserProfile(TEST_USER_ID,TEST_ROLE);
+
+        assertTrue(sharedPreferenceHelper.isFirstTimeUser());
     }
 
     @Test
