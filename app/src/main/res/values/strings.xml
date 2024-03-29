@@ -95,6 +95,8 @@
     <string name="milestone">Milestone</string>
     <string name="blank_numbers">_ _ _</string>
     <string name="images">Images</string>
+    <string name="default_notification_channel_id">your_notification_channel_id</string>
+
 
 
 </resources>
