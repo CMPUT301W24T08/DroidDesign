@@ -14,7 +14,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.UUID;
 
 public class QRcode {
-    private String qrId, eventId, eventName, type;
+    private String qrId, eventId, type;
     private Bitmap mQrBitmap;
 
     public QRcode(String eventId, String type) {
@@ -73,14 +73,6 @@ public class QRcode {
 
     public void setQrId(String qrId) {
         this.qrId = qrId;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
     }
 
     public String getEventId() {

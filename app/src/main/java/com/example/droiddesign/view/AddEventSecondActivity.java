@@ -147,10 +147,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
                 event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
             } else if (requestCode == GENERATE_QR_REQUEST) {
                 String shareQrUrl = data.getStringExtra("shareQrUrl");
+                String shareQrId = data.getStringExtra("shareQrId");
                 String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                String checkInQrId = data.getStringExtra("checkInId");
                 Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
-                event.setShareQrCode(shareQrUrl);
-                event.setCheckInQrCode(checkInQrUrl);
+                event.setShareQrCode(shareQrUrl, shareQrId);
+                event.setCheckInQrCode(checkInQrUrl, checkInQrId);
             }
         }
     }
@@ -200,7 +202,5 @@ public class AddEventSecondActivity extends AppCompatActivity {
         startActivity(detailsIntent);
 
         finish();
-
     }
-
 }
