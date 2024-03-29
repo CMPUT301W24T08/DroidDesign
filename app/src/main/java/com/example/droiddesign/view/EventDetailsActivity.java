@@ -142,7 +142,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, CurrentAttendanceActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.announcement_menu) {
-				intent = new Intent(this, SendAnnouncementFragment.class);
+				intent = new Intent(this, SendAnnouncementActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			}else if (id == R.id.sign_ups_menu) {
 				intent = new Intent(this, SignedUpUsersActivity.class);

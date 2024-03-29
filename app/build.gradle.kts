@@ -94,6 +94,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.squareup.okhttp3:okhttp:")
+    implementation ("com.google.firebase:firebase-messaging-directboot:23.4.1")
 
 
 
