@@ -4,17 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -109,29 +105,19 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+		FirebaseUser user = mAuth.getCurrentUser();
+		User newUser = new User(user.getUid(), role, false);
+		String userId = user.getUid();
+		String userEmail = user.getEmail();
 		// Save user profile to SharedPreferences
+		prefsHelper.saveUserProfile(userId, role, userEmail);
+
 		UsersDB userdb = new UsersDB(firestore);
-		mAuth.signInAnonymously()
-				.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-					@Override
-					public void onComplete(@NonNull Task<AuthResult> task) {
-						if (task.isSuccessful()) {
-							FirebaseUser user = mAuth.getCurrentUser();
-							User newUser = null;
-							if (user != null) {
-								newUser = new User(user.getUid(), role);
-								// Since it's an anonymous sign-in, email is set to null
-								newUser.setEmail(null);
-								newUser.setRegistered(String.valueOf(true));
-								// Save only user ID and role to SharedPreferences
-								prefsHelper.saveUserProfile(user.getUid(), role, null); // Email set to null
-								assert newUser != null;
-								userdb.addUser(newUser);
-							}
-						}
-					}
-				});
+		// Create user in Firestore without specifying the user ID
+//		newUser = new User(null, role, false);
+		// Add the user to Firestore and listen for success
+		userdb.addUser(newUser);
+
 
 		navigateToEventMenu();
 
