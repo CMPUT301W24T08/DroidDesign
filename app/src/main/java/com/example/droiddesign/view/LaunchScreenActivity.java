@@ -1,22 +1,14 @@
 package com.example.droiddesign.view;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * The LaunchScreenActivity class represents the main entry point for the application. It handles user authentication and navigation to different parts of the app based on user actions.
@@ -62,23 +54,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
             }
         });
 
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            System.out.println("Fetching FCM registration token failed");
-                            return;
-                        }
 
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        System.out.println(token);
-                        Log.d(TAG, "Refreshed token: " + token);
-                        // Log and toast
-                        Toast.makeText(LaunchScreenActivity.this, token, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 
