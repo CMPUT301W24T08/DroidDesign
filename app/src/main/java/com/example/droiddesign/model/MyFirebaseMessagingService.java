@@ -57,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(this, channelId)
-						.setSmallIcon(R.drawable.conclave_logo_large_dark)
+						.setSmallIcon(R.mipmap.conclavelogo_round)
 						.setContentTitle("New Event Message")
 						.setContentText(messageBody)
 						.setAutoCancel(true)
