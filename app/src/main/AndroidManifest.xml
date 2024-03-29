@@ -20,6 +20,9 @@
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
         <activity
+            android:name=".view.SignUpsActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.AddProfilePictureActivity"
             android:exported="false" />
         <activity
@@ -52,7 +55,9 @@
         <activity
             android:name=".view.EventMenuActivity"
             android:exported="true" />
-        <activity android:name=".view.EventDetailsActivity" android:exported="true"/>
+        <activity
+            android:name=".view.EventDetailsActivity"
+            android:exported="true" />
         <activity android:name=".view.AppSettingsActivity" />
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />

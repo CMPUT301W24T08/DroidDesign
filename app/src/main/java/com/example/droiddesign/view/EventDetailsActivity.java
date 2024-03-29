@@ -145,7 +145,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, SendAnnouncementFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			}else if (id == R.id.sign_ups_menu) {
-				intent = new Intent(this, SignUpsFragment.class);
+				intent = new Intent(this, SignUpsActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.geo_check_menu) {
 				intent = new Intent(this, GeoCheckFragment.class);
