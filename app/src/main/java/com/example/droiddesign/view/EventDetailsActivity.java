@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +63,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 
+
 	/**
 	 * Initializes the activity, sets the content view, and initiates the process to fetch and display event details.
 	 * Sets up the interaction logic for UI elements like back button and sign up button.
@@ -68,8 +72,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+
 		setContentView(R.layout.activity_event_details);
 		String origin = getIntent().getStringExtra("ORIGIN");
+
+		eventId = getIntent().getStringExtra("EVENT_ID");
+		if (eventId == null || eventId.isEmpty()) {
+			Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -79,6 +93,27 @@ public class EventDetailsActivity extends AppCompatActivity {
 			userRole = prefsHelper.getRole();
 		} //At this point, user details are valid
 
+
+
+		Button signUpButton = findViewById(R.id.sign_up_button);
+		DocumentReference userRef = db.collection("Users").document(userId);
+		userRef.get().addOnSuccessListener(documentSnapshot -> {
+			if (documentSnapshot.exists()) {
+				User user = documentSnapshot.toObject(User.class);
+				if (user != null) {
+					boolean isEventManaged = user.getManagedEventsList().contains(eventId);
+					if ("SignedEventsActivity".equals(origin) || isEventManaged || "EventMenuActivity".equals(origin)) {
+						Log.d("EventDetailsActivity", "Origin: " + origin);
+						signUpButton.setVisibility(View.GONE);
+					} else {
+						signUpButton.setVisibility(View.VISIBLE);
+					}
+				}
+			}
+		});
+
+
+
 		ImageButton menuButton = findViewById(R.id.button_menu);
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -87,6 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
+
 
 			// Check if eventId is in user.manageEventList
 			DocumentReference userRef = db.collection("Users").document(userId);
@@ -108,12 +144,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
 		}
 
-		eventId = getIntent().getStringExtra("EVENT_ID");
-		if (eventId == null || eventId.isEmpty()) {
-			Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
+
+
+		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
+
 
 		 Event.loadFromFirestore(eventId, event -> {
             if (event != null) {
@@ -135,12 +169,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 		});
 
 
-		Button signUpButton = findViewById(R.id.sign_up_button);
+
 		signUpButton.setOnClickListener(v -> {
 			if (!isUserSignedUp) {
 				signUpForEvent();
 			} else {
-				Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -163,6 +197,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, GeoCheckFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.share_qr_menu) {
+				intent = new Intent(this, ShareQrFragment.class);
+				intent.putExtra("EVENT_ID", eventId);
+			} else if (id == R.id.remove_event_menu){
 				// Retrieve the QR code URI from the event
 				Event.loadFromFirestore(eventId, event -> {
 					if (event != null) {
@@ -186,10 +223,30 @@ public class EventDetailsActivity extends AppCompatActivity {
 				});
 			}else if (id == R.id.remove_event_menu){
 				// get event and remove event id from managelist of User TODO: implementation slide to delete
-			}else if (id == R.id.remove_event_poster_menu){
+			} else if (id == R.id.remove_event_poster_menu){
 				// get event id and remove the poster of the event.poster  TODO: implementation
-			}else if(id == R.id.edit_event_details_menu){
+			} else if(id == R.id.edit_event_details_menu){
 				intent = new Intent(this, EditEventFragment.class);
+			} else if (id == R.id.remove_event_poster){
+				eventRef.update("imagePosterId", null)
+						.addOnSuccessListener(aVoid -> {
+							Toast.makeText(this, "Event poster removed successfully.", Toast.LENGTH_SHORT).show();
+							recreate();
+						})
+						.addOnFailureListener(e -> {
+							Toast.makeText(this, "Failed to remove event poster.", Toast.LENGTH_SHORT).show();
+						});
+
+			} else if (id == R.id.remove_event){
+				eventRef.delete()
+						.addOnSuccessListener(aVoid -> {
+							Toast.makeText(this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
+							finish(); // Close the activity or navigate as needed
+						})
+						.addOnFailureListener(e -> {
+							Toast.makeText(this, "Failed to delete event.", Toast.LENGTH_SHORT).show();
+						});
+				finish();
 			}
 
 			if (intent != null) {
@@ -200,6 +257,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 			return true;
 		});
 	}
+
 	/**
 	 * Toggles the visibility of the navigation menu.
 	 */
@@ -239,36 +297,60 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 */
 
 	private void signUpForEvent() {
-		// Assuming you have a method to get the current User (user)
+
 		isUserSignedUp = true;
-		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		String currentUserId = getCurrentUserId(); // Ensure this method gets the current user ID
+		if (currentUserId == null || currentUserId.isEmpty()) {
+			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
+			return;
+		}
 
-
+		// First, check the event details to see if signing up is possible
 		db.collection("EventsDB").document(eventId)
 				.get()
-				.addOnSuccessListener(eventDocumentSnapshot -> {
-					Event event = eventDocumentSnapshot.toObject(Event.class);
-					if (event != null && event.getAttendeeList().size() < event.getSignupLimit()) {
-						// There's room to sign up, now fetch the user and update their signedEventsList
-						db.collection("Users").document(currentUserId)
-								.get()
-								.addOnSuccessListener(userDocumentSnapshot -> {
-									User user = userDocumentSnapshot.toObject(User.class);
-									if (user != null) {
-										user.getSignedEventsList().add(eventId);
-										db.collection("Users").document(currentUserId).set(user.toMap())
-												.addOnSuccessListener(aVoid -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
-												.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Sign up failed.", Toast.LENGTH_SHORT).show());
-									}
-								})
-								.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
+				.addOnSuccessListener(eventDocument -> {
+					if (eventDocument.exists()) {
+						Event event = eventDocument.toObject(Event.class);
+						if (event != null) {
+							List<String> attendeeList = event.getAttendeeList() != null ? event.getAttendeeList() : new ArrayList<>();
+
+
+							if (event.getSignupLimit() == null || event.getSignupLimit() <= 0 || attendeeList.size() < event.getSignupLimit()) {
+
+								// Add the current user to the attendee list and update the event
+								attendeeList.add(currentUserId);
+								db.collection("EventsDB").document(eventId)
+										.update("attendeeList", attendeeList)
+										.addOnSuccessListener(aVoid -> {
+
+											// Fetch and update the user's signed events list
+											db.collection("Users").document(currentUserId)
+													.get()
+													.addOnSuccessListener(userDocument -> {
+														User user = userDocument.toObject(User.class);
+														if (user != null) {
+															List<String> signedEvents = user.getSignedEventsList() != null ? user.getSignedEventsList() : new ArrayList<>();
+															signedEvents.add(eventId);
+															db.collection("Users").document(currentUserId)
+																	.update("signedEventsList", signedEvents)
+																	.addOnSuccessListener(aVoidUser -> Toast.makeText(EventDetailsActivity.this, "Signed up successfully.", Toast.LENGTH_SHORT).show())
+																	.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to update user's signed events.", Toast.LENGTH_SHORT).show());
+														}
+													})
+													.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show());
+										})
+										.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to update event attendees.", Toast.LENGTH_SHORT).show());
+							} else {
+								Toast.makeText(this, "Signup limit reached.", Toast.LENGTH_LONG).show();
+							}
+						} else {
+							Toast.makeText(this, "Event data is invalid.", Toast.LENGTH_LONG).show();
+						}
 					} else {
-						// Event is full, show a toast message
-						Toast.makeText(EventDetailsActivity.this, "Event is full.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(this, "Event does not exist.", Toast.LENGTH_LONG).show();
 					}
 				})
 				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch event data.", Toast.LENGTH_SHORT).show());
-
 
 	}
 }
