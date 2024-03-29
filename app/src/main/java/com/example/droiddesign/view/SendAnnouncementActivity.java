@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SendAnnouncementFragment extends AppCompatActivity {
+public class SendAnnouncementActivity extends AppCompatActivity {
 	private Button sendButton;
 	private TextView titleEditText;
 	private TextView messageEditText;
@@ -149,7 +149,7 @@ public class SendAnnouncementFragment extends AppCompatActivity {
 	}
 
 	private void refreshActivity() {
-		Intent intent = new Intent(this, SendAnnouncementFragment.class);
+		Intent intent = new Intent(this, SendAnnouncementActivity.class);
 		intent.putExtra("EVENT_ID", eventId); // Pass the event ID back to the activity
 		finish();
 		startActivity(intent);
