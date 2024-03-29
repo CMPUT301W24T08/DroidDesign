@@ -1,9 +1,6 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
@@ -29,13 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Activity class that presents the details of an event.
@@ -124,18 +113,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
 
 
-			// Check if eventId is in user.manageEventList
-			DocumentReference userRef = db.collection("Users").document(userId);
-			userRef.get().addOnSuccessListener(documentSnapshot -> {
-				if (documentSnapshot.exists()) {
-					User user = documentSnapshot.toObject(User.class);
-					if (user != null) {
-						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
-						findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
-					}
-				}
-			});
-
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
 			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
@@ -149,7 +126,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
 
 
-		 Event.loadFromFirestore(eventId, event -> {
+		Event.loadFromFirestore(eventId, event -> {
             if (event != null) {
                 populateEventDetails(event);
             } else {
@@ -200,28 +177,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, ShareQrFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.remove_event_menu){
-				// Retrieve the QR code URI from the event
-				Event.loadFromFirestore(eventId, event -> {
-					if (event != null) {
-						String shareQrUri = event.getShareQrCode();
-						if (shareQrUri != null && !shareQrUri.isEmpty()) {
-							// Create an Intent to share the image
-							Intent shareIntent = new Intent(Intent.ACTION_SEND);
-							shareIntent.setType("image/png");
-							shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(shareQrUri));
-
-							// Create a chooser intent
-							Intent chooserIntent = Intent.createChooser(shareIntent, "Share QR code");
-
-							// Start the activity for result
-							startActivity(chooserIntent);
-						} else {
-							Toast.makeText(EventDetailsActivity.this, "QR code not available for this event.", Toast.LENGTH_SHORT).show();
-						}
-						toggleNavigationMenu();
-					}
-				});
-			}else if (id == R.id.remove_event_menu){
 				// get event and remove event id from managelist of User TODO: implementation slide to delete
 			} else if (id == R.id.remove_event_poster_menu){
 				// get event id and remove the poster of the event.poster  TODO: implementation
@@ -352,5 +307,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 				})
 				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch event data.", Toast.LENGTH_SHORT).show());
 
+	}
+
+
+	/**
+	 * Retrieves the ID of the currently logged-in user from FirebaseAuth.
+	 * @return The current user's ID or null if no user is logged in.
+	 */
+
+	private String getCurrentUserId() {
+		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+		return (user != null) ? user.getUid() : null;
 	}
 }
