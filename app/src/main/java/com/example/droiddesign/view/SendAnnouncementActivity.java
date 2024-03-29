@@ -15,10 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +32,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SendAnnouncementActivity extends AppCompatActivity {
 	private Button sendButton;
@@ -160,21 +174,72 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnSuccessListener(documentSnapshot -> {
 					List<String> attendeeList = (List<String>) documentSnapshot.get("attendeeList");
 					if (attendeeList != null) {
+						// Prepare the list of tokens for the attendees
+						List<String> tokens = new ArrayList<>();
 						for (String userId : attendeeList) {
-							// Assuming there's a 'Notifications' collection for each user where we can add a new notification
-							Map<String, Object> notificationData = new HashMap<>();
-							notificationData.put("message", "New announcement from the organizer!");
-							notificationData.put("title", title);
-							notificationData.put("eventId", eventId);
-							notificationData.put("timestamp", FieldValue.serverTimestamp()); // Use server timestamp for consistency
-
-							firestore.collection("Users").document(userId)
-									.collection("Notifications")
-									.add(notificationData)
-									.addOnFailureListener(e -> Log.e("NotifyAttendees", "Failed to notify user: " + userId));
+							// Fetch each user's token and add it to the tokens list
+							firestore.collection("Users").document(userId).get()
+									.addOnSuccessListener(userSnapshot -> {
+										String token = userSnapshot.getString("fcmToken");
+										if (token != null && !token.isEmpty()) {
+											tokens.add(token);
+											if (tokens.size() == attendeeList.size()) {
+												// All tokens are collected, send them to your server/cloud function to dispatch notifications
+												sendNotificationsToTokens(title, tokens);
+											}
+										}
+									});
 						}
 					}
 				})
 				.addOnFailureListener(e -> Log.e("NotifyAttendees", "Failed to get attendee list for event: " + eventId));
 	}
+	private void sendNotificationsToTokens(String title, List<String> tokens) {
+		// URL of your endpoint or cloud function
+		String url = "https://your-server-or-cloud-function-endpoint.com/send-notification";
+
+		// Prepare the payload
+		JSONObject payload = new JSONObject();
+		try {
+			payload.put("title", title);
+			JSONArray tokensJsonArray = new JSONArray(tokens);
+			payload.put("tokens", tokensJsonArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		// Create the request body
+		RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), payload.toString());
+
+		// Build the request
+		Request request = new Request.Builder()
+				.url(url)
+				.post(requestBody)
+				.build();
+
+		// Create a new OkHttpClient instance
+		OkHttpClient client = new OkHttpClient();
+
+		// Asynchronously send the request
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(@NotNull Call call, @NotNull IOException e) {
+				// Handle failure
+				Log.e("sendNotificationsToTokens", "Failed to send notifications", e);
+			}
+
+			@Override
+			public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+				if (!response.isSuccessful()) {
+					// Handle the failure
+					Log.e("sendNotificationsToTokens", "Failed to send notifications: " + response);
+				} else {
+					// Handle success
+					Log.d("sendNotificationsToTokens", "Notifications sent successfully");
+				}
+			}
+		});
+	}
+
 }
