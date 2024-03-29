@@ -1,6 +1,5 @@
 package com.example.droiddesign.view;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -139,12 +138,11 @@ public class BasicLoginFragment extends DialogFragment {
         Button profilePicButton = view.findViewById(R.id.button_profile_picture);
         EventBus.getDefault().register(this);
 
-
-        // Set up the role spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.role_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(requireContext(),
+                R.layout.spinner_item, getResources().getStringArray(R.array.role_options));
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
+
 
         // Set click listener for create account button
         createAccountButton.setOnClickListener(v -> {
