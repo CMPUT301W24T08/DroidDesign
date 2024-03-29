@@ -60,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		});
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "annoucementChannel")
 				.setSmallIcon(R.mipmap.conclavelogo_round).setContentTitle("New Announcement")
-				.setContentText(body).setAutoCancel(true);
+				.setContentText(body).setAutoCancel(true).setContentIntent(pendingIntent);
 
 		NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
 
