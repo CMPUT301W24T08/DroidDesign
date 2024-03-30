@@ -37,45 +37,62 @@ public class SignedEventsActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> finish());
 
-        fetchSignedEventsIds();
+        try {
+            fetchSignedEventsIds();
+        } catch (Exception e) {
+            Log.e("SignedEventsActivity", "Error in fetchSignedEventsIds", e);
+        }
     }
 
     private void fetchSignedEventsIds() {
-        SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
-        String currentUserId = prefsHelper.getUserId();
-        db.collection("Users").document(currentUserId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        User user = task.getResult().toObject(User.class);
-                        if (user != null && user.getSignedEventsList() != null) {
-                            signedEventsIds = user.getSignedEventsList();
-                            fetchEventsDetails();
+        try {
+            SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
+            String currentUserId = prefsHelper.getUserId();
+            db.collection("Users").document(currentUserId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            User user = task.getResult().toObject(User.class);
+                            if (user != null && user.getSignedEventsList() != null) {
+                                signedEventsIds = user.getSignedEventsList();
+                                try {
+                                    fetchEventsDetails();
+                                } catch (Exception e) {
+                                    Log.e("SignedEventsActivity", "Error in fetchEventsDetails", e);
+                                }
+                            }
+                        } else {
+                            Log.w("SignedEventsActivity", "Error getting signed events list.", task.getException());
                         }
-                    } else {
-                        Log.w("SignedEventsActivity", "Error getting signed events list.", task.getException());
-                    }
-                });
+                    });
+        } catch (Exception e) {
+            Log.e("SignedEventsActivity", "Error in fetchSignedEventsIds", e);
+            throw e;
+        }
     }
 
     private void fetchEventsDetails() {
         if (signedEventsIds != null && !signedEventsIds.isEmpty()) {
             for (String eventId : signedEventsIds) {
-                db.collection("EventsDB").document(eventId)
-                        .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                Event event = task.getResult().toObject(Event.class);
-                                if (event != null) {
-                                    signedEventsList.add(event);
-                                    if (signedEventsList.size() == signedEventsIds.size()) {
-                                        updateUI(signedEventsList);
+                try {
+                    db.collection("EventsDB").document(eventId)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    Event event = task.getResult().toObject(Event.class);
+                                    if (event != null) {
+                                        signedEventsList.add(event);
+                                        if (signedEventsList.size() == signedEventsIds.size()) {
+                                            updateUI(signedEventsList);
+                                        }
                                     }
+                                } else {
+                                    Log.w("SignedEventsActivity", "Error fetching event details.", task.getException());
                                 }
-                            } else {
-                                Log.w("SignedEventsActivity", "Error fetching event details.", task.getException());
-                            }
-                        });
+                            });
+                } catch (Exception e) {
+                    Log.e("SignedEventsActivity", "Error fetching event details for event ID: " + eventId, e);
+                }
             }
         }
     }
