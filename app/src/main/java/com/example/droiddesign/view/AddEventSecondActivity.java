@@ -21,51 +21,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
-/**
- * The AddEventSecondActivity class is responsible for collecting additional details for a new event creation process.
- * It allows the organizer to upload an image for the event, choose to generate a new QR code or use an existing one,
- * and finalize event details. After completion, the event data is saved to Firestore and the user is directed
- * to the EventDetailsActivity with the newly created event.
- */
 public class AddEventSecondActivity extends AppCompatActivity {
-
-    /**
-     * Request code for triggering an image upload intent.
-     */
     private static final int UPLOAD_IMAGE_REQUEST = 1;
-
-    /**
-     * Request code for triggering a QR code generation intent.
-     */
     private static final int GENERATE_QR_REQUEST = 2;
 
-    /**
-     * Event object to store and manage the event details being added.
-     */
-
     private Event event;
-    /**
-     * Instance of FirebaseFirestore to interact with Firestore database.
-     */
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    /**
-     * Initializes the activity for the second step of adding a new event.
-     * Sets up UI components and retrieves event details passed from the previous activity.
-     * Initializes a new Event object and assigns a unique ID.
-     *
-     * @param savedInstanceState Contains data supplied in onSaveInstanceState(Bundle) or null if no data was supplied.
-     */
     @Override
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_second);
 
         event = new Event();
-
         String uniqueID = UUID.randomUUID().toString();
         event.setEventId(uniqueID);
 
@@ -88,119 +56,109 @@ public class AddEventSecondActivity extends AppCompatActivity {
         });
 
         Button cancelButton = findViewById(R.id.button_cancel);
-        cancelButton.setOnClickListener(view -> {
-            finish();
-        });
+        cancelButton.setOnClickListener(view -> finish());
     }
 
-    /**
-     * Populates the Event object with data received from the Intent extras.
-     * Sets the event name, location, start time, end time, and date.
-     *
-     * @param intent The intent carrying the event details from the previous activity.
-     */
     private void populateEventFromIntent(Intent intent) {
-        event.setEventName(intent.getStringExtra("eventName"));
-        event.setEventLocation(intent.getStringExtra("eventLocation"));
-        event.setStartTime(intent.getStringExtra("startTime"));
-        event.setEndTime(intent.getStringExtra("endTime"));
-        event.setEventDate(intent.getStringExtra("startDate"));
-        event.setGeolocation(intent.getStringExtra("eventLocation"));
+        try {
+            event.setEventName(intent.getStringExtra("eventName"));
+            event.setEventLocation(intent.getStringExtra("eventLocation"));
+            event.setStartTime(intent.getStringExtra("startTime"));
+            event.setEndTime(intent.getStringExtra("endTime"));
+            event.setEventDate(intent.getStringExtra("startDate"));
+            event.setGeolocation(intent.getStringExtra("eventLocation"));
+        } catch (Exception e) {
+            Log.e("AddEventSecondActivity", "Error populating event from intent", e);
+            Toast.makeText(this, "Error loading event details", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    /**
-     * Sets up the dropdown menu for QR code generation options.
-     * Configures the dropdown with "Generate New QR" and "Use Existing QR" options
-     * and sets an item click listener to handle the selection.
-     *
-     * @param dropdownMenu The AutoCompleteTextView that acts as the dropdown menu.
-     */
     private void setupDropdownMenu(AutoCompleteTextView dropdownMenu) {
-        String[] listItems = new String[]{"Generate New QR", "Use Existing QR"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, listItems);
-        dropdownMenu.setAdapter(adapter);
+        try {
+            String[] listItems = new String[]{"Generate New QR", "Use Existing QR"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, listItems);
+            dropdownMenu.setAdapter(adapter);
 
-        dropdownMenu.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedItem = (String) parent.getItemAtPosition(position);
-            if ("Generate New QR".equals(selectedItem)) {
-                Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
-                qrGeneratorIntent.putExtra("eventID", event.getEventId());
-                startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
-            }
-        });
+            dropdownMenu.setOnItemClickListener((parent, view, position, id) -> {
+                String selectedItem = (String) parent.getItemAtPosition(position);
+                if ("Generate New QR".equals(selectedItem)) {
+                    Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
+                    qrGeneratorIntent.putExtra("eventID", event.getEventId());
+                    startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("AddEventSecondActivity", "Error setting up dropdown menu", e);
+            Toast.makeText(this, "Error setting up QR options", Toast.LENGTH_SHORT).show();
+        }
     }
-    /**
-     * Processes the result returned by any activities launched for result.
-     * Handles results for both image poster upload and QR code generation.
-     *
-     * @param requestCode The integer request code originally supplied to startActivityForResult(),
-     *                    allowing you to identify who this result came from.
-     * @param resultCode  The integer result code returned by the child activity through its setResult().
-     * @param data        An Intent, which can return result data to the caller (various data can be attached as Extras).
-     */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == UPLOAD_IMAGE_REQUEST) {
-                event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
-            } else if (requestCode == GENERATE_QR_REQUEST) {
-                String shareQrUrl = data.getStringExtra("shareQrUrl");
-                String shareQrId = data.getStringExtra("shareQrId");
-                String checkInQrUrl = data.getStringExtra("checkInQrUrl");
-                String checkInQrId = data.getStringExtra("checkInId");
-                Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
-                event.setShareQrCode(shareQrUrl, shareQrId);
-                event.setCheckInQrCode(checkInQrUrl, checkInQrId);
+            try {
+                if (requestCode == UPLOAD_IMAGE_REQUEST) {
+                    event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
+                } else if (requestCode == GENERATE_QR_REQUEST) {
+                    String shareQrUrl = data.getStringExtra("shareQrUrl");
+                    String shareQrId = data.getStringExtra("shareQrId");
+                    String checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                    String checkInQrId = data.getStringExtra("checkInId");
+                    Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
+                    event.setShareQrCode(shareQrUrl, shareQrId);
+                    event.setCheckInQrCode(checkInQrUrl, checkInQrId);
+                }
+            } catch (Exception e) {
+                Log.e("AddEventSecondActivity", "Error processing activity result", e);
+                Toast.makeText(this, "Error processing result", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    /**
-     * Saves the event to Firestore. Gathers additional event details from the user input,
-     * validates them, and calls the Event object's saveToFirestore method.
-     * If successful, transitions to the EventDetailsActivity displaying the newly added event.
-     */
     private void saveEvent() {
-        TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
-        String eventDescription = eventDescriptionTextView.getText().toString();
-        Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
-        event.setDescription(eventDescription);
+        try {
+            TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
+            String eventDescription = eventDescriptionTextView.getText().toString();
+            Log.d("AddEvent", "Event Description: '" + eventDescription + "'");
+            event.setDescription(eventDescription);
 
-        TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
-        TextView milestoneTextView = findViewById(R.id.input_number_milestone);
-        String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
-        String milestoneString = milestoneTextView.getText().toString().trim();
+            TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
+            String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
 
-        if (!maxAttendeesString.isEmpty()) {
-            try {
-                int maxAttendees = Integer.parseInt(maxAttendeesString);
-                event.setSignupLimit(maxAttendees);
-            } catch (NumberFormatException e) {
-                Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
-                return;
+            if (!maxAttendeesString.isEmpty()) {
+                try {
+                    int maxAttendees = Integer.parseInt(maxAttendeesString);
+                    event.setSignupLimit(maxAttendees);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+
+            // Add user event to their managedEventsList
+            SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
+            String currentUserId = prefsHelper.getUserId();
+            event.setOrganizerOwnerId(currentUserId);
+            event.saveToFirestore();
+
+            DocumentReference userRef = db.collection("Users").document(currentUserId);
+            userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()))
+                    .addOnSuccessListener(aVoid -> Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Log.e("AddEventSecondActivity", "Error adding event to user's managedEventsList", e));
+
+            Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
+            detailsIntent.putExtra("EVENT_ID", event.getEventId());
+            detailsIntent.putExtra("ORIGIN", "AddEventSecondActivity");
+            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(detailsIntent);
+
+            finish();
+        } catch (Exception e) {
+            Log.e("AddEventSecondActivity", "Error saving event", e);
+            Toast.makeText(AddEventSecondActivity.this, "Error saving event", Toast.LENGTH_SHORT).show();
         }
-
-        // Add user event to their managedEventsList
-        SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
-        String currentUserId = prefsHelper.getUserId();
-        event.setOrganizerOwnerId(currentUserId);
-        event.saveToFirestore();
-
-
-        DocumentReference userRef = db.collection("Users").document(currentUserId);
-        userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()));
-
-        Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show();
-
-        Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
-        detailsIntent.putExtra("EVENT_ID", event.getEventId());
-        detailsIntent.putExtra("ORIGIN", "AddEventSecondActivity");
-        detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(detailsIntent);
-
-        finish();
     }
 }
+
