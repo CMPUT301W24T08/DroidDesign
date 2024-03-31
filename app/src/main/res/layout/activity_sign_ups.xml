@@ -6,14 +6,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/background_light"
+    android:background="@drawable/gradient_background"
     tools:context=".view.SignUpsActivity">
+
+    <TextView
+        android:id="@+id/attendee_names_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Attendee Names"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/opensans_semibold"
+        android:padding="10dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white" />
 
     <ListView
         android:id="@+id/attendance_names"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white" />
+    <TextView
+        android:id="@+id/attendee_ids_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Attendee IDS"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/opensans_semibold"
+        android:padding="10dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/white" />
     <ListView
         android:id="@+id/attendance_ids"
         android:layout_width="match_parent"
