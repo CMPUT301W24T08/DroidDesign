@@ -3,6 +3,7 @@ package com.example.droiddesign.view;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -16,10 +17,18 @@ import android.widget.Toast;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
+import com.example.droiddesign.model.AttendanceDB;
 import com.example.droiddesign.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import android.location.Location;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 
 /**
  * An activity that handles QR code scanning using the camera.
@@ -32,6 +41,11 @@ public class QrCodeScanActivity extends AppCompatActivity {
      * Binding instance for the activity_qr_code_scan layout.
      */
     private ActivityQrCodeScanBinding binding;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private AttendanceDB attendanceDB;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     /**
      * An activity result launcher for handling the permission request result for using the camera.
@@ -65,17 +79,24 @@ public class QrCodeScanActivity extends AppCompatActivity {
      */
 
     private void setResult(String contents) {
-        Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
-        intent.putExtra("EVENT_ID", contents);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-        Event.loadFromFirestore(contents, event -> {
-            if (event != null) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                event.checkInUser(userId);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    processCheckIn(contents, location);
+                } else {
+                    Toast.makeText(QrCodeScanActivity.this, "Location not available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
-        startActivity(intent);
     }
 
 
@@ -102,6 +123,8 @@ public class QrCodeScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initBinding();
         initViews();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        attendanceDB = new AttendanceDB();  // Initialize your AttendanceDB
 
         Button backButton = findViewById(R.id.cancelButton);
         backButton.setOnClickListener(v -> finish());
@@ -137,5 +160,17 @@ public class QrCodeScanActivity extends AppCompatActivity {
     private void initBinding() {
         binding = ActivityQrCodeScanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+    }
+
+    private void processCheckIn(String eventId, Location location) {
+        Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
+        intent.putExtra("EVENT_ID", eventId);
+        startActivity(intent);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        attendanceDB.checkInUser(eventId, userId, latitude, longitude);
     }
 }

@@ -106,7 +106,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
             btnCancelAdd = findViewById(R.id.button_cancel);
 
-            SwitchMaterial switchMultiDay = findViewById(R.id.switch_is_multi_day);
 
             // Initialize starting time to current time + 1hr
             Calendar startTimeCalendar = Calendar.getInstance();
@@ -122,11 +121,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             String endTimeFormatted = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(endTimeCalendar.getTime());
             btnEndTime.setText(endTimeFormatted);
 
-            switchMultiDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                btnEndDate.setEnabled(!isChecked);
-                btnEndDate.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
-                endDateText.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
-            });
+
         } catch (Exception e) {
             // Handle the exception or log it
             Log.e("ActivityAddEvent", "Error in onCreate", e);
