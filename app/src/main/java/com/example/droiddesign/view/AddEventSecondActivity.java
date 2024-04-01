@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
@@ -19,6 +22,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.Inet4Address;
 import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
@@ -27,11 +31,19 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
     private Event event;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ActivityResultLauncher<Intent> qrGeneratorLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_second);
+
+        qrGeneratorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        result.getData();
+                    }
+                });
 
         event = new Event();
         String uniqueID = UUID.randomUUID().toString();
@@ -85,6 +97,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
                     qrGeneratorIntent.putExtra("eventID", event.getEventId());
                     startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
+                } else if ("Use Existing QR".equals(selectedItem)) {
+
+
                 }
             });
         } catch (Exception e) {

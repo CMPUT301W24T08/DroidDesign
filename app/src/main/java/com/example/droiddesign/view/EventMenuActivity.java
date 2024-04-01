@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -20,6 +21,7 @@ import com.example.droiddesign.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -98,8 +100,15 @@ public class EventMenuActivity extends AppCompatActivity {
 		} else {
 			// No userId found in SharedPreferences, fetch it from FirebaseAuth
 			fetchUserRole();
-			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-			prefsHelper.saveUserProfile(userId,userRole,userEmail);
+			FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+			if (currentUser != null) {
+				userId = currentUser.getUid();
+				prefsHelper.saveUserProfile(userId, userRole, userEmail);
+			} else {
+				Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(EventMenuActivity.this, BasicLoginFragment.class);
+				startActivity(intent);
+			}
 		}
 
 		if ("Organizer".equalsIgnoreCase(userRole)) {
