@@ -74,6 +74,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -96,6 +97,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -116,6 +118,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -136,6 +139,7 @@ public class User {
 		map.put("email", email);
 		map.put("company", company);
 		map.put("phone", phone);
+		map.put("fcmToken", token);
 		map.put("profileName", profileName);
 		map.put("profilePic", profilePic);
 		map.put("signedEventsList", signedEventsList);

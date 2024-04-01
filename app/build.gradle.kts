@@ -94,7 +94,18 @@ dependencies {
 
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.squareup.okhttp3:okhttp:")
+    implementation ("com.google.firebase:firebase-messaging-directboot:23.4.1")
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
 
+    // Add these lines to your app-level build.gradle dependencies section
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    // Add the dependencies for the Firebase Cloud Messaging and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
 
 
 }

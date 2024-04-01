@@ -1,10 +1,11 @@
 package com.example.droiddesign.UnitTests;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.example.droiddesign.model.OrganizerMessage;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class OrganizerMessageTest {
 
@@ -21,8 +22,7 @@ public class OrganizerMessageTest {
     @Test
     public void constructor_initializesPropertiesCorrectly() {
         assertEquals("Constructor should initialize date correctly", testDate, organizerMessage.getDate());
-        assertEquals("Constructor should initialize text correctly", testText, organizerMessage.getText());
-        assertEquals("Constructor should initialize imageUploadedPictureID correctly", testImageUploadedPictureID, organizerMessage.getImageUploadedPictureID());
+        assertEquals("Constructor should initialize text correctly", testText, organizerMessage.getMessage());
     }
 
     @Test
@@ -35,15 +35,9 @@ public class OrganizerMessageTest {
     @Test
     public void setText_updatesTextCorrectly() {
         String newText = "Change of plans!";
-        organizerMessage.setText(newText);
-        assertEquals("setText should update text correctly", newText, organizerMessage.getText());
+        organizerMessage.setMessage(newText);
+        assertEquals("setText should update text correctly", newText, organizerMessage.getMessage());
     }
 
-    @Test
-    public void setImageUploadedPictureID_updatesImageUploadedPictureIDCorrectly() {
-        String newImageUploadedPictureID = "image456";
-        organizerMessage.setImageUploadedPictureID(newImageUploadedPictureID);
-        assertEquals("setImageUploadedPictureID should update imageUploadedPictureID correctly", newImageUploadedPictureID, organizerMessage.getImageUploadedPictureID());
-    }
 }
 

@@ -118,23 +118,31 @@ public class AddEventSecondActivity extends AppCompatActivity {
     }
 
     private void saveEvent() {
+        TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
+        String eventDescription = eventDescriptionTextView.getText().toString();
+        Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
+        event.setDescription(eventDescription);
+
+        TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
+        TextView milestoneTextView = findViewById(R.id.input_number_milestone);
+        String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
+        String milestoneString = milestoneTextView.getText().toString().trim();
+
         try {
-            TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
-            String eventDescription = eventDescriptionTextView.getText().toString();
-            Log.d("AddEvent", "Event Description: '" + eventDescription + "'");
-            event.setDescription(eventDescription);
-
-            TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
-            String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
-
-            if (!maxAttendeesString.isEmpty()) {
-                try {
-                    int maxAttendees = Integer.parseInt(maxAttendeesString);
-                    event.setSignupLimit(maxAttendees);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            int maxAttendees = Integer.parseInt(maxAttendeesString);
+            int milestone = Integer.parseInt(milestoneString);
+            event.setSignupLimit(maxAttendees);
+            event.setSignupLimit(milestone);
+        } catch (NumberFormatException e) {
+            event.setSignupLimit(null);
+            event.setSignupLimit(null);}
+        if (!maxAttendeesString.isEmpty()) {
+            try {
+                int maxAttendees = Integer.parseInt(maxAttendeesString);
+                event.setSignupLimit(maxAttendees);
+            } catch (NumberFormatException e) {
+                Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             // Add user event to their managedEventsList

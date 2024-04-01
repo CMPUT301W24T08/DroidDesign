@@ -15,21 +15,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/organizer_message_recyclerview"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="fill_parent"
+        android:maxHeight="700dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="60dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/top_menu_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_menu_bar"
-        app:layout_constraintVertical_bias="0.01" >
-
-    </androidx.recyclerview.widget.RecyclerView>
-
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.02" >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/organizer_message_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
+    </ScrollView>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_menu"
@@ -53,12 +55,9 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/bg_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/text_upcoming_events"
@@ -90,6 +89,12 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.82" />
 
     <RelativeLayout
         android:id="@+id/only_owner"
@@ -124,6 +129,7 @@
                 android:textColorHint="@color/card_bg_light_transparent"
                 android:background="@color/bg_dark_transparent_97"
                 android:padding="7dp"
+                android:layout_marginTop="5dp"
                 android:hint="Message"
                 android:inputType="textMultiLine"/>
 

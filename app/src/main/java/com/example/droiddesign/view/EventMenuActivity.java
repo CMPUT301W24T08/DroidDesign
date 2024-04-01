@@ -87,7 +87,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		CardView adminCard = findViewById(R.id.admin_card);
 		adminCard.setVisibility(View.GONE);
 
-		getFCMToken();
+		updateTokenIfNeeded();
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -216,17 +216,14 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent;
-			// Check if the user is an organizer
-//			if ("organizer".equalsIgnoreCase(userRole)) {
-//				// If the user is an organizer, navigate to EditEventActivity
-//				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
-//			} else {
-//				// For other roles, navigate to EventDetailsActivity
-//				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-//			}
 			intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
 			intent.putExtra("ORIGIN", "EventMenuActivity");
+			if ("Organizer".equalsIgnoreCase(userRole)) {
+				intent.putExtra("ORIGIN", "EventMenuActivity");
+			} else if ("Attendee".equalsIgnoreCase(userRole)) {
+				intent.putExtra("ORIGIN", "SignedEventsActivity");
+			}
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
@@ -365,11 +362,11 @@ public class EventMenuActivity extends AppCompatActivity {
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
 
-	void getFCMToken(){
+	void updateTokenIfNeeded(){
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){
 				String token = task.getResult();
-				db.collection("Users").document(userId).update("token",token)
+				db.collection("Users").document(userId).update("fcmToken",token)
 						.addOnSuccessListener(aVoid -> Log.d("UpdateToken", "Token successfully updated for user: " + userId))
 						.addOnFailureListener(e -> Log.e("UpdateToken", "Error updating token", e));
 			}

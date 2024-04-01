@@ -100,6 +100,8 @@
     <string name="admin_roles_description">As an Administrator, harness your control:\n\n    - Remove events at will\n    - Delete profiles as necessary\n    - Manage image content with precision\n    - Browse events, profiles, and images effortlessly\n\nThe top right menu bar is your friend.</string>
     <string name="delete_user_profile">Delete User Profile</string>
     <string name="proffile_pic_note">Edit or remove profile picture using the options on the image.</string>
+    <string name="default_notification_channel_id">your_notification_channel_id</string>
+
 
 
 </resources>

@@ -1,10 +1,11 @@
 package com.example.droiddesign.UnitTests;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.example.droiddesign.model.Event;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class EventUnitTest {
 
@@ -56,7 +57,7 @@ public class EventUnitTest {
 		event.setAttendeesCount(testInteger);
 		assertEquals(testInteger, event.getAttendeesCount());
 
-		event.setShareQrCode(testString);
+		event.setShareQrCode(testString, testString);
 		assertEquals(testString, event.getShareQrCode());
 
 	}

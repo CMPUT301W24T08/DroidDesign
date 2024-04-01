@@ -1,6 +1,7 @@
 package com.example.droiddesign.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +19,6 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -113,12 +112,24 @@ public class EventDetailsActivity extends AppCompatActivity {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
 
 
+			// Check if eventId is in user.manageEventList
+			userRef.get().addOnSuccessListener(documentSnapshot -> {
+				if (documentSnapshot.exists()) {
+					User user = documentSnapshot.toObject(User.class);
+					if (user != null) {
+						boolean isEventManaged = user.getManagedEventsList().contains(eventId);
+						findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : isEventManaged ? View.GONE : View.VISIBLE);
+					}
+				}
+			});
+      
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
 			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
 
 		} else { // Default to attendee if no role or attendee role
 			navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+			findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : View.VISIBLE);
 		}
 
 
@@ -165,7 +176,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, CurrentAttendanceActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.announcement_menu) {
-				intent = new Intent(this, SendAnnouncementFragment.class);
+				intent = new Intent(this, SendAnnouncementActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			}else if (id == R.id.sign_ups_menu) {
 				intent = new Intent(this, SignedUpUsersActivity.class);
@@ -254,7 +265,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 	private void signUpForEvent() {
 
 		isUserSignedUp = true;
-		String currentUserId = getCurrentUserId(); // Ensure this method gets the current user ID
+		String currentUserId = userId;// Ensure this method gets the current user ID
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
