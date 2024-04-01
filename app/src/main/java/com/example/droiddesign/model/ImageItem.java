@@ -25,4 +25,5 @@ public class ImageItem {
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
 	}
+
 }
