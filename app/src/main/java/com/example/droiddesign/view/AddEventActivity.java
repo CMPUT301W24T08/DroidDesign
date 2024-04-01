@@ -2,6 +2,7 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -75,53 +76,62 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
-        // Get event name and location as Strings
-        TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-        TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
-
-        // Initialize Start date button to have the current date + 1 day
-        btnStartDate = findViewById(R.id.button_start_date);
-        Calendar currentDate = Calendar.getInstance();
-        Calendar startDate = (Calendar) currentDate.clone();
-        startDate.add(Calendar.DATE, 1);
-        String startDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(startDate.getTime());
-        btnStartDate.setText(startDateFormatted);
-
-        // Set default button behaviour to gone and set button to display current date + 2 days
-        TextView endDateText = findViewById(R.id.textView3);
-        Calendar endDate = (Calendar) currentDate.clone();
-        endDate.add(Calendar.DATE, 2);
-        String endDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(endDate.getTime());
-        btnEndDate = findViewById(R.id.button_end_date);
-        btnEndDate.setText(endDateFormatted);
-        btnEndDate.setVisibility(View.GONE);
-        endDateText.setVisibility(View.GONE);
-
-        btnStartTime = findViewById(R.id.button_start_time);
-        btnEndTime = findViewById(R.id.button_end_time);
-
         Button btnCancelAdd = findViewById(R.id.button_cancel);
 
-        SwitchMaterial switchMultiDay = findViewById(R.id.switch_is_multi_day);
+        try {
+            // Get event name and location as Strings
+            TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
+            TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
-        // Initialize starting time to current time + 1hr
-        startTimeCalendar.add(Calendar.HOUR_OF_DAY, 1);
-        startTimeCalendar.set(Calendar.MINUTE, 0);
-        String startTimeFormatted = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(startTimeCalendar.getTime());
-        btnStartTime.setText(startTimeFormatted);
+            // Initialize Start date button to have the current date + 1 day
+            btnStartDate = findViewById(R.id.button_start_date);
+            Calendar currentDate = Calendar.getInstance();
+            Calendar startDate = (Calendar) currentDate.clone();
+            startDate.add(Calendar.DATE, 1);
+            String startDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(startDate.getTime());
+            btnStartDate.setText(startDateFormatted);
 
-        // Initialize ending time to current time + 2hr
-        endTimeCalendar.add(Calendar.HOUR_OF_DAY, 2);
-        endTimeCalendar.set(Calendar.MINUTE, 0);
-        String endTimeFormatted = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(endTimeCalendar.getTime());
-        btnEndTime.setText(endTimeFormatted);
+            // Set default button behaviour to gone and set button to display current date + 2 days
+            TextView endDateText = findViewById(R.id.textView3);
+            Calendar endDate = (Calendar) currentDate.clone();
+            endDate.add(Calendar.DATE, 2);
+            String endDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(endDate.getTime());
+            btnEndDate = findViewById(R.id.button_end_date);
+            btnEndDate.setText(endDateFormatted);
+            btnEndDate.setVisibility(View.GONE);
+            endDateText.setVisibility(View.GONE);
 
-        switchMultiDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            btnEndDate.setEnabled(!isChecked);
-            btnEndDate.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
-            endDateText.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
-        });
+            btnStartTime = findViewById(R.id.button_start_time);
+            btnEndTime = findViewById(R.id.button_end_time);
 
+            btnCancelAdd = findViewById(R.id.button_cancel);
+
+            SwitchMaterial switchMultiDay = findViewById(R.id.switch_is_multi_day);
+
+            // Initialize starting time to current time + 1hr
+            Calendar startTimeCalendar = Calendar.getInstance();
+            startTimeCalendar.add(Calendar.HOUR_OF_DAY, 1);
+            startTimeCalendar.set(Calendar.MINUTE, 0);
+            String startTimeFormatted = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(startTimeCalendar.getTime());
+            btnStartTime.setText(startTimeFormatted);
+
+            // Initialize ending time to current time + 2hr
+            Calendar endTimeCalendar = Calendar.getInstance();
+            endTimeCalendar.add(Calendar.HOUR_OF_DAY, 2);
+            endTimeCalendar.set(Calendar.MINUTE, 0);
+            String endTimeFormatted = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(endTimeCalendar.getTime());
+            btnEndTime.setText(endTimeFormatted);
+
+            switchMultiDay.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                btnEndDate.setEnabled(!isChecked);
+                btnEndDate.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+                endDateText.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+            });
+        } catch (Exception e) {
+            // Handle the exception or log it
+            Log.e("ActivityAddEvent", "Error in onCreate", e);
+            Toast.makeText(this, "An error occurred setting up the event details.", Toast.LENGTH_LONG).show();
+        }
 
         btnCancelAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,34 +141,43 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
 
         btnStartTime.setOnClickListener(v -> {
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "startTimePicker");
+            try {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "startTimePicker");
+            } catch (Exception e) {
+                Toast.makeText(AddEventActivity.this, "Error showing time picker", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnEndTime.setOnClickListener(v -> {
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "endTimePicker");
+            try {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "endTimePicker");
+            } catch (Exception e) {
+                Toast.makeText(AddEventActivity.this, "Error showing time picker", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isStartDate = true;
-                showDatePickerDialog();
+                try {
+                    showDatePickerDialog();
+                } catch (Exception e) {
+                    Toast.makeText(AddEventActivity.this, "Error showing date picker", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         btnEndDate.setOnClickListener(v -> {
             if (btnEndDate.getVisibility() == View.VISIBLE) {
                 isStartDate = false;
-                showDatePickerDialog();
-            }
-        });
-
-        btnCancelAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+                try {
+                    showDatePickerDialog();
+                } catch (Exception e) {
+                    Toast.makeText(AddEventActivity.this, "Error showing date picker", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -166,94 +185,82 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         fabNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Pass values for event to next activity
-                // Start the AddEventSecondActivity
-                TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-                TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
+                try {
+                    TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
+                    TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
-                // Convert event start and end times to String
-                String eventName = eventNameInput.getText().toString();
-                String eventLocation = eventLocationInput.getText().toString();
-                String startTime = btnStartTime.getText().toString();
-                String endTime = btnEndTime.getText().toString();
-                String startDate = btnStartDate.getText().toString();
+                    String eventName = eventNameInput.getText().toString();
+                    String eventLocation = eventLocationInput.getText().toString();
+                    String startTime = btnStartTime.getText().toString();
+                    String endTime = btnEndTime.getText().toString();
+                    String startDate = btnStartDate.getText().toString();
+                    String endDate = btnEndDate.getText().toString();
 
-                // Pack the data into an Intent
-                Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
-                intent.putExtra("eventName", eventName);
-                intent.putExtra("eventLocation", eventLocation);
-                intent.putExtra("startTime", startTime);
-                intent.putExtra("endTime", endTime);
-                intent.putExtra("startDate", startDate);
-                intent.putExtra("endDate", endDate);
+                    Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
+                    intent.putExtra("eventName", eventName);
+                    intent.putExtra("eventLocation", eventLocation);
+                    intent.putExtra("startTime", startTime);
+                    intent.putExtra("endTime", endTime);
+                    intent.putExtra("startDate", startDate);
+                    intent.putExtra("endDate", endDate);
 
-                // Start the EventDetailsActivity
-                startActivity(intent);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(AddEventActivity.this, "Error starting activity", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    /**
-     * Displays a date picker dialog to allow the user to select a date.
-     * This method creates a new instance of DatePickerFragment and displays it.
-     */
     private void showDatePickerDialog() {
-        DialogFragment datePicker = new DatePickerFragment();
-        datePicker.show(getSupportFragmentManager(), "datePicker");
-    }
-
-
-    /**
-     * Handles the date selected by the user in the DatePickerFragment. Depending on whether the user is
-     * setting a start or end date, this method updates the appropriate button's text to reflect the
-     * selected date. It formats the date according to the "dd MMMM" pattern (e.g., "15 March").
-     *
-     * @param year The year that was picked by the user.
-     * @param month The month that was picked by the user (0-indexed, e.g., 0 for January).
-     * @param day The day of the month that was picked by the user.
-     */
-    public void onDateSet(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        Date eventDate = calendar.getTime();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", Locale.getDefault());
-        String dateString = dateFormat.format(eventDate);
-
-        if (isStartDate) {
-            btnStartDate.setText(dateString);
-        } else {
-            btnEndDate.setText(dateString);
+        try {
+            DialogFragment datePicker = new DatePickerFragment();
+            datePicker.show(getSupportFragmentManager(), "datePicker");
+        } catch (Exception e) {
+            Toast.makeText(this, "Error showing date picker", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Callback invoked when a time is picked in the TimePickerFragment.
-     * It updates the corresponding start or end time based on the source of the callback and validates the time logic.
-     *
-     * @param tag A tag identifying which time picker (start or end) triggered this callback.
-     * @param hourOfDay The hour of the day that was picked.
-     * @param minute The minute within the hour that was picked.
-     */
-    public void onTimeSet(String tag, int hourOfDay, int minute) {
-        String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-        // If button is startTime button
-        if ("startTimePicker".equals(tag)) {
-            startTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            startTimeCalendar.set(Calendar.MINUTE, minute);
-            btnStartTime.setText(formattedTime);
-            // if button is endTime button
-        } else if ("endTimePicker".equals(tag)) {
-            endTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            endTimeCalendar.set(Calendar.MINUTE, minute);
+    public void onDateSet(int year, int month, int day) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            Date eventDate = calendar.getTime();
 
-            // Check that the end time is after the start time
-            if (endTimeCalendar.after(startTimeCalendar)) {
-                btnEndTime.setText(formattedTime);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", Locale.getDefault());
+            String dateString = dateFormat.format(eventDate);
+
+            if (isStartDate) {
+                btnStartDate.setText(dateString);
             } else {
-                Toast.makeText(this, "End Time must be after start time.", Toast.LENGTH_SHORT).show();
-                btnEndTime.setText("ERR");
+                btnEndDate.setText(dateString);
             }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error setting date", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onTimeSet(String tag, int hourOfDay, int minute) {
+        try {
+            String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+            if ("startTimePicker".equals(tag)) {
+                startTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                startTimeCalendar.set(Calendar.MINUTE, minute);
+                btnStartTime.setText(formattedTime);
+            } else if ("endTimePicker".equals(tag)) {
+                endTimeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                endTimeCalendar.set(Calendar.MINUTE, minute);
+
+                if (endTimeCalendar.after(startTimeCalendar)) {
+                    btnEndTime.setText(formattedTime);
+                } else {
+                    Toast.makeText(this, "End Time must be after start time.", Toast.LENGTH_SHORT).show();
+                    btnEndTime.setText("ERR");
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error setting time", Toast.LENGTH_SHORT).show();
         }
     }
 }
