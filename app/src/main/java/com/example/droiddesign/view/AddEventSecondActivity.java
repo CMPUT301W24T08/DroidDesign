@@ -128,21 +128,16 @@ public class AddEventSecondActivity extends AppCompatActivity {
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
         String milestoneString = milestoneTextView.getText().toString().trim();
 
-        try {
-            int maxAttendees = Integer.parseInt(maxAttendeesString);
-            int milestone = Integer.parseInt(milestoneString);
-            event.setSignupLimit(maxAttendees);
-            event.setSignupLimit(milestone);
-        } catch (NumberFormatException e) {
-            event.setSignupLimit(null);
-            event.setSignupLimit(null);}
-
-        try {
-            int maxAttendees = Integer.parseInt(maxAttendeesString);
-            event.setSignupLimit(maxAttendees);
-        } catch (NumberFormatException e) {
-            Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
-            return;
+        if (!maxAttendeesString.isEmpty() && !milestoneString.isEmpty()) {
+            try {
+                int maxAttendees = Integer.parseInt(maxAttendeesString);
+                int milestone = Integer.parseInt(milestoneString);
+                event.setSignupLimit(maxAttendees);
+                event.setMilestones(milestone);
+            } catch (NumberFormatException e) {
+                Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         // Add user event to their managedEventsList
