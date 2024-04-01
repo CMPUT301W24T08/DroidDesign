@@ -8,18 +8,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +84,10 @@ public class EventMenuActivity extends AppCompatActivity {
 		FloatingActionButton fabQuickScan = findViewById(R.id.fab_quick_scan);
 		FloatingActionButton addEventButton = findViewById(R.id.fab_add_event);
 		TextView textViewEvents = findViewById(R.id.text_upcoming_events);
+		CardView adminCard = findViewById(R.id.admin_card);
+		adminCard.setVisibility(View.GONE);
 
-
+		updateTokenIfNeeded();
 
 		prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
@@ -102,6 +106,12 @@ public class EventMenuActivity extends AppCompatActivity {
 			textViewEvents.setText(R.string.created_events);
 		} else if ("Attendee".equalsIgnoreCase(userRole)) {
 			textViewEvents.setText(R.string.upcoming_events);
+			addEventButton.setVisibility(View.INVISIBLE);
+		} else {
+			textViewEvents.setText(R.string.administration);
+			adminCard.setVisibility(View.VISIBLE);
+			addEventButton.setVisibility(View.INVISIBLE);
+			fabQuickScan.setVisibility(View.INVISIBLE);
 		}
 
 
@@ -120,8 +130,7 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		// Check if the userRole is "attendee"
 		if ("attendee".equalsIgnoreCase(userRole)) {
-			// If userRole is "attendee", hide the addEventButton
-			addEventButton.setVisibility(View.INVISIBLE);
+
 			// Update the layout parameters to position the button at the bottom center
 			ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) fabQuickScan.getLayoutParams();
 			params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
@@ -130,9 +139,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			params.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.fab_margin_bottom));
 			fabQuickScan.setLayoutParams(params);
 
-		} else {
-			// If userRole is not "attendee", i.e admin or organizer show the addEventButton
-			addEventButton.setVisibility(View.VISIBLE);
 		}
 		addEventButton.setOnClickListener(view -> {
 			Intent intent = new Intent(EventMenuActivity.this, AddEventActivity.class);
@@ -168,8 +174,14 @@ public class EventMenuActivity extends AppCompatActivity {
 			} else if (id == R.id.profile) {
 				intent = new Intent(this, ProfileSettingsActivity.class);
 				intent.putExtra("USER_ID", finalUserId);
+			} else if (id == R.id.browse_users){
+				intent = new Intent(this, AdminBrowseUsersActivity.class);
+			} else if (id == R.id.admin_browse_events) {
+				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.settings) {
 				intent = new Intent(this, AppSettingsActivity.class);
+			} else if (id == R.id.browse_images) {
+				intent = new Intent(this, BrowseImagesActivity.class);
 			} else if (id == R.id.log_out) {
 				intent = new Intent(this, LaunchScreenActivity.class);
 				// Clear stored preferences
@@ -204,16 +216,14 @@ public class EventMenuActivity extends AppCompatActivity {
 
 		eventsAdapter = new EventsAdapter(eventsList, event -> {
 			Intent intent;
-			// Check if the user is an organizer
-//			if ("organizer".equalsIgnoreCase(userRole)) {
-//				// If the user is an organizer, navigate to EditEventActivity
-//				intent = new Intent(EventMenuActivity.this, EditEventFragment.class);
-//			} else {
-//				// For other roles, navigate to EventDetailsActivity
-//				intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
-//			}
 			intent = new Intent(EventMenuActivity.this, EventDetailsActivity.class);
 			intent.putExtra("EVENT_ID", event.getEventId());
+			intent.putExtra("ORIGIN", "EventMenuActivity");
+			if ("Organizer".equalsIgnoreCase(userRole)) {
+				intent.putExtra("ORIGIN", "EventMenuActivity");
+			} else if ("Attendee".equalsIgnoreCase(userRole)) {
+				intent.putExtra("ORIGIN", "SignedEventsActivity");
+			}
 			startActivity(intent);
 		});
 		eventsRecyclerView.setAdapter(eventsAdapter);
@@ -342,8 +352,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	}
 
 
-
-
 	/**
 	 * Updates the UI to display the latest list of events.
 	 */
@@ -353,5 +361,16 @@ public class EventMenuActivity extends AppCompatActivity {
 		eventsAdapter.notifyDataSetChanged();
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
-	
+
+	void updateTokenIfNeeded(){
+		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+			if(task.isSuccessful()){
+				String token = task.getResult();
+				db.collection("Users").document(userId).update("fcmToken",token)
+						.addOnSuccessListener(aVoid -> Log.d("UpdateToken", "Token successfully updated for user: " + userId))
+						.addOnFailureListener(e -> Log.e("UpdateToken", "Error updating token", e));
+			}
+		});
+	}
+
 }

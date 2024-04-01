@@ -35,6 +35,17 @@ public class SharedPreferenceHelper {
 		editor.putString(KEY_ROLE, role);
 		editor.apply();
 	}
+	/**
+	 * Saves the user profile information (userId and role) only to SharedPreferences.
+	 * @param userId The user ID to be saved.
+	 * @param role The role to be saved.
+	 */
+	public void saveUserProfile(String userId, String role) {
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString(KEY_USER_ID, userId);
+		editor.putString(KEY_ROLE, role);
+		editor.apply();
+	}
 
 
 	/**

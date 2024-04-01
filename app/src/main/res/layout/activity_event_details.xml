@@ -6,6 +6,53 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="845dp"
+        android:layout_height="845dp"
+        android:layout_marginTop="125dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_details_top_bar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/conclave_logo_large_dark" />
+
+
+    <LinearLayout
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/event_images"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/opensans_semibold"
+            android:text="@string/Description"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="match_parent"
+            android:minHeight="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="25dp"
+            android:background="@drawable/textview_background"
+            android:fontFamily="@font/opensans"
+            android:text="@string/event_details"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/event_details_top_bar"
         android:layout_width="match_parent"
@@ -86,35 +133,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="845dp"
-        android:layout_height="845dp"
-        android:layout_marginTop="125dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_details_top_bar"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/conclave_logo_large_dark" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/edit_event_details_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:layout_marginStart="50dp"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/opensans_semibold"
-        android:text="Go Back To Menu Page"
-        android:textColor="@color/bg_dark"
-        app:cornerRadius="12.5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_details_top_bar"
-        app:layout_constraintVertical_bias="0.9" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/sign_up_button"
@@ -130,53 +148,9 @@
         app:cornerRadius="12.5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_event_details_button" />
-
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_images">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/opensans_semibold"
-                android:text="@string/Description"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/event_description"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/textview_background"
-                android:fontFamily="@font/opensans"
-                android:text="@string/event_details"
-                android:textColor="@color/white" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/chat_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/secondary_light" />
-
-        </LinearLayout>
-    </ScrollView>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_images"
+        app:layout_constraintVertical_bias="0.91"/>
 
 
     <LinearLayout
@@ -256,29 +230,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
-        android:id="@+id/announcement_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:background="#F5708CA3"
-        android:padding="15dp"
-        android:hint="Enter your announcement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/send_button"
-        app:layout_constraintStart_toStartOf="@+id/send_button" />
-
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Send Announcement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/announcement_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@
             android:title="@string/browse_events" />
 
         <item
-            android:id="@+id/profile_settings"
+            android:id="@+id/profile"
             android:title="@string/profile_settings" />
         <item
             android:id="@+id/app_settings"

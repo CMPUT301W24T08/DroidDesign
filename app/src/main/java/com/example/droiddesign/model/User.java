@@ -42,6 +42,7 @@ public class User {
 	 * The phone number of the user.
 	 */
 	private String phone;
+	private String token;
 
 	/**
 	 * The URL or path to the profile picture of the user.
@@ -73,6 +74,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -95,6 +97,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -115,6 +118,7 @@ public class User {
 		this.email = "";
 		this.company = "";
 		this.phone = "";
+		this.token = "";
 		this.profilePic = "";
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
@@ -135,6 +139,7 @@ public class User {
 		map.put("email", email);
 		map.put("company", company);
 		map.put("phone", phone);
+		map.put("fcmToken", token);
 		map.put("profileName", profileName);
 		map.put("profilePic", profilePic);
 		map.put("signedEventsList", signedEventsList);
@@ -271,6 +276,14 @@ public class User {
 	 */
 	public String getPhone() {
 		return phone;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	/**
