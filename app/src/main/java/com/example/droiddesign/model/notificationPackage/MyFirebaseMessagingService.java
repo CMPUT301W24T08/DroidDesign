@@ -30,17 +30,19 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 	private static final String TAG = "FCM Service";
-
+    private String eventId;
 	@Override
 	public void onMessageReceived(RemoteMessage remoteMessage) {
 		// Not getting messages here? See why this may be: https://goo.gl/39bRNJ
 		Log.d(TAG, "From: " + remoteMessage.getFrom( ));
 
+		// Extract the event ID from the message data if available
+		eventId = remoteMessage.getData().get("eventId");
 		// Check if message contains a notification payload.
-		if (remoteMessage.getNotification( ) != null) {
-			Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification( ).getBody( ));
+		if (remoteMessage.getNotification() != null) {
+			Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+			// Pass the event ID to the method that creates the notification
 		}
-
 		// Also if you intend on generating your own notifications as a result of a received FCM
 		// message, here is where that should be initiated. See sendNotification method below.
 		sendNotification(remoteMessage.getFrom( ), remoteMessage.getNotification( ).getTitle( ));
@@ -50,8 +52,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 	private void sendNotification(String from, String body) {
 		Intent intent = new Intent(this, EventDetailsActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+		// Check if eventId is not null and add it as an extra to the intent
+		if (eventId != null && !eventId.isEmpty()) {
+			intent.putExtra("EVENT_ID", eventId);
+		}
+
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-				PendingIntent.FLAG_IMMUTABLE);
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
 		new Handler(Looper.getMainLooper( )).post(new Runnable( ) {
 			@Override
 			public void run() {
