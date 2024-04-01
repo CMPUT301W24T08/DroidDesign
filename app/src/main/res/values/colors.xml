@@ -11,4 +11,6 @@
     <color name="text_dark">#405164</color>
     <color name="card_bg_light_transparent">#B3708CA3</color>
     <color name="card_bg_darker_transparent">#B3626F7E</color>
+    <color name="blue">#5B778D</color>
+
 </resources>

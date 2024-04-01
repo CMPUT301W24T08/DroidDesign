@@ -18,23 +18,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class CurrentAttendanceActivity extends AppCompatActivity {
     private RecyclerView attendanceListView;
     private UserListAdapter attendanceListAdapter;
-
 
     List<User> users = new ArrayList<>(); // Initialize the list
     private HashMap<String, Integer> checkedInUsers = new HashMap<>(); // Initialize the map
     private String eventId;
     private FirebaseFirestore firestore;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_attendance);
-
 
         firestore = FirebaseFirestore.getInstance();
         eventId = getIntent().getStringExtra("EVENT_ID");
@@ -46,13 +42,11 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
         attendanceListView = findViewById(R.id.attendance_list_recycler_view);
         attendanceListView.setLayoutManager(new LinearLayoutManager(this));
 
-
         // Initialize the adapter with the empty list and map
         attendanceListAdapter = new UserListAdapter(users, checkedInUsers, user -> {
             // Handle user item click event if necessary
         });
         attendanceListView.setAdapter(attendanceListAdapter);
-
 
         retrieveEventAndAttendanceList();
 
@@ -62,36 +56,44 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
         });
     }
 
-
     private void retrieveEventAndAttendanceList() {
         firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                HashMap<String, Integer> checkedInUsersMap = (HashMap<String, Integer>) task.getResult().get("checkedInUsers");
-                if (checkedInUsersMap != null) {
-                    checkedInUsers.clear();
-                    checkedInUsers.putAll(checkedInUsersMap);
-                    users.clear(); // Clear the existing users before fetching new ones
+            try {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    HashMap<String, Integer> checkedInUsersMap = (HashMap<String, Integer>) task.getResult().get("checkedInUsers");
+                    if (checkedInUsersMap != null) {
+                        checkedInUsers.clear();
+                        checkedInUsers.putAll(checkedInUsersMap);
+                        users.clear(); // Clear the existing users before fetching new ones
 
-
-                    for (String userId : checkedInUsersMap.keySet()) {
-                        firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
-                            if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                User user = userTask.getResult().toObject(User.class);
-                                if (user != null) {
-                                    users.add(user);
-                                    // Update the adapter's dataset and refresh the RecyclerView
-                                    if (users.size() == checkedInUsersMap.keySet().size()) {
-                                        attendanceListAdapter.notifyDataSetChanged();
+                        for (String userId : checkedInUsersMap.keySet()) {
+                            firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
+                                try {
+                                    if (userTask.isSuccessful() && userTask.getResult() != null) {
+                                        User user = userTask.getResult().toObject(User.class);
+                                        if (user != null) {
+                                            users.add(user);
+                                            // Update the adapter's dataset and refresh the RecyclerView
+                                            if (users.size() == checkedInUsersMap.keySet().size()) {
+                                                attendanceListAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(this, "An error occurred while processing user data.", Toast.LENGTH_SHORT).show();
                                 }
-                            } else {
-                                Toast.makeText(this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            });
+                        }
                     }
+                } else {
+                    Toast.makeText(this, "Failed to load event data.", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(this, "Failed to load event data.", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "An error occurred while fetching event data.", Toast.LENGTH_SHORT).show();
             }
         });
     }

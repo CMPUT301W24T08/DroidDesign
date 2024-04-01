@@ -27,8 +27,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 /**
  * The LaunchScreenActivity class represents the main entry point for the application. It handles user authentication and navigation to different parts of the app based on user actions.
  */
-public class LaunchScreenActivity extends AppCompatActivity implements BasicLoginFragment.UserCreationListener{
-
+public class LaunchScreenActivity extends AppCompatActivity implements BasicLoginFragment.UserCreationListener {
 
     /**
      * An instance of FirebaseFirestore providing access to the Firebase Firestore database.
@@ -37,7 +36,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     SharedPreferenceHelper prefsHelper;
-
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -74,23 +72,29 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
         }
 
 
-        // Initialize SharedPreferences
-        prefsHelper = new SharedPreferenceHelper(this);
-        // Not a new user scenario
-        if (!prefsHelper.isFirstTimeUser()) {
-            // Returning user scenario
-            Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
-            startActivity(intent);
-            finish();
+        try {
+            // Initialize SharedPreferences
+            prefsHelper = new SharedPreferenceHelper(this);
+            // Not a new user scenario
+            if (!prefsHelper.isFirstTimeUser()) {
+                // Returning user scenario
+                navigateToEventMenu();
+            }
+        } catch (Exception e) {
+            Log.e("LaunchScreenActivity", "Error initializing or navigating: " + e.getMessage());
         }
 
         findViewById(R.id.button_enter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create a new instance of BasicLoginFragment
-                BasicLoginFragment basicLoginFragment = new BasicLoginFragment();
-                basicLoginFragment.setCancelable(false);
-                basicLoginFragment.show(getSupportFragmentManager(), "BasicLoginFragment");
+                try {
+                    // Create a new instance of BasicLoginFragment
+                    BasicLoginFragment basicLoginFragment = new BasicLoginFragment();
+                    basicLoginFragment.setCancelable(false);
+                    basicLoginFragment.show(getSupportFragmentManager(), "BasicLoginFragment");
+                } catch (Exception e) {
+                    Log.e("LaunchScreenActivity", "Error displaying BasicLoginFragment: " + e.getMessage());
+                }
             }
         });
 
@@ -108,16 +112,27 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
         }
     }
 
-
     /**
      * Callback triggered when a new user is successfully created. This navigates the user to the EventMenuActivity.
      */
     @Override
     public void userCreated() {
-        Intent intent = new Intent(LaunchScreenActivity.this,EventMenuActivity.class);
+        try {
+            navigateToEventMenu();
+        } catch (Exception e) {
+            Log.e("LaunchScreenActivity", "Error navigating to EventMenuActivity after user creation: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Navigates to the EventMenuActivity.
+     */
+    private void navigateToEventMenu() {
+        Intent intent = new Intent(LaunchScreenActivity.this, EventMenuActivity.class);
         startActivity(intent);
         finish();
     }
+
     // Declare the launcher at the top of your Activity/Fragment:
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {

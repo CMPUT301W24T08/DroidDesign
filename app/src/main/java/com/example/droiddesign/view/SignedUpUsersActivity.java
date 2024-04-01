@@ -25,49 +25,61 @@ public class SignedUpUsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signed_up_users);
 
-        firestore = FirebaseFirestore.getInstance();
-        eventId = getIntent().getStringExtra("EVENT_ID");
+        try {
+            firestore = FirebaseFirestore.getInstance();
+            eventId = getIntent().getStringExtra("EVENT_ID");
 
-        usersRecyclerView = findViewById(R.id.signup_recyclerview);
-        usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            usersRecyclerView = findViewById(R.id.signup_recyclerview);
+            usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        usersListAdapter = new UserListAdapter(users, null, user -> {
-            // Handle user item click event if necessary
-        });
-        usersRecyclerView.setAdapter(usersListAdapter);
+            usersListAdapter = new UserListAdapter(users, null, user -> {
+                // Handle user item click event if necessary
+            });
+            usersRecyclerView.setAdapter(usersListAdapter);
 
-        retrieveAttendees();
+            retrieveAttendees();
 
-        ImageButton backButton = findViewById(R.id.button_back);
-        backButton.setOnClickListener(v -> {
-            finish();
-        });
+            ImageButton backButton = findViewById(R.id.button_back);
+            backButton.setOnClickListener(v -> {
+                finish();
+            });
+        } catch (Exception e) {
+            Toast.makeText(this, "An error occurred during initialization: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void retrieveAttendees() {
         firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                List<String> attendeeList = (List<String>) task.getResult().get("attendeeList");
-                if (attendeeList != null) {
-                    users.clear(); // Clear the existing users before fetching new ones
+            try {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    List<String> attendeeList = (List<String>) task.getResult().get("attendeeList");
+                    if (attendeeList != null) {
+                        users.clear(); // Clear the existing users before fetching new ones
 
-                    for (String userId : attendeeList) {
-                        firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
-                            if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                User user = userTask.getResult().toObject(User.class);
-                                if (user != null) {
-                                    users.add(user);
-                                    // Update the adapter's dataset and refresh the RecyclerView
-                                    usersListAdapter.notifyDataSetChanged();
+                        for (String userId : attendeeList) {
+                            firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
+                                try {
+                                    if (userTask.isSuccessful() && userTask.getResult() != null) {
+                                        User user = userTask.getResult().toObject(User.class);
+                                        if (user != null) {
+                                            users.add(user);
+                                            // Update the adapter's dataset and refresh the RecyclerView
+                                            usersListAdapter.notifyDataSetChanged();
+                                        }
+                                    } else {
+                                        Toast.makeText(this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (Exception e) {
+                                    Toast.makeText(this, "Error processing user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-                            } else {
-                                Toast.makeText(this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            });
+                        }
                     }
+                } else {
+                    Toast.makeText(this, "Failed to load event data.", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(this, "Failed to load event data.", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Error fetching attendees: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
