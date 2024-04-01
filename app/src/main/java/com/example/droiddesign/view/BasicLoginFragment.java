@@ -138,6 +138,13 @@ public class BasicLoginFragment extends DialogFragment {
         editCompany = view.findViewById(R.id.edit_company);
         editPhoneNumber = view.findViewById(R.id.edit_phone_number);
         roleSpinner = view.findViewById(R.id.spinner_role);
+        // Create an ArrayAdapter using the custom layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getContext() , R.array.role_options, R.layout.spinner_dropdown_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        roleSpinner.setAdapter(adapter);
     }
 
     private void registerEventBus() {
