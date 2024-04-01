@@ -34,11 +34,6 @@ public class DiscoverEventsActivity extends AppCompatActivity {
     private RecyclerView eventsRecyclerView;
     private EventsAdapter eventsAdapter;
 
-    /**
-     * Sets up the activity's UI, initializes the RecyclerView for displaying events, and triggers fetching of event data.
-     * @param savedInstanceState Contains data supplied by onSaveInstanceState() if the activity is being re-initialized.
-     */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +47,6 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
-
-    /**
-     * Fetches events from the Firestore 'EventsDB' collection, processes the query results,
-     * and updates the UI to display the list of events.
-     */
-
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserId = getCurrentUserId();
@@ -65,32 +54,40 @@ public class DiscoverEventsActivity extends AppCompatActivity {
             return; // Handle the case where the user is not logged in
         }
 
-        db.collection("Users").document(currentUserId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    User user = documentSnapshot.toObject(User.class);
-                    if (user != null) {
-                        List<String> signedUpEvents = user.getSignedEventsList();
+        try {
+            db.collection("Users").document(currentUserId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        User user = documentSnapshot.toObject(User.class);
+                        if (user != null) {
+                            List<String> signedUpEvents = user.getSignedEventsList();
 
-                        db.collection("EventsDB")
-                                .get()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        List<Event> fetchedEvents = new ArrayList<>();
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Event event = document.toObject(Event.class);
-                                            if (!signedUpEvents.contains(event.getEventId())) {
-                                                fetchedEvents.add(event);
+                            try {
+                                db.collection("EventsDB")
+                                        .get()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                List<Event> fetchedEvents = new ArrayList<>();
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    Event event = document.toObject(Event.class);
+                                                    if (!signedUpEvents.contains(event.getEventId())) {
+                                                        fetchedEvents.add(event);
+                                                    }
+                                                }
+                                                updateUI(fetchedEvents);
+                                            } else {
+                                                Log.w("DiscoverEventsActivity", "Error getting documents.", task.getException());
                                             }
-                                        }
-                                        updateUI(fetchedEvents);
-                                    } else {
-                                        Log.w("DiscoverEventsActivity", "Error getting documents.", task.getException());
-                                    }
-                                });
-                    }
-                })
-                .addOnFailureListener(e -> Log.w("DiscoverEventsActivity", "Error fetching user data", e));
+                                        });
+                            } catch (Exception e) {
+                                Log.e("DiscoverEventsActivity", "Error fetching events", e);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.w("DiscoverEventsActivity", "Error fetching user data", e));
+        } catch (Exception e) {
+            Log.e("DiscoverEventsActivity", "Error fetching user document", e);
+        }
     }
 
     @Override
@@ -99,23 +96,14 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         fetchEvents();
     }
 
-    /**
-     * Retrieves the ID of the currently logged-in user from FirebaseAuth.
-     * @return The current user's ID or null if no user is logged in.
-     */
     private String getCurrentUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            return user.getUid(); // Return the user ID if a user is logged in
+            return user.getUid();
         } else {
-            return null; // Return null if no user is logged in
+            return null;
         }
     }
-
-    /**
-     * Updates the RecyclerView adapter with fetched event data and refreshes the view to display the new data.
-     * @param events A list of Event objects to be displayed in the RecyclerView.
-     */
 
     private void updateUI(List<Event> events) {
         if (!events.isEmpty()) {

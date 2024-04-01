@@ -1,6 +1,5 @@
 package com.example.droiddesign.view;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,20 +14,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.controller.MessageEvent;
-import com.example.droiddesign.controller.SharedViewModel;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
-import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -40,58 +34,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-/**
- * The BasicLoginFragment class allows users to create a new account with email, password, and role.
- * It communicates user creation status back to the attached activity using the UserCreationListener interface.
- */
 public class BasicLoginFragment extends DialogFragment {
 
-    /**
-     * Listener interface for communication with the activity that hosts this fragment.
-     */
-
-    interface UserCreationListener{
-        void userCreated();
-    }
-
-    /**
-     * FirebaseAuth instance to handle user authentication.
-     */
     public FirebaseAuth mAuth;
     private EditText editUserName;
     private EditText editEmail;
     private EditText editCompany;
     private EditText editPhoneNumber;
     private Spinner roleSpinner;
-
-
-    /**
-     * The activity that implements UserCreationListener for callback purposes.
-     */
-
-
     private UserCreationListener listener;
     private SharedPreferenceHelper prefsHelper;
     private String profilePicUrl;
-
-    private ActivityResultLauncher<Intent> mStartForResult;
-
-//    public void onStart() {
-//        super.onStart();
-//        if (!isRegisteredWithEventBus) {
-//            EventBus.getDefault().register(this);
-//            Log.d("EventBusDebug", "EventBus registered in onStart");
-//            isRegisteredWithEventBus = true;
-//        }
-//    }
-//
-//    @Override
-//    public void onStop() {
-//
-//        //EventBus.getDefault().unregister(this);
-//        Log.d("EventBusDebug", "EventBus unregistered in onStop");
-//        super.onStop();
-//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
@@ -99,20 +52,13 @@ public class BasicLoginFragment extends DialogFragment {
         Log.d("BasicLoginFragment", "Received profile picture URL: " + profilePicUrl);
     }
 
-
-    /**
-     * Called when the fragment is first attached to its context. Ensures that the context implements
-     * the required UserCreationListener interface.
-     *
-     * @param context The context the fragment is attached to.
-     */
     @Override
-    public void onAttach(@NonNull Context context){
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof UserCreationListener){
+        if (context instanceof UserCreationListener) {
             listener = (UserCreationListener) context;
         } else {
-            throw new RuntimeException(context+" must implement UserCreationListener");
+            throw new RuntimeException(context + " must implement UserCreationListener");
         }
         prefsHelper = new SharedPreferenceHelper(requireContext());
     }
@@ -127,72 +73,16 @@ public class BasicLoginFragment extends DialogFragment {
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
-        // Initialize views
         assert view != null;
-	    editUserName = view.findViewById(R.id.edit_user_name);
-        editEmail = view.findViewById(R.id.edit_email);
-        editCompany = view.findViewById(R.id.edit_company);
-        editPhoneNumber = view.findViewById(R.id.edit_phone_number);
-        roleSpinner = view.findViewById(R.id.spinner_role);
-        Button createAccountButton = view.findViewById(R.id.button_create_account);
-        Button skipButton = view.findViewById(R.id.skip_account_creation);
-        Button profilePicButton = view.findViewById(R.id.button_profile_picture);
-        EventBus.getDefault().register(this);
-
-
-        // Set up the role spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.role_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        roleSpinner.setAdapter(adapter);
-
-        // Set click listener for create account button
-        createAccountButton.setOnClickListener(v -> {
-            // Get user input from EditText fields
-            String userName = editUserName.getText().toString().trim();
-            String email = editEmail.getText().toString().trim();
-            String company = editCompany.getText().toString().trim();
-            String phoneNumber = editPhoneNumber.getText().toString().trim();
-            String role = roleSpinner.getSelectedItem().toString();
-
-            // Perform validation or other operations with the user input TODO: maybe error checking
-            // ...
-            // Call the createUser method to authenticate with Firebase and save the user details to Firestore
-            createUser(userName, email, role, company, phoneNumber);
-            // Show a toast message as an example
-            Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
-
-            // Close the dialog
-            dismiss();
-        });
-
-
-        profilePicButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AddProfilePictureActivity.class);
-            intent.putExtra("image_url", profilePicUrl);
-            startActivity(intent);
-        });
-
-
-        // Set click listener for skip button
-        skipButton.setOnClickListener(v -> {
-            // Finish the activity and start a new activity
-            Intent intent = new Intent(getActivity(), RoleSelectionActivity.class);
-            startActivity(intent);
-            requireActivity().finish();//getActivity().finish();
-        });
+        initializeViews(view);
+        registerEventBus();
+        setupListeners(view);
 
         return view;
     }
 
 
-    /**
-     * Creates the dialog instance for the login fragment, initializing the authentication handler,
-     * user input fields, and setting up the dialog interface.
-     *
-     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     * @return The AlertDialog for user login.
-     */
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -201,50 +91,166 @@ public class BasicLoginFragment extends DialogFragment {
         return dialog;
     }
 
-    /**
-     * Creates a new user account with Firebase anonymoous and adds the user information to Firestore.
-     *
-     * @param userName    The user's email address.
-     * @param email    The user's chosen password.
-     * @param role     The user's selected role.
-     * @param company    The user's email address.
-     * @param phoneNumber The user's chosen password.
-     */
-    public void createUser(String userName, String email, String role, String company, String phoneNumber){
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        UsersDB userdb = new UsersDB(firestore);
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            User newUser = null;
-                            if (user != null) {
-                                newUser = new User(user.getUid(), role);
-                                newUser.setUserName(userName);
-                                newUser.setEmail(email);
-                                newUser.setRegistered(String.valueOf(true));
-                                newUser.setCompany(company);
-                                newUser.setPhone(phoneNumber);
-                                newUser.setProfilePic(profilePicUrl);
-                                // Save user profile to SharedPreferences
-                                prefsHelper.saveUserProfile(user.getUid(), role, email);
-                            }
+    public void createUser(String userName, String email, String role, String company, String phoneNumber) {
+        try {
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            UsersDB userdb = new UsersDB(firestore);
+            mAuth.signInAnonymously()
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                User newUser = null;
+                                if (user != null) {
+                                    newUser = new User(user.getUid(), role);
+                                    newUser.setUserName(userName);
+                                    newUser.setEmail(email);
+                                    newUser.setRegistered(String.valueOf(true));
+                                    newUser.setCompany(company);
+                                    newUser.setPhone(phoneNumber);
 
-                            assert newUser != null;
-	                        userdb.addUser(newUser);
-                            listener.userCreated();
-                            // Close the dialog
-                            dismiss();
-                            // Close the dialog, finish the activity, and start a new activity
-                            if (isAdded() && getActivity() != null) {
-                                Intent intent = new Intent(getActivity(), EventMenuActivity.class);
-                                startActivity(intent);
-                                requireActivity().finish();
+                                    profilePicUrl = determineProfilePicUrl(userName);
+
+                                    newUser.setProfilePic(profilePicUrl);
+                                    prefsHelper.saveUserProfile(user.getUid(), role, email);
+                                }
+
+                                assert newUser != null;
+                                userdb.addUser(newUser);
+                                listener.userCreated();
+                                navigateToEventMenu();
+                            } else {
+                                Log.e("BasicLoginFragment", "Authentication failed.", task.getException());
+                                Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }
-                });
+                    });
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error creating user", e);
+            Toast.makeText(getContext(), "Error creating account", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void initializeViews(View view) {
+        editUserName = view.findViewById(R.id.edit_user_name);
+        editEmail = view.findViewById(R.id.edit_email);
+        editCompany = view.findViewById(R.id.edit_company);
+        editPhoneNumber = view.findViewById(R.id.edit_phone_number);
+        roleSpinner = view.findViewById(R.id.spinner_role);
+    }
+
+    private void registerEventBus() {
+        try {
+            EventBus.getDefault().register(this);
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error registering EventBus", e);
+        }
+    }
+
+    private void setupListeners(View view) {
+        Button createAccountButton = view.findViewById(R.id.button_create_account);
+        Button skipButton = view.findViewById(R.id.skip_account_creation);
+        Button profilePicButton = view.findViewById(R.id.button_profile_picture);
+
+        createAccountButton.setOnClickListener(v -> {
+            try {
+                String userName = editUserName.getText().toString().trim();
+                String email = editEmail.getText().toString().trim();
+                String company = editCompany.getText().toString().trim();
+                String phoneNumber = editPhoneNumber.getText().toString().trim();
+                String role = roleSpinner.getSelectedItem().toString();
+
+                createUser(userName, email, role, company, phoneNumber);
+                Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+                dismiss();
+            } catch (Exception e) {
+                Log.e("BasicLoginFragment", "Error creating user account", e);
+                Toast.makeText(getContext(), "Error creating account", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        profilePicButton.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(getActivity(), AddProfilePictureActivity.class);
+                intent.putExtra("image_url", profilePicUrl);
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e("BasicLoginFragment", "Error opening profile picture activity", e);
+                Toast.makeText(getContext(), "Error setting profile picture", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        skipButton.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(getActivity(), RoleSelectionActivity.class);
+                startActivity(intent);
+                requireActivity().finish();
+            } catch (Exception e) {
+                Log.e("BasicLoginFragment", "Error skipping account creation", e);
+                Toast.makeText(getContext(), "Error skipping account creation", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String determineProfilePicUrl(String userName) {
+        try {
+            if (profilePicUrl == null || profilePicUrl.isEmpty()) {
+                String initials = getInitials(userName);
+                return "https://ui-avatars.com/api/?name=" + initials + "&background=random";
+            }
+            return profilePicUrl;
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error determining profile picture URL", e);
+            return "";
+        }
+    }
+
+    private String getInitials(String userName) {
+        try {
+            if (userName == null || userName.isEmpty()) {
+                return "XX"; // Return some default initials
+            }
+
+            String[] nameParts = userName.split(" ");
+            StringBuilder initials = new StringBuilder();
+            for (String part : nameParts) {
+                if (!part.isEmpty()) {
+                    initials.append(part.charAt(0));
+                }
+            }
+
+            return initials.toString().toUpperCase();
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error getting initials for profile picture", e);
+            return "XX"; // Return some default initials in case of an error
+        }
+    }
+
+    private void navigateToEventMenu() {
+        try {
+            if (isAdded() && getActivity() != null) {
+                Intent intent = new Intent(getActivity(), EventMenuActivity.class);
+                startActivity(intent);
+                requireActivity().finish();
+            }
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error navigating to event menu", e);
+            Toast.makeText(getContext(), "Error navigating to event menu", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            EventBus.getDefault().unregister(this);
+        } catch (Exception e) {
+            Log.e("BasicLoginFragment", "Error unregistering EventBus", e);
+        }
+    }
+
+    interface UserCreationListener {
+        void userCreated();
     }
 }

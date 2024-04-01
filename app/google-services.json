@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "587471699650",
-    "project_id": "conclave-e2199",
-    "storage_bucket": "conclave-e2199.appspot.com"
+    "project_number": "913690360510",
+    "project_id": "conclave-d465f",
+    "storage_bucket": "conclave-d465f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:587471699650:android:880c0e9a3f4e6199ee055b",
+        "mobilesdk_app_id": "1:913690360510:android:e80c3d430a3cfb0c1a3cef",
         "android_client_info": {
           "package_name": "com.example.droiddesign"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDaURE9ef74GOGqhTj1SP1lflZvX_AQI-0"
+          "current_key": "AIzaSyB1M6H5JOT4jt3Tf_IBjO1RPexe2nTzKz8"
         }
       ],
       "services": {
