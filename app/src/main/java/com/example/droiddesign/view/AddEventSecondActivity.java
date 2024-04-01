@@ -136,37 +136,34 @@ public class AddEventSecondActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             event.setSignupLimit(null);
             event.setSignupLimit(null);}
-        if (!maxAttendeesString.isEmpty()) {
-            try {
-                int maxAttendees = Integer.parseInt(maxAttendeesString);
-                event.setSignupLimit(maxAttendees);
-            } catch (NumberFormatException e) {
-                Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            // Add user event to their managedEventsList
-            SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
-            String currentUserId = prefsHelper.getUserId();
-            event.setOrganizerOwnerId(currentUserId);
-            event.saveToFirestore();
-
-            DocumentReference userRef = db.collection("Users").document(currentUserId);
-            userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()))
-                    .addOnSuccessListener(aVoid -> Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Log.e("AddEventSecondActivity", "Error adding event to user's managedEventsList", e));
-
-            Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
-            detailsIntent.putExtra("EVENT_ID", event.getEventId());
-            detailsIntent.putExtra("ORIGIN", "AddEventSecondActivity");
-            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(detailsIntent);
-
-            finish();
-        } catch (Exception e) {
-            Log.e("AddEventSecondActivity", "Error saving event", e);
-            Toast.makeText(AddEventSecondActivity.this, "Error saving event", Toast.LENGTH_SHORT).show();
+        try {
+            int maxAttendees = Integer.parseInt(maxAttendeesString);
+            event.setSignupLimit(maxAttendees);
+        } catch (NumberFormatException e) {
+            Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        // Add user event to their managedEventsList
+        SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
+        String currentUserId = prefsHelper.getUserId();
+        event.setOrganizerOwnerId(currentUserId);
+        event.saveToFirestore();
+
+        DocumentReference userRef = db.collection("Users").document(currentUserId);
+        userRef.update("managedEventsList", FieldValue.arrayUnion(event.getEventId()))
+                .addOnSuccessListener(aVoid -> Toast.makeText(AddEventSecondActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Log.e("AddEventSecondActivity", "Error adding event to user's managedEventsList", e));
+
+        Intent detailsIntent = new Intent(AddEventSecondActivity.this, EventDetailsActivity.class);
+        detailsIntent.putExtra("EVENT_ID", event.getEventId());
+        detailsIntent.putExtra("ORIGIN", "AddEventSecondActivity");
+        detailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(detailsIntent);
+
+        finish();
+
     }
 }
 
