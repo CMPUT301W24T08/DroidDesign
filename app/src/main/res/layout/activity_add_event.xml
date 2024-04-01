@@ -141,22 +141,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.10" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_is_multi_day"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:fontFamily="@font/opensans_semibold"
-        android:layoutDirection="rtl"
-        android:checked="false"
-        android:text="@string/multi_day_event"
-        android:textColor="@color/white"
-        app:trackTint="@color/card_bg_light_transparent"
-        app:thumbTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/event_name_query"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView3"

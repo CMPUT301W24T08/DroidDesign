@@ -19,6 +19,8 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -122,7 +124,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 					}
 				}
 			});
-      
+
 		} else if ("admin".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_admin_event_details);
 			findViewById(R.id.sign_up_button).setVisibility(View.GONE);
@@ -265,7 +267,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 	private void signUpForEvent() {
 
 		isUserSignedUp = true;
-		String currentUserId = userId;// Ensure this method gets the current user ID
+		String currentUserId = getCurrentUserId(); // Ensure this method gets the current user ID
 		if (currentUserId == null || currentUserId.isEmpty()) {
 			Toast.makeText(this, "User not logged in.", Toast.LENGTH_LONG).show();
 			return;
