@@ -195,6 +195,10 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 			notification.put("title", "New Announcement from "+eventName);
 			notification.put("body", title);
 
+			// Adding custom data including event ID
+			JSONObject data = new JSONObject();
+			data.put("eventId", eventId);
+
 			payload.put("registration_ids", new JSONArray(tokens));
 			payload.put("notification", notification);
 
