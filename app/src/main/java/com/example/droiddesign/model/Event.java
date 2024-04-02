@@ -78,16 +78,16 @@ public class Event {
     /**
      * Limit on the number of signups allowed for the event.
      */
-    private Integer signupLimit;
+    private int signupLimit;
 
     /**
      * Count of current attendees signed up for the event.
      */
-    private Integer attendeesCount;
+    private int attendeesCount;
     /**
      * List of milestone attendance numbers for the event
      */
-    private Integer milestones;
+    private int milestones;
 
     /**
      * QR code URL associated with the event for easy sharing and identification.
@@ -123,7 +123,6 @@ public class Event {
 
     public Event() {}
 
-
     /**
      * Constructs an Event instance with detailed attributes specifying the event's properties.
      *
@@ -142,7 +141,11 @@ public class Event {
      * @param shareQrCode The QR code data associated with sharing the event.
      * @param checkInQrCode The QR code associated with checking in to the event.
      */
-    public Event(String eventId, String eventName, String eventDate, String eventLocation, String startTime, String endTime, String geolocation, String organizerOwnerId, String imagePosterId, String description, Integer signupLimit, Integer attendeesCount, String shareQrCode, String checkInQrCode) {
+    public Event(String eventId, String eventName, String eventDate,
+                 String eventLocation, String startTime, String endTime,
+                 String geolocation, String organizerOwnerId, String imagePosterId,
+                 String description, int signupLimit, int attendeesCount, int milestones,
+                 String shareQrCode, String checkInQrCode, String shareQrId, String checkInQrId) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -157,6 +160,9 @@ public class Event {
         this.attendeesCount = attendeesCount;
         this.shareQrCode = shareQrCode;
         this.checkInQrCode = checkInQrCode;
+        this.shareQrId = shareQrId;
+        this.checkInQrId = checkInQrId;
+        this.milestones = milestones;
     }
 
 // Getters and setters with JavaDoc comments
