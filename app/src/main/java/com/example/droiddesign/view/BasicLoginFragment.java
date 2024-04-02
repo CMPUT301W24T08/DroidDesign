@@ -142,7 +142,7 @@ public class BasicLoginFragment extends DialogFragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 getContext() , R.array.role_options, R.layout.spinner_dropdown_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Apply the adapter to the spinner
         roleSpinner.setAdapter(adapter);
     }
