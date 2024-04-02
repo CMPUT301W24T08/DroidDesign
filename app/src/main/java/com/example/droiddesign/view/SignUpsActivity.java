@@ -55,9 +55,15 @@ public class SignUpsActivity extends AppCompatActivity {
 
         // Fetch attendee IDs from Firestore and populate the ListView
         fetchAttendeeIds();
+        eventID = getIntent().getStringExtra("EVENT_ID");
+        if (eventID == null || eventID.isEmpty()) {
+            Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
     }
     private void fetchAttendeeIds() {
-        eventID = "158c339b-77a0-4075-8e21-71d7cc231284";
+        //eventID = "158c339b-77a0-4075-8e21-71d7cc231284";
         db.collection("EventsDB").document(eventID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
