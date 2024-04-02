@@ -81,7 +81,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
-		this.notificationPreference = "Selected Events";
+		this.notificationPreference = "";
 	}
 
 	/**

@@ -88,8 +88,8 @@ public class AppSettingsActivity extends AppCompatActivity {
 		db.collection("Users").document(currentUserId).get()
 				.addOnSuccessListener(documentSnapshot -> {
 					if (documentSnapshot.exists()) {
-						Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocation_enabled");
-						String notificationPreference = documentSnapshot.getString("notification_preference");
+						Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocation");
+						String notificationPreference = documentSnapshot.getString("notificationPreference");
 
 						if (geolocationEnabled != null) {
 							switchGeolocation.setChecked(geolocationEnabled);
@@ -110,7 +110,7 @@ public class AppSettingsActivity extends AppCompatActivity {
 
 	private void setupListeners() {
 		switchGeolocation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			updateFirestore("geolocation_enabled", isChecked);
+			updateFirestore("geolocation", isChecked);
 			Toast.makeText(AppSettingsActivity.this,
 					"Geolocation is " + (isChecked ? "enabled" : "disabled"),
 					Toast.LENGTH_SHORT).show();
