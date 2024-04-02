@@ -110,6 +110,10 @@ public class BasicLoginFragment extends DialogFragment {
                                     newUser.setCompany(company);
                                     newUser.setPhone(phoneNumber);
 
+                                    // Set default settings
+                                    newUser.setGeolocation(false);
+                                    newUser.setNotificationPreference("Selected Events");
+
                                     profilePicUrl = determineProfilePicUrl(userName);
 
                                     newUser.setProfilePic(profilePicUrl);

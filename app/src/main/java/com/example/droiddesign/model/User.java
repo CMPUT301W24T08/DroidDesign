@@ -63,6 +63,8 @@ public class User {
 	 */
 	private ArrayList<String> managedEventsList;
 
+	private String notificationPreference;
+
 	/**
 	 * Constructs an empty User instance with default values.
 	 */
@@ -79,6 +81,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "Selected Events";
 	}
 
 	/**
@@ -102,6 +105,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "";
 	}
 
 	/**
@@ -123,6 +127,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "";
 	}
 
 	/**
@@ -144,6 +149,8 @@ public class User {
 		map.put("profilePic", profilePic);
 		map.put("signedEventsList", signedEventsList);
 		map.put("managedEventsList", managedEventsList);
+		map.put("notificationPreference", notificationPreference);
+		map.put("geolocation", geolocation);
 		return map;
 	}
 
@@ -367,5 +374,16 @@ public class User {
 	public void setManagedEventsList(ArrayList<String> managedEventsList) {
 		this.managedEventsList = managedEventsList;
 	}
+
+	// New getter for notification preference
+	public String getNotificationPreference() {
+		return notificationPreference;
+	}
+
+	// New setter for notification preference
+	public void setNotificationPreference(String notificationPreference) {
+		this.notificationPreference = notificationPreference;
+	}
+
 }
 
