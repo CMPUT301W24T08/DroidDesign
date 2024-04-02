@@ -1,13 +1,18 @@
 package com.example.droiddesign.view;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.droiddesign.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,6 +28,8 @@ public class AppSettingsActivity extends AppCompatActivity {
 	 * Switch to toggle geolocation settings (commented out for potential future use).
 	 */
 	private SwitchCompat switchGeolocation;
+
+
 
 	/**
 	 * The user's ID, utilized for retrieving and storing specific settings for the user.
@@ -63,8 +70,35 @@ public class AppSettingsActivity extends AppCompatActivity {
 			}
 		});
 
-//		switchGeolocation = findViewById(R.id.switch_geolocation); TODO: for later requirement
-//
+		switchGeolocation = findViewById(R.id.switch_geo_location);
+		Drawable thumbDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.thumb_selector);
+		Drawable trackDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.track_selector);
+		switchGeolocation.setThumbDrawable(thumbDrawable);
+		switchGeolocation.setTrackDrawable(trackDrawable);
+
+
+
+		Spinner spinner = findViewById(R.id.settings_spinner);
+		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
+				R.layout.custom_spinner_item,
+				new String[] {"Selected Events", "None", "All Events"});
+		adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				// Handle selection
+				String selectedItem = parent.getItemAtPosition(position).toString();
+				// Do something with the selected item
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// Another interface callback
+			}
+		});
+
+
 //		// Initialize the switch position
 //		loadSettings();
 //
