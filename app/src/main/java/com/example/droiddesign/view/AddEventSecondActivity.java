@@ -28,10 +28,11 @@ import java.util.UUID;
 public class AddEventSecondActivity extends AppCompatActivity {
     private static final int UPLOAD_IMAGE_REQUEST = 1;
     private static final int GENERATE_QR_REQUEST = 2;
-
-    private Event event;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ActivityResultLauncher<Intent> qrGeneratorLauncher;
+    // Generate a UUID for the event
+    private final String uniqueID = UUID.randomUUID().toString();
+    private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +42,17 @@ public class AddEventSecondActivity extends AppCompatActivity {
         qrGeneratorLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        result.getData();
+                        Intent data = result.getData();
+                        if (data != null) {
+                            shareQrUrl = data.getStringExtra("shareQrUrl");
+                            shareQrId = data.getStringExtra("shareQrId");
+                            checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                            checkInQrId = data.getStringExtra("checkInId");
+                            Log.d("AddEventSecondActivity", "Share QR Code ID: " + shareQrId);
+                            Log.d("AddEventSecondActivity", "Check-in QR Code ID: " + checkInQrId);
+                        }
                     }
                 });
-
-        event = new Event();
-        String uniqueID = UUID.randomUUID().toString();
-        event.setEventId(uniqueID);
 
         Intent intent = getIntent();
         populateEventFromIntent(intent);
@@ -73,12 +78,12 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
     private void populateEventFromIntent(Intent intent) {
         try {
-            event.setEventName(intent.getStringExtra("eventName"));
-            event.setEventLocation(intent.getStringExtra("eventLocation"));
-            event.setStartTime(intent.getStringExtra("startTime"));
-            event.setEndTime(intent.getStringExtra("endTime"));
-            event.setEventDate(intent.getStringExtra("startDate"));
-            event.setGeolocation(intent.getStringExtra("eventLocation"));
+            eventName = intent.getStringExtra("eventName");
+            eventLocation = intent.getStringExtra("eventLocation");
+            eventStartTime = intent.getStringExtra("startTime");
+            eventEndTime = intent.getStringExtra("endTime");
+            eventDate = intent.getStringExtra("startDate");
+            eventGeo = intent.getStringExtra("eventLocation");
         } catch (Exception e) {
             Log.e("AddEventSecondActivity", "Error populating event from intent", e);
             Toast.makeText(this, "Error loading event details", Toast.LENGTH_SHORT).show();
@@ -95,8 +100,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
                 String selectedItem = (String) parent.getItemAtPosition(position);
                 if ("Generate New QR".equals(selectedItem)) {
                     Intent qrGeneratorIntent = new Intent(AddEventSecondActivity.this, QrCodeGeneratorActivity.class);
-                    qrGeneratorIntent.putExtra("eventID", event.getEventId());
-                    startActivityForResult(qrGeneratorIntent, GENERATE_QR_REQUEST);
+                    qrGeneratorIntent.putExtra("eventID", uniqueID);
+                    qrGeneratorLauncher.launch(qrGeneratorIntent);
                 } else if ("Use Existing QR".equals(selectedItem)) {
 
 
@@ -108,47 +113,21 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK && data != null) {
-            try {
-                if (requestCode == UPLOAD_IMAGE_REQUEST) {
-                    event.setImagePosterId(data.getStringExtra("imagePosterUrl"));
-                } else if (requestCode == GENERATE_QR_REQUEST) {
-                    String shareQrUrl = data.getStringExtra("shareQrUrl");
-                    String shareQrId = data.getStringExtra("shareQrId");
-                    String checkInQrUrl = data.getStringExtra("checkInQrUrl");
-                    String checkInQrId = data.getStringExtra("checkInId");
-                    Log.d("AddEventSecondActivity", "QR Code URL: " + shareQrUrl);
-                    event.setShareQrCode(shareQrUrl, shareQrId);
-                    event.setCheckInQrCode(checkInQrUrl, checkInQrId);
-                }
-            } catch (Exception e) {
-                Log.e("AddEventSecondActivity", "Error processing activity result", e);
-                Toast.makeText(this, "Error processing result", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
         Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
-        event.setDescription(eventDescription);
-
         TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
         TextView milestoneTextView = findViewById(R.id.input_number_milestone);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
         String milestoneString = milestoneTextView.getText().toString().trim();
 
+        int maxAttendees = 0;
+        int milestone = 0;
         if (!maxAttendeesString.isEmpty() && !milestoneString.isEmpty()) {
             try {
-                int maxAttendees = Integer.parseInt(maxAttendeesString);
-                int milestone = Integer.parseInt(milestoneString);
-                event.setSignupLimit(maxAttendees);
-                event.setMilestones(milestone);
+                maxAttendees = Integer.parseInt(maxAttendeesString);
+                milestone = Integer.parseInt(milestoneString);
             } catch (NumberFormatException e) {
                 Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
                 return;
@@ -158,7 +137,11 @@ public class AddEventSecondActivity extends AppCompatActivity {
         // Add user event to their managedEventsList
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
         String currentUserId = prefsHelper.getUserId();
-        event.setOrganizerOwnerId(currentUserId);
+
+        Event event = new Event(uniqueID, eventName, eventDate, eventLocation, eventStartTime, eventEndTime, eventLocation,
+                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestone, shareQrUrl,
+                checkInQrUrl, shareQrId, checkInQrId);
+
         event.saveToFirestore();
 
         DocumentReference userRef = db.collection("Users").document(currentUserId);
