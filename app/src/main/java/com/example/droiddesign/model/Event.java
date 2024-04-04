@@ -62,7 +62,6 @@ public class Event {
      */
     private String organizerOwnerId;
 
-    private HashMap<String, Integer> checkedInUsers = new HashMap<>();
 
 
     /**
@@ -78,16 +77,16 @@ public class Event {
     /**
      * Limit on the number of signups allowed for the event.
      */
-    private int signupLimit;
+    private Integer signupLimit;
 
     /**
      * Count of current attendees signed up for the event.
      */
-    private int attendeesCount;
+    private Integer attendeesCount;
     /**
      * List of milestone attendance numbers for the event
      */
-    private int milestones;
+    private Integer milestones;
 
     /**
      * QR code URL associated with the event for easy sharing and identification.
@@ -419,15 +418,6 @@ public class Event {
         this.milestones = milestone;
     }
 
-    /**
-     * Sets the count of attendees for the event and updates the corresponding field in Firestore.
-     *
-     * @param attendeesCount The new attendees count.
-     */
-    public void setAttendeesCount(Integer attendeesCount) {
-        this.attendeesCount = attendeesCount;
-        updateFirestore("attendeesCount", attendeesCount);
-    }
 
     /**
      * Retrieves the QR code associated with the event.
@@ -559,21 +549,9 @@ public class Event {
         }
     }
 
-    public void checkInUser(String userId) {
-        Integer count = checkedInUsers.getOrDefault(userId, 0);
-        checkedInUsers.put(userId, count + 1);
-        Log.d("checkInUser", "Checking in user: " + userId + " with count: " + (count + 1));
-        updateFirestore("checkedInUsers", checkedInUsers);
-    }
 
-    public HashMap<String, Integer> getCheckedInUsers() {
-        return checkedInUsers;
-    }
 
-    public void setCheckedInUsers(HashMap<String, Integer> checkedInUsers) {
-        this.checkedInUsers = checkedInUsers;
-        updateFirestore("checkedInUsers", checkedInUsers);
-    }
+
 
 
 
@@ -603,8 +581,6 @@ public class Event {
         map.put("checkInQrId", checkInQrId);
         map.put("attendeeList", attendeeList);
         map.put("organizerMessages", organizerMessages);
-        map.put("checkedInUsers", checkedInUsers);
-
         return map;
     }
 

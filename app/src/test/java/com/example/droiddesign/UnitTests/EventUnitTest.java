@@ -54,8 +54,6 @@ public class EventUnitTest {
 		event.setSignupLimit(testInteger);
 		assertEquals(testInteger, event.getSignupLimit());
 
-		event.setAttendeesCount(testInteger);
-		assertEquals(testInteger, event.getAttendeesCount());
 
 		event.setShareQrCode(testString, testString);
 		assertEquals(testString, event.getShareQrCode());

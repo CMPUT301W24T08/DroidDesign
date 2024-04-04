@@ -158,8 +158,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 			}
 		});
 
-
-
 		signUpButton.setOnClickListener(v -> {
 			if (!isUserSignedUp) {
 				signUpForEvent();

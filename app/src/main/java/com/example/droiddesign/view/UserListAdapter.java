@@ -19,8 +19,9 @@ import java.util.List;
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserViewHolder> {
 
     private List<User> userList;
-    private HashMap<String, Integer> checkInsMap; // This can now be null
+    private HashMap<String, Integer> checkInsMap;
     private final OnItemClickListener listener;
+    private int guestUserCount = 0;
 
     public interface OnItemClickListener {
         void onItemClick(User user);
@@ -39,11 +40,36 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
         return new UserViewHolder(view);
     }
 
+
+
+
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
-        holder.textUserName.setText(user.getUserName());
-        holder.textCompany.setText(user.getCompany());
+        boolean isRegistered = Boolean.parseBoolean(user.getRegistered());
+
+        if (isRegistered) {
+            holder.textUserName.setText(user.getUserName());
+            holder.textCompany.setText(user.getCompany());
+
+            // Load the actual profile picture
+            if (user.getProfilePic() != null) {
+                Glide.with(holder.itemView.getContext())
+                        .load(user.getProfilePic())
+                        .into(holder.profileImageView);
+            }
+        } else {
+            // Increment and display for guest users
+            guestUserCount++;
+            holder.textUserName.setText("Guest User " + guestUserCount);
+            holder.textCompany.setText("");
+
+            // Load a generic avatar image
+            String avatarUrl = "https://robohash.org/" + user.getUserId(); // Example URL
+            Glide.with(holder.itemView.getContext())
+                    .load(avatarUrl)
+                    .into(holder.profileImageView);
+        }
 
         // Only show check-in data if checkInsMap is not null
         if (checkInsMap != null) {
@@ -51,13 +77,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
             Integer checkInsCount = (checkInsCountNumber != null) ? checkInsCountNumber.intValue() : null;
             holder.numCheckIns.setText(checkInsCount == null ? "0" : checkInsCount.toString());
         } else {
-            holder.numCheckIns.setVisibility(View.GONE); // or set to an empty string or some default text
-        }
-
-        if (user.getProfilePic() != null) {
-            Glide.with(holder.itemView.getContext())
-                    .load(user.getProfilePic())
-                    .into(holder.profileImageView);
+            holder.numCheckIns.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(user));

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.User;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,44 +58,40 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
     }
 
     private void retrieveEventAndAttendanceList() {
-        firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
-            try {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    HashMap<String, Integer> checkedInUsersMap = (HashMap<String, Integer>) task.getResult().get("checkedInUsers");
-                    if (checkedInUsersMap != null) {
+        firestore.collection("AttendanceDB")
+                .whereEqualTo("event_id", eventId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
                         checkedInUsers.clear();
-                        checkedInUsers.putAll(checkedInUsersMap);
                         users.clear(); // Clear the existing users before fetching new ones
 
-                        for (String userId : checkedInUsersMap.keySet()) {
-                            firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
-                                try {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String userId = document.getString("user_id");
+                            Long checkInCount = document.getLong("check_in_count");
+                            if (userId != null && checkInCount != null) {
+                                checkedInUsers.put(userId, checkInCount.intValue());
+
+                                firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
                                     if (userTask.isSuccessful() && userTask.getResult() != null) {
                                         User user = userTask.getResult().toObject(User.class);
                                         if (user != null) {
                                             users.add(user);
                                             // Update the adapter's dataset and refresh the RecyclerView
-                                            if (users.size() == checkedInUsersMap.keySet().size()) {
+                                            if (users.size() == checkedInUsers.size()) {
                                                 attendanceListAdapter.notifyDataSetChanged();
                                             }
                                         }
                                     } else {
-                                        Toast.makeText(this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(CurrentAttendanceActivity.this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(this, "An error occurred while processing user data.", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                });
+                            }
                         }
+                    } else {
+                        Toast.makeText(CurrentAttendanceActivity.this, "Failed to load attendance data.", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(this, "Failed to load event data.", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "An error occurred while fetching event data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
     }
+
 }
