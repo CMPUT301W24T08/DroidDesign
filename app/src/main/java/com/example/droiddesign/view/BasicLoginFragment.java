@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Objects;
+
 /**
  * BasicLoginFragment is a dialog fragment that allows the user to create an account
  * by entering their name, email, role, company, and phone number. The user can also
@@ -95,6 +100,7 @@ public class BasicLoginFragment extends DialogFragment {
         }
         assert view != null;
         initializeViews(view);
+        setupPhoneNumberValidation();
         registerEventBus();
         setupListeners(view);
 
@@ -178,7 +184,7 @@ public class BasicLoginFragment extends DialogFragment {
         roleSpinner = view.findViewById(R.id.spinner_role);
         // Create an ArrayAdapter using the custom layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                getContext() , R.array.role_options, R.layout.spinner_dropdown_item);
+                requireContext(), R.array.role_options, R.layout.spinner_dropdown_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -213,9 +219,13 @@ public class BasicLoginFragment extends DialogFragment {
                 String phoneNumber = editPhoneNumber.getText().toString().trim();
                 String role = roleSpinner.getSelectedItem().toString();
 
-                createUser(userName, email, role, company, phoneNumber);
-                Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
-                dismiss();
+                if (phoneNumber.length() != 10) {
+                    Toast.makeText(getContext(), "Phone number must be 10 digits", Toast.LENGTH_SHORT).show();
+                } else {
+                    createUser(userName, email, role, company, phoneNumber);
+                    Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+                    dismiss();
+                }
             } catch (Exception e) {
                 Log.e("BasicLoginFragment", "Error creating user account", e);
                 Toast.makeText(getContext(), "Error creating account", Toast.LENGTH_SHORT).show();
@@ -323,5 +333,32 @@ public class BasicLoginFragment extends DialogFragment {
      */
     interface UserCreationListener {
         void userCreated();
+    }
+
+    /**
+     * Setup phone number validation
+     */
+    private void setupPhoneNumberValidation() {
+        editPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Not needed
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phoneNumber = s.toString().trim();
+                if (phoneNumber.length() != 10) {
+                    editPhoneNumber.setError("Phone number must be 10 digits");
+                } else {
+                    editPhoneNumber.setError(null);
+                }
+            }
+        });
     }
 }
