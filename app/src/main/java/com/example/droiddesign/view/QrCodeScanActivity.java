@@ -64,7 +64,7 @@ public class QrCodeScanActivity extends AppCompatActivity {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         attendanceDB = new AttendanceDB();
-        Button backButton = findViewById(R.id.cancelButton);
+        ImageButton backButton = findViewById(R.id.button_back2);
         backButton.setOnClickListener(v -> finish());
     }
 
@@ -207,7 +207,8 @@ public class QrCodeScanActivity extends AppCompatActivity {
      * Initializes the view components and sets up the camera permission check.
      */
     private void initViews() {
-        binding.fab.setOnClickListener(view -> {
+        Button myButton = findViewById(R.id.scan_button);
+        myButton.setOnClickListener(view -> {
             checkPermissionAndShowActivity(this);
         });
     }
