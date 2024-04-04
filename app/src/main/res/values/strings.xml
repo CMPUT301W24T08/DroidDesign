@@ -59,7 +59,7 @@
     <string name="blue_square">Blue Square</string>
     <string name="Description">Description</string>
     <string name="Sign_Up">Sign Up For Event</string>
-    <string name="current_attendance">Current Attendance.</string>
+    <string name="current_attendance">Current Attendance</string>
     <string name="event_poster">Event Poster</string>
     <string name="finish">Finish</string>
     <string name="Profile">Profile</string>
@@ -101,7 +101,4 @@
     <string name="delete_user_profile">Delete User Profile</string>
     <string name="proffile_pic_note">Edit or remove profile picture using the options on the image.</string>
     <string name="default_notification_channel_id">your_notification_channel_id</string>
-
-
-
 </resources>

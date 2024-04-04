@@ -25,10 +25,26 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/top_menu_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/count_layout"
+        app:layout_constraintTop_toBottomOf="@+id/map_preview"
         app:layout_constraintVertical_bias="0.024">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <FrameLayout
+        android:id="@+id/map_preview"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@id/count_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="12dp">
+
+        <fragment
+            android:id="@+id/map_fragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -46,14 +62,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_light"
             android:textStyle="bold"
-            android:text="Milestone"
-            android:textSize="20dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_light"
-            android:textStyle="bold"
-            android:text="Check ins"
+            android:text="Current Attendance"
             android:textSize="20dp"/>
     </LinearLayout>
 
@@ -67,44 +76,13 @@
         app:layout_constraintVertical_bias="0.11">
 
         <TextView
-            android:id="@+id/milestone_textview"
+            android:id="@+id/current_attendance_textview_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:textColor="@color/secondary_light"
             android:textStyle="bold"
             android:textSize="20dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/milestone_textview"
-            android:text="/"
-            android:textColor="@color/secondary_light"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginLeft="16dp"/>
-        <TextView
-            android:id="@+id/total_sign_up_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/milestone_textview"
-            android:text="0"
-            android:textColor="@color/secondary_light"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginLeft="30dp"/>
-
-        <TextView
-            android:id="@+id/check_ins_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/milestone_textview"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="87dp"
-            android:text="0"
-            android:textColor="@color/secondary_light"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
 
     </RelativeLayout>
