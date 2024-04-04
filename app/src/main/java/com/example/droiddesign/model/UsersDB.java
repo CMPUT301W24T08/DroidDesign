@@ -34,6 +34,9 @@ public class UsersDB {
      * @param user The User object to add to Firestore.
      */
     public void addUser(User user) {
+
+        user.setNotificationPreference("Selected Events");
+
         HashMap<String, Object> data = user.toMap();
         userCollection.document(user.getUserId())
                 .set(data)

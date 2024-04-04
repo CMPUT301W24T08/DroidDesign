@@ -181,14 +181,33 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, SendAnnouncementActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			}else if (id == R.id.sign_ups_menu) {
-				intent = new Intent(this, SignedUpUsersActivity.class);
+				intent = new Intent(this, SignUpsActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.geo_check_menu) {
 				intent = new Intent(this, GeoCheckFragment.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.share_qr_menu) {
-				intent = new Intent(this, ShareQrFragment.class);
-				intent.putExtra("EVENT_ID", eventId);
+				// Retrieve the QR code URI from the event
+				Event.loadFromFirestore(eventId, event -> {
+					if (event != null) {
+						String shareQrUri = event.getShareQrCode();
+						if (shareQrUri != null && !shareQrUri.isEmpty()) {
+							// Create an Intent to share the image
+							Intent shareIntent = new Intent(Intent.ACTION_SEND);
+							shareIntent.setType("image/png");
+							shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(shareQrUri));
+
+							// Create a chooser intent
+							Intent chooserIntent = Intent.createChooser(shareIntent, "Share QR code");
+
+							// Start the activity for result
+							startActivity(chooserIntent);
+						} else {
+							Toast.makeText(EventDetailsActivity.this, "QR code not available for this event.", Toast.LENGTH_SHORT).show();
+						}
+						toggleNavigationMenu();
+					}
+				});
 			} else if (id == R.id.remove_event_menu){
 				// get event and remove event id from managelist of User TODO: implementation slide to delete
 			} else if (id == R.id.remove_event_poster_menu){

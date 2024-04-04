@@ -26,7 +26,7 @@ public class SharedPreferenceHelper {
 	 * Saves the user profile information (userId and role) to SharedPreferences.
 	 * @param userId The user ID to be saved.
 	 * @param role The role to be saved.
-	 * @param email The email to be saved if loged in.
+	 * @param email The email to be saved if logged in.
 	 */
 	public void saveUserProfile(String userId, String role, String email) {
 		SharedPreferences.Editor editor = sharedPreferences.edit();

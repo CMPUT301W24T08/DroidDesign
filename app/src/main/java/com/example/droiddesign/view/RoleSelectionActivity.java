@@ -2,8 +2,10 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
@@ -105,18 +107,29 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
-		FirebaseUser user = mAuth.getCurrentUser();
-		User newUser = new User(user.getUid(), role, false);
-		String userId = user.getUid();
-		String userEmail = user.getEmail();
-		// Save user profile to SharedPreferences
-		prefsHelper.saveUserProfile(userId, role, userEmail);
+		prefsHelper = new SharedPreferenceHelper(this);
 
-		UsersDB userdb = new UsersDB(firestore);
-		// Create user in Firestore without specifying the user ID
-//		newUser = new User(null, role, false);
-		// Add the user to Firestore and listen for success
-		userdb.addUser(newUser);
+// Add AuthStateListener
+		mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+			@Override
+			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+				FirebaseUser user = firebaseAuth.getCurrentUser();
+				if (user != null) {
+					// User is signed in
+					String userId = user.getUid();
+					User newUser = new User(userId, role, false);
+					// Save user profile to SharedPreferences
+					prefsHelper.saveUserProfile(userId, role, null);
+
+					UsersDB userdb = new UsersDB(firestore);
+					userdb.addUser(newUser);
+				} else {
+					// User is signed out
+					Log.d("AuthStateListener", "onAuthStateChanged:signed_out");
+				}
+			}
+		});
+
 
 
 		navigateToEventMenu();
