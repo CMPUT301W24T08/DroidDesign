@@ -128,8 +128,6 @@ public class QRcode {
     public interface OnQrCodeUploadListener {
         void onQrCodeUploadSuccess();
 
-        void onQrCodeUploadSuccess(String downloadUrl);
-
         void onQrCodeUploadFailure(String errorMessage);
     }
 
