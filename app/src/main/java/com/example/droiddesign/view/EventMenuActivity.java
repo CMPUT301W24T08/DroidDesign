@@ -160,7 +160,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			startActivity(intent);
 		});
 
-
 		navigationMenu.getMenu().clear();
 
 		// Inflate the menu based on user role
@@ -214,7 +213,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		});
 	}
 
-
 	/**
 	 * Sets up the RecyclerView with its layout manager and adapter.
 	 */
@@ -242,7 +240,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * Initializes the events list.
 	 * @return An empty ArrayList of Event objects.
 	 */
-
 	private List<Event> initializeEventsList() {
 		return new ArrayList<>();
 	}
@@ -257,7 +254,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			navigationMenu.setVisibility(View.VISIBLE);
 		}
 	}
-
 
 	/**
 	 * Fetches the events the user has signed up for and updates the UI accordingly.
@@ -291,12 +287,10 @@ public class EventMenuActivity extends AppCompatActivity {
 		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user data", e));
 	}
 
-
 	/**
 	 * Fetches details for each event the user has signed up for using their IDs.
 	 * @param eventIds List of event IDs the user has signed up for.
 	 */
-
 	private void fetchEventsByIds(List<String> eventIds) {
 		signedUpEvents = new ArrayList<>();
 		for (String eventId : eventIds) {
@@ -315,7 +309,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Called when the activity resumes. Fetches the signed-up events again to refresh the list.
 	 */
-
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -364,13 +357,15 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Updates the UI to display the latest list of events.
 	 */
-
 	private void updateUI() {
 		eventsAdapter.setEvents(signedUpEvents);
 		eventsAdapter.notifyDataSetChanged();
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
 
+	/**
+	 * Updates the FCM token for the current user in Firestore.
+	 */
 	void updateTokenIfNeeded(){
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){
@@ -381,5 +376,4 @@ public class EventMenuActivity extends AppCompatActivity {
 			}
 		});
 	}
-
 }

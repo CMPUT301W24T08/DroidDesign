@@ -83,7 +83,6 @@
         <activity android:name=".view.AddEventActivity" />
         <activity android:name=".view.AddEventSecondActivity" />
         <activity android:name=".view.SendAnnouncementActivity" />
-        <activity android:name=".view.ShareQrFragment" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"

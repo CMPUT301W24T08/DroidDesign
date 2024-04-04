@@ -21,21 +21,11 @@ import androidx.core.content.ContextCompat;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-//import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * The LaunchScreenActivity class represents the main entry point for the application. It handles user authentication and navigation to different parts of the app based on user actions.
  */
 public class LaunchScreenActivity extends AppCompatActivity implements BasicLoginFragment.UserCreationListener {
-
-    /**
-     * An instance of FirebaseFirestore providing access to the Firebase Firestore database.
-     * This instance is used throughout the activity to interact with the Firestore database.
-     */
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     SharedPreferenceHelper prefsHelper;
 
@@ -82,8 +72,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
                 }
             }
         });
-
-
     }
 
     /**

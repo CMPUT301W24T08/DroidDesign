@@ -11,8 +11,7 @@ public class SharedPreferenceHelper {
 	private static final String KEY_USER_ID = "userId";
 	private static final String KEY_EMAIL = "email";
 	private static final String KEY_ROLE = "role";
-
-	private SharedPreferences sharedPreferences;
+	private final SharedPreferences sharedPreferences;
 
 	/**
 	 * Constructs a new SharedPreferencesHelper instance.

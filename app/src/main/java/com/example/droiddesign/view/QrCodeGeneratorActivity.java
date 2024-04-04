@@ -40,7 +40,6 @@ import java.io.ByteArrayOutputStream;
  * This activity allows users to generate a QR code based on an input string (event ID)
  * and upload the generated QR code image to Firebase Storage.
  */
-
 public class QrCodeGeneratorActivity extends AppCompatActivity {
 
     /**
@@ -72,13 +71,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qr_code_generator);
 
         Button buttonGenerate = findViewById(R.id.button_generate);
-        /**
-         * Image view to display the generated QR code.
-         */
         ImageView mImageViewQrCode = findViewById(R.id.qr_code);
-        /**
-         * Button to trigger saving the generated QR code.
-         */
         Button mButtonSaveQrCode = findViewById(R.id.button_save_qr);
         Button buttonBack = findViewById(R.id.button_back);
 
@@ -102,9 +95,6 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +113,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                         }
                     });
 
+                    // Upload the check-in QR code
                     uploadQrCode(checkInQrCode, new OnQrCodeUploadListener() {
                         @Override
                         public void onQrCodeUploadSuccess(String qrUrl) {
@@ -141,6 +132,10 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                 }
             }
 
+            /**
+             * Checks if both QR codes have been uploaded successfully.
+             * If so, sends the URLs of the uploaded QR codes back to the calling activity.
+             */
             private void checkUploadCompletion() {
                 if (uploadCount == 2) {
                     Intent resultIntent = new Intent();
@@ -161,7 +156,6 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
      * Uploads the generated QR code image to Firebase Storage and saves its metadata to Firestore.
      * @param qrCode The QRcode to be uploaded to the firestore.
      */
-
     private void uploadQrCode(QRcode qrCode, final OnQrCodeUploadListener listener) {
         Bitmap bitmap = qrCode.getmQrBitmap();
         String qrId = qrCode.getQrId();
@@ -207,6 +201,9 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Listener interface for handling QR code upload events.
+     */
     private interface OnQrCodeUploadListener {
         void onQrCodeUploadSuccess(String qrUrl);
         void onQrCodeUploadFailure(String errorMessage);

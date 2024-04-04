@@ -32,8 +32,13 @@ import java.util.List;
 public class DiscoverEventsActivity extends AppCompatActivity {
 
     private RecyclerView eventsRecyclerView;
-    private EventsAdapter eventsAdapter;
 
+    /**
+     * Called when the activity is first created.
+     * Sets up the activity layout and fetches events from Firestore.
+     *
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,9 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Fetches events from Firestore and updates the UI with the fetched events.
+     */
     private void fetchEvents() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserId = getCurrentUserId();
@@ -90,12 +98,21 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the activity is resumed.
+     * Fetches events from Firestore when the activity is resumed.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         fetchEvents();
     }
 
+    /**
+     * Gets the ID of the currently logged-in user.
+     *
+     * @return The ID of the currently logged-in user.
+     */
     private String getCurrentUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -105,9 +122,14 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates the UI with the fetched events.
+     *
+     * @param events The list of events fetched from Firestore.
+     */
     private void updateUI(List<Event> events) {
         if (!events.isEmpty()) {
-            eventsAdapter = new EventsAdapter(events, event -> {
+            EventsAdapter eventsAdapter = new EventsAdapter(events, event -> {
                 Intent detailIntent = new Intent(DiscoverEventsActivity.this, EventDetailsActivity.class);
                 detailIntent.putExtra("EVENT_ID", event.getEventId());
                 startActivity(detailIntent);

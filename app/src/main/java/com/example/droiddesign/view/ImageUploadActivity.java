@@ -44,16 +44,6 @@ public class ImageUploadActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
-     * Button for choosing an image from the device.
-     */
-    private Button mButtonChooseImage;
-
-    /**
-     * Button for uploading the selected image.
-     */
-    private Button mButtonUpload;
-
-    /**
      * EditText for entering the file name.
      */
     private EditText mEditTextFileName;
@@ -88,7 +78,6 @@ public class ImageUploadActivity extends AppCompatActivity {
      */
     private Uri mImageUri;
 
-
     /**
      * Called when the activity is created.
      * @param savedInstanceState The saved instance state Bundle.
@@ -99,8 +88,8 @@ public class ImageUploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
 
-        mButtonChooseImage = findViewById(R.id.button_choose_image);
-        mButtonUpload = findViewById(R.id.button_upload);
+        Button mButtonChooseImage = findViewById(R.id.button_choose_image);
+        Button mButtonUpload = findViewById(R.id.button_upload);
         mEditTextFileName = findViewById(R.id.edit_text_file_name);
         mImageView = findViewById(R.id.image_preview);
         mProgressBar = findViewById(R.id.progress_bar);
@@ -137,7 +126,6 @@ public class ImageUploadActivity extends AppCompatActivity {
      * @param uri The URI of the file.
      * @return The file extension.
      */
-
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -147,7 +135,6 @@ public class ImageUploadActivity extends AppCompatActivity {
     /**
      * Uploads the chosen image to Firebase Storage.
      */
-
     private void uploadFile() {
         if (mImageUri != null) {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
@@ -195,7 +182,6 @@ public class ImageUploadActivity extends AppCompatActivity {
     /**
      * Opens a file chooser to select an image.
      */
-
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -209,7 +195,6 @@ public class ImageUploadActivity extends AppCompatActivity {
      * @param resultCode The integer result code returned by the child activity through its setResult().
      * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
      */
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

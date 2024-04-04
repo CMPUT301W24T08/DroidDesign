@@ -34,7 +34,7 @@ import java.util.UUID;
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private EditText editUsername, editUserEmail, editUserContactNumber, editUserCompany, editDisplayUserName, editDisplayUserCompany;
-    private Button saveButton, editProfilePicButton, deleteProfilePicButton, editProfileButton, deleteProfileButton;
+    private Button saveButton;
     private ImageView profileImageView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -63,16 +63,17 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         editDisplayUserName= findViewById(R.id.UserDisplayName);
         editDisplayUserCompany = findViewById(R.id.UserCompanyDisplay);
         profileImageView = findViewById(R.id.profile_image_view);
-        editProfilePicButton = findViewById(R.id.edit_image_button);
-        deleteProfilePicButton = findViewById(R.id.delete_image_button);
-        editProfileButton = findViewById(R.id.edit_profile_button);
-        deleteProfileButton = findViewById(R.id.delete_profile);
+        Button editProfilePicButton = findViewById(R.id.edit_image_button);
+        Button deleteProfilePicButton = findViewById(R.id.delete_image_button);
+        Button editProfileButton = findViewById(R.id.edit_profile_button);
+        Button deleteProfileButton = findViewById(R.id.delete_profile);
         saveButton = findViewById(R.id.buttonSave);
         ImageButton backButton = findViewById(R.id.button_back);
         deleteProfileButton.setVisibility(View.GONE);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) throw new AssertionError();
         userId = currentUser.getUid();
 
         prefsHelper = new SharedPreferenceHelper(this);

@@ -3,16 +3,9 @@ package com.example.droiddesign.controller;
 /**
  * Represents an upload entity with a name and image URL.
  */
-
 public class Upload {
     private String mName;
     private String mImageUrl;
-
-    /**
-     * Default constructor required for calls to DataSnapshot.getValue(Upload.class).
-     */
-    public Upload(String qrId, String string, String eventId, String eventName, String type) {
-    }
 
     /**
      * Constructs an Upload object with the specified name and image URL.
@@ -23,7 +16,7 @@ public class Upload {
      */
     public Upload(String name, String imageUrl) {
         // If the name is empty, set it to "No Name"
-        if (name.trim().equals("")) {
+        if (name.trim().isEmpty()) {
             this.mName = "No Name";
         } else {
             this.mName = name;

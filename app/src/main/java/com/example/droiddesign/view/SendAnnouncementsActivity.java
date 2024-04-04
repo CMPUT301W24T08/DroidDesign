@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,19 +28,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Activity for sending announcements to attendees of an event.
+ * This activity allows organizers to send announcements to attendees of an event.
+ */
 public class SendAnnouncementsActivity extends AppCompatActivity {
-    private Button sendButton;
     private TextView titleEditText;
     private TextView messageEditText;
     private TextView dateEditText;
     private FirebaseFirestore firestore;
-    private CollectionReference attendeeListRef;
-    private RecyclerView announcementsRecyclerView;
     private AnnouncementAdapter announcementAdapter;
-    private List<Map<String, Object>> announcementList = new ArrayList<>();
+    private final List<Map<String, Object>> announcementList = new ArrayList<>();
     private String userId, userRole,eventId;
     SharedPreferenceHelper prefsHelper;
 
+    /**
+     * Method called when the activity is created.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +61,6 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
         // Inflate the button based on user role
         findViewById(R.id.send_button).setVisibility("organizer".equalsIgnoreCase(userRole) ? View.VISIBLE : View.GONE );
 
-
         eventId = getIntent().getStringExtra("EVENT_ID");
         if (eventId == null || eventId.isEmpty()) {
             Toast.makeText(this, "Event ID is missing.", Toast.LENGTH_LONG).show();
@@ -64,7 +69,7 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
         }
 
         firestore = FirebaseFirestore.getInstance();
-        attendeeListRef = firestore.collection("EventsDB").document(eventId).collection("attendeeList");
+        CollectionReference attendeeListRef = firestore.collection("EventsDB").document(eventId).collection("attendeeList");
         firestore.collection("EventsDB").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -74,7 +79,7 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("VisibilityCheck", "Error", e));
         titleEditText = findViewById(R.id.title_edit_text);
         messageEditText = findViewById(R.id.message_edit_text);
-        sendButton = findViewById(R.id.send_button);
+        Button sendButton = findViewById(R.id.send_button);
 
         sendButton.setOnClickListener(v -> {
             String title = titleEditText.getText().toString().trim();
@@ -86,7 +91,7 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
                 saveMessage(title, message);
             }
         });
-        announcementsRecyclerView = findViewById(R.id.organizer_message_recyclerview);
+        RecyclerView announcementsRecyclerView = findViewById(R.id.organizer_message_recyclerview);
         announcementsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         announcementAdapter = new AnnouncementAdapter(announcementList);
@@ -100,6 +105,11 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method to save the message to the database.
+     * @param title The title of the message.
+     * @param message The content of the message.
+     */
     private void saveMessage(String title, String message) {
         if (eventId == null || eventId.trim().isEmpty()) {
             Toast.makeText(this, "Event ID is not set.", Toast.LENGTH_SHORT).show();
@@ -127,6 +137,10 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Method to fetch announcements from the database.
+     */
+    @SuppressLint("NotifyDataSetChanged")
     private void fetchAnnouncements() {
         firestore.collection("EventsDB").document(eventId)
                 .get()
@@ -148,6 +162,9 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("FetchAnnouncementsError", "Error loading announcements", e));
     }
 
+    /**
+     * Method to refresh the activity.
+     */
     private void refreshActivity() {
         Intent intent = new Intent(this, SendAnnouncementActivity.class);
         intent.putExtra("EVENT_ID", eventId); // Pass the event ID back to the activity
@@ -155,6 +172,10 @@ public class SendAnnouncementsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Method to notify attendees of the event.
+     * @param title The title of the message.
+     */
     private void notifyAttendees(String title) {
         firestore.collection("EventsDB").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {

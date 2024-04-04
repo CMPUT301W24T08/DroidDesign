@@ -24,7 +24,6 @@ public class DatePickerFragment extends DialogFragment
      * The DatePickerFragment class provides a date picker dialog allowing users to select a date.
      * It communicates the selected date back to the host activity using the DatePickerListener interface.
      */
-
     public interface DatePickerListener {
 
         /**
@@ -50,6 +49,12 @@ public class DatePickerFragment extends DialogFragment
      * @param context The context attaching the fragment.
      */
 
+    /**
+     * Called when the fragment is first attached to its context.
+     * Confirms that the host context implements the required DatePickerListener interface.
+     *
+     * @param context The context attaching the fragment.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -133,30 +133,51 @@ public class QRcode {
         void onQrCodeUploadFailure(String errorMessage);
     }
 
+    /** Gets the QR code image.
+     * @return The QR code image.
+     */
     public Bitmap getmQrBitmap() {
         return this.mQrBitmap;
     }
 
+    /** Sets the QR code image.
+     * @param mQrBitmap The QR code image.
+     */
     public void setmQrBitmap(Bitmap mQrBitmap) {
         this.mQrBitmap = mQrBitmap;
     }
 
+    /** Gets the QR code ID.
+     * @return The QR code ID.
+     */
     public String getQrId() {
         return qrId;
     }
 
+    /** Sets the QR code ID.
+     * @param qrId The QR code ID.
+     */
     public void setQrId(String qrId) {
         this.qrId = qrId;
     }
 
+    /** Gets the event ID of the QR code.
+     * @return The event ID of the QR code.
+     */
     public String getEventId() {
         return eventId;
     }
 
+    /** Sets the event ID of the QR code.
+     * @param eventId The event ID to be encoded in the QR code.
+     */
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
+    /** Gets the type of the QR code.
+     * @return The type of the QR code.
+     */
     public String getType() {
         return type;
     }

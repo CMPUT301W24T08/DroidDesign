@@ -29,6 +29,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
+/**
+ * This activity allows users to add an event to the app.
+ * The user can enter details about the event, upload an image poster for the event,
+ * and generate a QR code for the event.
+ */
 public class AddEventSecondActivity extends AppCompatActivity {
     private static final int UPLOAD_IMAGE_REQUEST = 1;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -111,6 +116,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(view -> finish());
     }
 
+    /**
+     * Populates the event details from the intent.
+     * @param intent The intent containing the event details.
+     */
     private void populateEventFromIntent(Intent intent) {
         try {
             eventName = intent.getStringExtra("eventName");
@@ -125,6 +134,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets up the dropdown menu for selecting QR code options.
+     * @param dropdownMenu The dropdown menu to set up.
+     */
     private void setupDropdownMenu(AutoCompleteTextView dropdownMenu) {
         try {
             String[] listItems = new String[]{"Generate New QR", "Use Existing QR"};
@@ -173,6 +186,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Saves the event details to Firestore.
+     */
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();

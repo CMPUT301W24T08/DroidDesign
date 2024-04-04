@@ -20,33 +20,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for displaying sign-ups.
+ * This activity displays a list of users who have signed up for an event.
+ */
 public class SignUpsActivity extends AppCompatActivity {
-    //private ListView listViewAttendees;
-    //private ArrayAdapter<String> adapter;
-    //private List<String> attendeeIds;
-    private ListView listViewWithName;
-    private ListView listViewWithoutName;
     private ArrayAdapter<String> adapterWithName;
     private ArrayAdapter<String> adapterWithoutName;
     private FirebaseFirestore db;
-    private String eventID;
 
+    /**
+     * Method called when the activity is created.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_ups);
 
-        //listViewAttendees = findViewById(R.id.attendance_list_view);
-        listViewWithName = findViewById(R.id.attendance_names);
-        listViewWithoutName = findViewById(R.id.attendance_ids);
+        ListView listViewWithName = findViewById(R.id.attendance_names);
+        ListView listViewWithoutName = findViewById(R.id.attendance_ids);
 
         adapterWithName = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         adapterWithoutName = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-
-
-        //attendeeIds = new ArrayList<>();
-        //adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, attendeeIds);
-        //listViewAttendees.setAdapter(adapter);
 
         listViewWithName.setAdapter(adapterWithName);
         listViewWithoutName.setAdapter(adapterWithoutName);
@@ -56,22 +52,23 @@ public class SignUpsActivity extends AppCompatActivity {
         // Fetch attendee IDs from Firestore and populate the ListView
         fetchAttendeeIds();
     }
+
+    /**
+     * Fetches the IDs of the attendees for the event.
+     */
     private void fetchAttendeeIds() {
-        eventID = "158c339b-77a0-4075-8e21-71d7cc231284";
+        String eventID = "158c339b-77a0-4075-8e21-71d7cc231284";
         db.collection("EventsDB").document(eventID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         List<String> attendees = (List<String>) documentSnapshot.get("attendeeList");
                         if (attendees != null) {
-                            //attendeeIds.clear();
                             adapterWithName.clear();
                             adapterWithoutName.clear();
-                            for (String attendeeId : attendees) {  //new
-                                fetchUserName(attendeeId);         //new
-                            }                                      //new
-                            //attendeeIds.addAll(attendees);
-                            //adapter.notifyDataSetChanged();
+                            for (String attendeeId : attendees) {
+                                fetchUserName(attendeeId);
+                            }
                         } else {
                             Toast.makeText(this, "No attendees found for this event", Toast.LENGTH_SHORT).show();
                         }
@@ -84,12 +81,16 @@ public class SignUpsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Fetches the name of the user with the given ID.
+     * @param userId The ID of the user to fetch.
+     */
     private void fetchUserName(String userId) {
         db.collection("Users").document(userId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String userName = documentSnapshot.getString("userName"); // Edit this line
+                        String userName = documentSnapshot.getString("userName");
                         if (userName != null && !userName.isEmpty()) {
                             adapterWithName.add(userName);
                         } else {
@@ -105,5 +106,4 @@ public class SignUpsActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to fetch user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
 }

@@ -184,7 +184,7 @@ public class QrCodeScanActivity extends AppCompatActivity {
         initBinding();
         initViews();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        attendanceDB = new AttendanceDB();  // Initialize your AttendanceDB
+        attendanceDB = new AttendanceDB();  // Initialize AttendanceDB
 
         Button backButton = findViewById(R.id.cancelButton);
         backButton.setOnClickListener(v -> finish());

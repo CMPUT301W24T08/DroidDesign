@@ -7,14 +7,28 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The AttendanceDB class is responsible for managing the attendance data in the Firestore database.
+ */
 public class AttendanceDB {
 
     private FirebaseFirestore db;
 
+    /**
+     * Creates a new instance of the AttendanceDB class.
+     */
     public AttendanceDB() {
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Checks in a user to an event by saving the check-in data in the Firestore database.
+     *
+     * @param eventId   The unique identifier of the event.
+     * @param userId    The unique identifier of the user.
+     * @param latitude  The latitude of the user's location.
+     * @param longitude The longitude of the user's location.
+     */
     public void checkInUser(String eventId, String userId, double latitude, double longitude) {
         // Use a composite key to uniquely identify each check-in
         String documentId = eventId + "_" + userId;
