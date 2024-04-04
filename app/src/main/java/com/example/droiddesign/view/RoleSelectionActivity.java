@@ -12,7 +12,10 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -108,27 +111,21 @@ public class RoleSelectionActivity extends AppCompatActivity {
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
 		prefsHelper = new SharedPreferenceHelper(this);
-
-// Add AuthStateListener
-		mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+		mAuth.signInAnonymously()
+				.addOnCompleteListener(RoleSelectionActivity.this, new OnCompleteListener<AuthResult>() {
 			@Override
-			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-				FirebaseUser user = firebaseAuth.getCurrentUser();
-				if (user != null) {
-					// User is signed in
+				public void onComplete(@NonNull Task<AuthResult> task) {
+					FirebaseUser user = mAuth.getCurrentUser();
 					String userId = user.getUid();
-					User newUser = new User(userId, role, false);
-					// Save user profile to SharedPreferences
-					prefsHelper.saveUserProfile(userId, role, null);
+					User newUser = new User(userId,role,false);
+					prefsHelper.saveUserProfile(userId,role,null);
 
 					UsersDB userdb = new UsersDB(firestore);
 					userdb.addUser(newUser);
-				} else {
-					// User is signed out
-					Log.d("AuthStateListener", "onAuthStateChanged:signed_out");
-				}
 			}
 		});
+// Add AuthStateListener
+
 
 
 
