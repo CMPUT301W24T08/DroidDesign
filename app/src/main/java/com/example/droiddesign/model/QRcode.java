@@ -18,7 +18,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
-
+/**
+ * A class that generates and uploads QR codes to Firebase Storage and Firestore.
+ */
 public class QRcode {
     private String qrId, eventId, type, uri;
     // Bitmap object to hold the generated QR code image.
