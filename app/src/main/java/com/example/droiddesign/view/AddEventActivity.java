@@ -4,14 +4,18 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.R;
@@ -22,7 +26,6 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,9 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * An activity that provides UI for adding a new event. It allows users to select start and end dates and times.
@@ -219,6 +220,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                     intent.putExtra("endTime", endTime);
                     intent.putExtra("startDate", startDate);
                     intent.putExtra("endDate", endDate);
+                    intent.putExtra("eventLocation", selectedEventLocation);
 
                     startActivity(intent);
                 } catch (Exception e) {
@@ -280,6 +282,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
+
+
+    private String selectedEventLocation = "";
+
     private void setupAutocompleteFragment() {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -289,9 +295,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                // Assuming 'eventId' is obtained from the context, such as the currently selected or viewed event
-                String eventId = "your-event-id-here";
-                updateEventLocationInFirestore(eventId, place);
+                selectedEventLocation = place.getAddress(); // Store the selected location
             }
 
             @Override
@@ -299,20 +303,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
-    }
-
-
-    private void updateEventLocationInFirestore(String eventId, Place place) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Reference to the specific event document by its ID
-        DocumentReference eventDocRef = db.collection("EventsDB").document(eventId);
-
-        // Update the 'eventLocation' field in the document
-        eventDocRef
-                .update("eventLocation", place.getAddress())
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Event location successfully updated with: " + place.getAddress()))
-                .addOnFailureListener(e -> Log.w(TAG, "Error updating event location", e));
     }
 
 
