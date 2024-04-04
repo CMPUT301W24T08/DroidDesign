@@ -43,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_small"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.808" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_event"
@@ -171,7 +171,7 @@
         app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.78" />
+        app:layout_constraintVertical_bias="0.671" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_end_time"
@@ -189,7 +189,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_start_time"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintVertical_bias="0.643" />
 
     <TextView
         android:id="@+id/text_start_time"
@@ -244,16 +244,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.86">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_input_location"
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:fontFamily="@font/opensans"
-            android:text=""
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintVertical_bias="0.86"/>
 
     <TextView
         android:id="@+id/textView6"
@@ -265,10 +256,10 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_start_time"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.466" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_next_page"
@@ -299,5 +290,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.106" />
+
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="373dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/opensans"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

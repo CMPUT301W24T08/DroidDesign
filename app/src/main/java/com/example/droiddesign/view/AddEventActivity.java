@@ -1,5 +1,7 @@
 package com.example.droiddesign.view;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,18 +10,30 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.R;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * An activity that provides UI for adding a new event. It allows users to select start and end dates and times.
@@ -76,12 +90,22 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
+        // Initialize the Places SDK
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), "AIzaSyBrp292RbeEZVL79orFd-0OvnVbNpZAzio");
+        }
+
+        // Setup Places Client
+        PlacesClient placesClient = Places.createClient(this);
+
+        // Initialize the AutocompleteSupportFragment and specify the types of place data to return.
+        setupAutocompleteFragment();
+
         Button btnCancelAdd = findViewById(R.id.button_cancel);
 
         try {
             // Get event name and location as Strings
             TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-            TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
             // Initialize Start date button to have the current date + 1 day
             btnStartDate = findViewById(R.id.button_start_date);
@@ -182,10 +206,8 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             public void onClick(View view) {
                 try {
                     TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-                    TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
                     String eventName = eventNameInput.getText().toString();
-                    String eventLocation = eventLocationInput.getText().toString();
                     String startTime = btnStartTime.getText().toString();
                     String endTime = btnEndTime.getText().toString();
                     String startDate = btnStartDate.getText().toString();
@@ -193,7 +215,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
                     Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                     intent.putExtra("eventName", eventName);
-                    intent.putExtra("eventLocation", eventLocation);
                     intent.putExtra("startTime", startTime);
                     intent.putExtra("endTime", endTime);
                     intent.putExtra("startDate", startDate);
@@ -258,4 +279,41 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             Toast.makeText(this, "Error setting time", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void setupAutocompleteFragment() {
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                // Assuming 'eventId' is obtained from the context, such as the currently selected or viewed event
+                String eventId = "your-event-id-here";
+                updateEventLocationInFirestore(eventId, place);
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+    }
+
+
+    private void updateEventLocationInFirestore(String eventId, Place place) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the specific event document by its ID
+        DocumentReference eventDocRef = db.collection("EventsDB").document(eventId);
+
+        // Update the 'eventLocation' field in the document
+        eventDocRef
+                .update("eventLocation", place.getAddress())
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Event location successfully updated with: " + place.getAddress()))
+                .addOnFailureListener(e -> Log.w(TAG, "Error updating event location", e));
+    }
+
+
 }
