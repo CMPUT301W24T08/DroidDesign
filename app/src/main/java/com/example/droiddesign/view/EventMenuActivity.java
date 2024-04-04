@@ -313,16 +313,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Called when the activity resumes. Fetches the signed-up events again to refresh the list.
-	 */
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		fetchEvents();
-	}
-
-	/**
 	 * Fetches the current user's role from Firestore and configures the UI based on the role.
 	 * This method retrieves the role information from the 'Users' collection in Firestore
 	 * using the current user's ID. Once the role is fetched, it calls {@link #configureUIBasedOnRole()}

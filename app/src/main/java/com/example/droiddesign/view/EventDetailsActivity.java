@@ -150,7 +150,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 		ImageButton backButton = findViewById(R.id.back_button);
 		backButton.setOnClickListener(v -> {
-			if ("AddEventSecondActivity".equals(origin)) {
+			if ("AddEventSecondActivity".equals(origin) || "QrCodeScanActivity".equals(origin) ) {
 				Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
 				startActivity(intent);
 			} else {

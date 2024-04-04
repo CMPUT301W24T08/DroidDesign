@@ -112,30 +112,23 @@ public class QrCodeScanActivity extends AppCompatActivity {
                 if (eventId != null && type != null) {
                     Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
                     intent.putExtra("EVENT_ID", eventId);
+                    intent.putExtra("ORIGIN", "QrCodeScanActivity");
 
 
                     if ("check_in".equals(type)) {
                         // Get user ID
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        Log.d("QrCodeScanActivity", "Checking in user");
 
                         // Fetch location and check in
                         getCurrentLocation((latitude, longitude) -> {
-                            Log.d("QrCodeScanActivity", "Checking in userrr");
                             attendanceDB.checkInUser(eventId, userId, latitude, longitude);
+                            Toast.makeText(QrCodeScanActivity.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
                         });
 
-                        Event.loadFromFirestore(eventId, event -> {
-                            if (event != null) {
-                                // Additional event processing if needed
-                            }
-                        });
-                    } else if ("share".equals(type)) {
-                        // Handle share logic if needed
                     }
 
                     startActivity(intent);
-                    finish();
+                    //finish();
                 } else {
                     Log.e("QrCodeScanActivity", "Event ID or Type not found in QR code document.");
                 }

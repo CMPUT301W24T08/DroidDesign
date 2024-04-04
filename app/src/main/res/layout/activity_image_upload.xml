@@ -23,22 +23,10 @@
         android:id="@+id/button_choose_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose file"
-        app:cornerRadius="12.5dp"
         android:layout_below="@+id/text_view_title"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:id="@+id/edit_text_file_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/button_choose_image"
-        android:textColorHint="@color/white"
-        android:background="@drawable/rounded_edittext"
-        android:hint="Enter file name"
-        android:layout_alignBaseline="@+id/button_choose_image"
-        android:layout_toRightOf="@+id/button_choose_image"
-        android:layout_marginStart="10dp" />
+        android:layout_marginTop="40dp"
+        android:text="Choose file"
+        app:cornerRadius="12.5dp" />
 
     <ImageView
         android:id="@+id/image_preview"
