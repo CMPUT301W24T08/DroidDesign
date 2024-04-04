@@ -1,8 +1,12 @@
 package com.example.droiddesign.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -16,20 +20,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
+import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.net.Inet4Address;
 import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
     private static final int UPLOAD_IMAGE_REQUEST = 1;
-    private static final int GENERATE_QR_REQUEST = 2;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore mFirestoreDb;
     private ActivityResultLauncher<Intent> qrGeneratorLauncher;
+    private ActivityResultLauncher<Intent> pickQrImageLauncher;
+    private ActivityResultLauncher<Intent> scanQrLauncher;
     // Generate a UUID for the event
     private final String uniqueID = UUID.randomUUID().toString();
     private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
@@ -50,6 +56,31 @@ public class AddEventSecondActivity extends AppCompatActivity {
                             checkInQrId = data.getStringExtra("checkInId");
                             Log.d("AddEventSecondActivity", "Share QR Code ID: " + shareQrId);
                             Log.d("AddEventSecondActivity", "Check-in QR Code ID: " + checkInQrId);
+                        }
+                    }
+                });
+
+        pickQrImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri selectedImageUri = data.getData();
+                            // Process the selected QR image URI
+                            // ...
+                        }
+                    }
+                });
+
+        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            shareQrId = data.getStringExtra("SCANNED_QR_DATA");
+                            Bitmap qrBitmap = data.getParcelableExtra("SCANNED_QR_BITMAP");
+
+                            Log.d("AddEventSecondActivity", "Scanned QR Code ID: " + shareQrId);
                         }
                     }
                 });
@@ -103,15 +134,59 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     qrGeneratorIntent.putExtra("eventID", uniqueID);
                     qrGeneratorLauncher.launch(qrGeneratorIntent);
                 } else if ("Use Existing QR".equals(selectedItem)) {
-
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEventSecondActivity.this);
+                    builder.setTitle("Select QR Option")
+                            .setMessage("How would you like to upload the existing QR code?")
+                            .setPositiveButton("Select from Files", (dialog, which) -> {
+                                // Launch an intent to select the QR image from files or photos
+                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                pickQrImageLauncher.launch(intent);
+                            })
+                            .setNegativeButton("Scan QR", (dialog, which) -> {
+                                // Launch an intent to scan the QR code
+                                Intent intent = new Intent(AddEventSecondActivity.this, QrCodeScanActivity.class);
+                                scanQrLauncher.launch(intent);
+                            })
+                            .show();
                 }
+
             });
         } catch (Exception e) {
             Log.e("AddEventSecondActivity", "Error setting up dropdown menu", e);
             Toast.makeText(this, "Error setting up QR options", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * Generates a new QR code for checking into the event.
+     */
+    private void generateCheckInQrCode() {
+        QRcode checkInQrCode = new QRcode(uniqueID, "check_in");
+        checkInQrId = checkInQrCode.getQrId();
+
+        checkInQrCode.upload(new QRcode.OnQrCodeUploadListener() {
+            @Override
+            public void onQrCodeUploadSuccess() {
+                checkInQrUrl = checkInQrCode.getUri();
+                Log.d("AddEventSecondActivity", "Check-in QR code uploaded successfully. URL: " + checkInQrUrl);
+            }
+
+            @Override
+            public void onQrCodeUploadSuccess(String downloadUrl) {
+                checkInQrUrl = downloadUrl;
+                // Perform any additional actions or update UI as needed
+                Log.d("CheckInQRCode", "Check-in QR code uploaded successfully. URL: " + checkInQrUrl);
+            }
+
+            @Override
+            public void onQrCodeUploadFailure(String errorMessage) {
+                // Handle upload failure
+                Log.e("CheckInQRCode", "Check-in QR code upload failed: " + errorMessage);
+                // Display an error message or take appropriate action
+            }
+        });
+    }
+
 
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
@@ -156,7 +231,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
         startActivity(detailsIntent);
 
         finish();
-
     }
 }
 
