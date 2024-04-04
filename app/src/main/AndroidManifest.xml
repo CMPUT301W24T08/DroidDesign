@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DroidDesign"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBO3ThsgiV0ayHfzMBr3rJUXKQ8ATJPQpg" />
         <activity
             android:name=".view.SendAnnouncementsActivity"
             android:exported="false" />
@@ -68,6 +71,9 @@
             android:exported="true" />
         <activity
             android:name=".view.QrCodeScanActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.GeoCheckActivity"
             android:exported="true" />
         <activity
             android:name=".view.RoleSelectionActivity"

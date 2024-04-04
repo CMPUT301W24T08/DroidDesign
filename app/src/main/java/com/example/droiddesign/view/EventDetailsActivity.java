@@ -184,7 +184,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 				intent = new Intent(this, SignUpsActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.geo_check_menu) {
-				intent = new Intent(this, GeoCheckFragment.class);
+				intent = new Intent(this, GeoCheckActivity.class);
 				intent.putExtra("EVENT_ID", eventId);
 			} else if (id == R.id.share_qr_menu) {
 				// Retrieve the QR code URI from the event
