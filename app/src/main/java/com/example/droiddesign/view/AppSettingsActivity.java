@@ -42,6 +42,8 @@ public class AppSettingsActivity extends AppCompatActivity {
 
 		// Load user settings
 		loadUserSettings();
+
+
 	}
 
 	private void setupBackButton() {
@@ -132,4 +134,5 @@ public class AppSettingsActivity extends AppCompatActivity {
 			}
 		});
 	}
+
 }
