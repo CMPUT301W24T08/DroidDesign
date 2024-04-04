@@ -33,7 +33,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
+/**
+ * BasicLoginFragment is a dialog fragment that allows the user to create an account
+ * by entering their name, email, role, company, and phone number. The user can also
+ * skip account creation and navigate to the role selection activity. The user can also
+ * set a profile picture by clicking on the profile picture button.
+ */
 public class BasicLoginFragment extends DialogFragment {
 
     public FirebaseAuth mAuth;
@@ -46,12 +51,20 @@ public class BasicLoginFragment extends DialogFragment {
     private SharedPreferenceHelper prefsHelper;
     private String profilePicUrl;
 
+    /**
+     * On receipt of a message event, set the profile picture URL
+     * @param event The message event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         profilePicUrl = event.getMessage();
         Log.d("BasicLoginFragment", "Received profile picture URL: " + profilePicUrl);
     }
 
+    /**
+     * On attach of the context, check if the context implements the UserCreationListener
+     * @param context The context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -63,6 +76,13 @@ public class BasicLoginFragment extends DialogFragment {
         prefsHelper = new SharedPreferenceHelper(requireContext());
     }
 
+    /**
+     * Create the view for the BasicLoginFragment
+     * @param inflater The layout inflater
+     * @param container The view group container
+     * @param savedInstanceState The saved instance state
+     * @return The view for the BasicLoginFragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,8 +101,10 @@ public class BasicLoginFragment extends DialogFragment {
         return view;
     }
 
-
-
+    /**
+     * Create a new instance of the BasicLoginFragment
+     * @return The BasicLoginFragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -91,6 +113,14 @@ public class BasicLoginFragment extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Create a new user
+     * @param userName The user's name
+     * @param email The user's email
+     * @param role The user's role
+     * @param company The user's company
+     * @param phoneNumber The user's phone number
+     */
     public void createUser(String userName, String email, String role, String company, String phoneNumber) {
         try {
             FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -136,6 +166,10 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Initialize the views
+     * @param view The view
+     */
     private void initializeViews(View view) {
         editUserName = view.findViewById(R.id.edit_user_name);
         editEmail = view.findViewById(R.id.edit_email);
@@ -151,6 +185,9 @@ public class BasicLoginFragment extends DialogFragment {
         roleSpinner.setAdapter(adapter);
     }
 
+    /**
+     * Register the EventBus
+     */
     private void registerEventBus() {
         try {
             EventBus.getDefault().register(this);
@@ -159,6 +196,10 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Setup listeners for the buttons
+     * @param view The view
+     */
     private void setupListeners(View view) {
         Button createAccountButton = view.findViewById(R.id.button_create_account);
         Button skipButton = view.findViewById(R.id.skip_account_creation);
@@ -204,6 +245,11 @@ public class BasicLoginFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Determine the profile picture URL based on the user's name
+     * @param userName The user's name
+     * @return The URL of the profile picture
+     */
     private String determineProfilePicUrl(String userName) {
         try {
             if (profilePicUrl == null || profilePicUrl.isEmpty()) {
@@ -217,6 +263,11 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Get the initials of the user's name
+     * @param userName The user's name
+     * @return The initials of the user's name
+     */
     private String getInitials(String userName) {
         try {
             if (userName == null || userName.isEmpty()) {
@@ -238,6 +289,9 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Navigate to the event menu activity
+     */
     private void navigateToEventMenu() {
         try {
             if (isAdded() && getActivity() != null) {
@@ -251,6 +305,9 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Unregister the EventBus
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -261,6 +318,9 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Interface for user creation listener
+     */
     interface UserCreationListener {
         void userCreated();
     }
