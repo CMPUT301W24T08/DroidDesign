@@ -140,12 +140,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 		Event.loadFromFirestore(eventId, event -> {
-            if (event != null) {
-                populateEventDetails(event);
-            } else {
-                Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
-            }
-        });
+			if (event != null) {
+				populateEventDetails(event);
+			} else {
+				Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
+			}
+		});
 
 
 		ImageButton backButton = findViewById(R.id.back_button);
