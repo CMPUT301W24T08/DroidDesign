@@ -505,6 +505,34 @@ public class Event {
         return UUID.randomUUID().toString();
     }
 
+    public void setShareQrCode(String shareQrCode) {
+        this.shareQrCode = shareQrCode;
+    }
+
+    public String getCheckInQrCode() {
+        return checkInQrCode;
+    }
+
+    public void setCheckInQrCode(String checkInQrCode) {
+        this.checkInQrCode = checkInQrCode;
+    }
+
+    public String getCheckInQrId() {
+        return checkInQrId;
+    }
+
+    public void setCheckInQrId(String checkInQrId) {
+        this.checkInQrId = checkInQrId;
+    }
+
+    public String getShareQrId() {
+        return shareQrId;
+    }
+
+    public void setShareQrId(String shareQrId) {
+        this.shareQrId = shareQrId;
+    }
+
     /**
      * Saves the current state of the event object to Firestore, merging it with existing data.
      */
