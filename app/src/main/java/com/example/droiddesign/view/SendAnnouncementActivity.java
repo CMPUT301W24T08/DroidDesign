@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -39,21 +41,27 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Activity for sending announcements to attendees of an event.
+ * This activity allows organizers to send announcements to attendees of an event.
+ */
 public class SendAnnouncementActivity extends AppCompatActivity {
-	private Button sendButton;
 	private TextView titleEditText;
 	private TextView messageEditText;
 	private FirebaseFirestore firestore;
-	private RecyclerView announcementsRecyclerView;
 	private AnnouncementAdapter announcementAdapter;
-	private List<Map<String, Object>> announcementList = new ArrayList<>();
+	private final List<Map<String, Object>> announcementList = new ArrayList<>();
 	private String userId, userRole,eventId;
-	SharedPreferenceHelper prefsHelper;
+
+	/**
+	 * Method called when the activity is created.
+	 * @param savedInstanceState The saved instance state of the activity.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_send_announcement);
-		prefsHelper = new SharedPreferenceHelper(this);
+		SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
 		String savedUserId = prefsHelper.getUserId();
 		if (savedUserId != null) {
 			// Use the userId from SharedPreferences
@@ -81,7 +89,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Log.e("VisibilityCheck", "Error", e));
 		titleEditText = findViewById(R.id.title_edit_text);
 		messageEditText = findViewById(R.id.message_edit_text);
-		sendButton = findViewById(R.id.send_button);
+		Button sendButton = findViewById(R.id.send_button);
 
 		sendButton.setOnClickListener(v -> {
 			String title = titleEditText.getText().toString().trim();
@@ -93,7 +101,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				saveMessage(title, message);
 			}
 		});
-		announcementsRecyclerView = findViewById(R.id.organizer_message_recyclerview);
+		RecyclerView announcementsRecyclerView = findViewById(R.id.organizer_message_recyclerview);
 		announcementsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 		announcementAdapter = new AnnouncementAdapter(announcementList);
@@ -107,6 +115,11 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		});
 	}
 
+	/**
+	 * Method to save the message to the Firestore database.
+	 * @param title The title of the message.
+	 * @param message The content of the message.
+	 */
 	private void saveMessage(String title, String message) {
 		if (eventId == null || eventId.trim().isEmpty()) {
 			Toast.makeText(this, "Event ID is not set.", Toast.LENGTH_SHORT).show();
@@ -133,6 +146,9 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show());
 	}
 
+	/**
+	 * Method to fetch announcements from the Firestore database.
+	 */
 	@SuppressLint("NotifyDataSetChanged")
 	private void fetchAnnouncements() {
 		firestore.collection("EventsDB").document(eventId)
@@ -145,7 +161,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 							List<Map<String, Object>> sortedMessages = new ArrayList<>(unsortedMessages);
 							sortedMessages.sort((map1, map2) -> ((String) map2.get("date")).compareTo((String) map1.get("date")));
 
-							// Now use sortedMessages to update your RecyclerView
+							// Now use sortedMessages to update RecyclerView
 							announcementList.clear();
 							announcementList.addAll(sortedMessages);
 							announcementAdapter.notifyDataSetChanged();
@@ -155,6 +171,9 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Log.e("FetchAnnouncementsError", "Error loading announcements", e));
 	}
 
+	/**
+	 * Method to refresh the activity.
+	 */
 	private void refreshActivity() {
 		Intent intent = new Intent(this, SendAnnouncementActivity.class);
 		intent.putExtra("EVENT_ID", eventId); // Pass the event ID back to the activity
@@ -162,6 +181,10 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		startActivity(intent);
 	}
 
+	/**
+	 * Method to notify attendees of the event about the announcement.
+	 * @param title The title of the announcement.
+	 */
 	private void notifyAttendees(String title) {
 		firestore.collection("EventsDB").document(eventId).get()
 				.addOnSuccessListener(documentSnapshot -> {
@@ -178,7 +201,7 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 											tokens.add(token);
 											if (tokens.size() == attendeeList.size()) {
 												// All tokens are collected, send them to your server/cloud function to dispatch notifications
-												sendNotificationsToTokens(title, tokens, documentSnapshot.get("eventName").toString());
+												sendNotificationsToTokens(title, tokens, Objects.requireNonNull(documentSnapshot.get("eventName")).toString());
 											}
 										}
 									});
@@ -187,6 +210,13 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 				})
 				.addOnFailureListener(e -> Log.e("NotifyAttendees", "Failed to get attendee list for event: " + eventId));
 	}
+
+	/**
+	 * Method to send notifications to the attendees of the event.
+	 * @param title The title of the announcement.
+	 * @param tokens The list of FCM tokens of the attendees.
+	 * @param eventName The name of the event.
+	 */
 	private void sendNotificationsToTokens(String title, List<String> tokens, String eventName) {
 		// Prepare the payload
 		JSONObject payload = new JSONObject();
@@ -219,11 +249,11 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 			// Asynchronously send the request
 			client.newCall(request).enqueue(new Callback() {
 				@Override
-				public void onFailure(okhttp3.Call call, IOException e) {
+				public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
 					Log.e("sendNotificationsToTokens", "Failed to send notifications", e);
 				}
 				@Override
-				public void onResponse(okhttp3.Call call, Response response) throws IOException {
+				public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
 					if (!response.isSuccessful()) {
 						Log.e("sendNotificationsToTokens", "Failed to send notifications: " + response);
 					} else {
@@ -237,6 +267,12 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * fetchEventName method to fetch the name of the event from Firestore.
+	 * @param firestore
+	 * @param eventId
+	 * @param callback
+	 */
 	public void fetchEventName(FirebaseFirestore firestore, String eventId, EventNameCallback callback) {
 		firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
 			if (task.isSuccessful() && task.getResult() != null) {
@@ -249,8 +285,14 @@ public class SendAnnouncementActivity extends AppCompatActivity {
 		});
 	}
 
+	/**
+	 * EventNameCallback interface to handle the event name.
+	 */
 	public interface EventNameCallback {
+		/**
+		 * Method to handle the event name.
+		 * @param eventName The name of the event.
+		 */
 		void onEventName(String eventName);
 	}
-
 }

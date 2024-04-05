@@ -63,6 +63,8 @@ public class User {
 	 */
 	private ArrayList<String> managedEventsList;
 
+	private String notificationPreference;
+
 	/**
 	 * Constructs an empty User instance with default values.
 	 */
@@ -79,6 +81,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "";
 	}
 
 	/**
@@ -102,6 +105,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "";
 	}
 
 	/**
@@ -123,6 +127,7 @@ public class User {
 		this.geolocation = false;
 		this.signedEventsList = new ArrayList<>();
 		this.managedEventsList = new ArrayList<>();
+		this.notificationPreference = "";
 	}
 
 	/**
@@ -144,6 +149,8 @@ public class User {
 		map.put("profilePic", profilePic);
 		map.put("signedEventsList", signedEventsList);
 		map.put("managedEventsList", managedEventsList);
+		map.put("notificationPreference", notificationPreference);
+		map.put("geolocation", geolocation);
 		return map;
 	}
 
@@ -199,10 +206,20 @@ public class User {
 		this.role = role;
 	}
 
+	/**
+	 * Gets the registered status of the user.
+	 *
+	 * @return The registered status of the user.
+	 */
 	public String getRegistered() {
 		return registered;
 	}
 
+	/**
+	 * Sets the registered status of the user.
+	 *
+	 * @param registered The new registered status to be set.
+	 */
 	public void setRegistered(String registered) {
 		this.registered = registered;
 	}
@@ -278,10 +295,20 @@ public class User {
 		return phone;
 	}
 
+	/**
+	 * Gets the FCM token of the user.
+	 *
+	 * @return The FCM token of the user.
+	 */
 	public String getToken() {
 		return token;
 	}
 
+	/**
+	 * Sets the FCM token of the user.
+	 *
+	 * @param token The new FCM token to be set.
+	 */
 	public void setToken(String token) {
 		this.token = token;
 	}
@@ -367,5 +394,22 @@ public class User {
 	public void setManagedEventsList(ArrayList<String> managedEventsList) {
 		this.managedEventsList = managedEventsList;
 	}
-}
 
+	/**
+	 * Gets the notification preference of the user.
+	 *
+	 * @return The notification preference of the user.
+	 */
+	public String getNotificationPreference() {
+		return notificationPreference;
+	}
+
+	/**
+	 * Sets the notification preference of the user.
+	 *
+	 * @param notificationPreference The notification preference of the user.
+	 */
+	public void setNotificationPreference(String notificationPreference) {
+		this.notificationPreference = notificationPreference;
+	}
+}

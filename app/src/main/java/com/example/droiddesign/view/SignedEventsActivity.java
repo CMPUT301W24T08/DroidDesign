@@ -18,14 +18,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for displaying signed events.
+ * This activity displays a list of events that the user has signed up for.
+ */
 public class SignedEventsActivity extends AppCompatActivity {
 
     private RecyclerView eventsRecyclerView;
-    private EventsAdapter eventsAdapter;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<String> signedEventsIds;
-    private List<Event> signedEventsList = new ArrayList<>();
+    private final List<Event> signedEventsList = new ArrayList<>();
 
+    /**
+     * Method called when the activity is created.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,9 @@ public class SignedEventsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Fetches the IDs of the events that the user has signed up for.
+     */
     private void fetchSignedEventsIds() {
         try {
             SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
@@ -71,6 +81,9 @@ public class SignedEventsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Fetches the details of the events that the user has signed up for.
+     */
     private void fetchEventsDetails() {
         if (signedEventsIds != null && !signedEventsIds.isEmpty()) {
             for (String eventId : signedEventsIds) {
@@ -97,8 +110,12 @@ public class SignedEventsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates the UI with the list of signed events.
+     * @param events The list of signed events.
+     */
     private void updateUI(List<Event> events) {
-        eventsAdapter = new EventsAdapter(events, event -> {
+        EventsAdapter eventsAdapter = new EventsAdapter(events, event -> {
             Intent detailIntent = new Intent(SignedEventsActivity.this, EventDetailsActivity.class);
             detailIntent.putExtra("EVENT_ID", event.getEventId());
             detailIntent.putExtra("ORIGIN", "SignedEventsActivity");

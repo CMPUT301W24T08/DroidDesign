@@ -22,6 +22,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.UUID;
 
+/**
+ * This activity is used to add a profile picture to the user's profile.
+ * The user can upload an image from the gallery and save it to the Firebase storage.
+ */
 public class AddProfilePictureActivity extends AppCompatActivity {
 
     private ImageView imageView;
@@ -34,11 +38,17 @@ public class AddProfilePictureActivity extends AppCompatActivity {
 
     private String existingImageUrl;
 
+    /**
+     * This method is called when the activity is created.
+     * It initializes the activity and sets up the UI components.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_profile_picture);
 
+        // Initialize UI components
         imageView = findViewById(R.id.profile_image_view);
         Button editButton = findViewById(R.id.edit_image_button);
         Button saveButton = findViewById(R.id.save_button);
@@ -58,6 +68,7 @@ public class AddProfilePictureActivity extends AppCompatActivity {
             Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
         }
 
+        // Set up button click listeners
         editButton.setOnClickListener(view -> {
             try {
                 ImagePicker.with(AddProfilePictureActivity.this)
@@ -83,6 +94,9 @@ public class AddProfilePictureActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * This method is used to save the profile picture to the Firebase storage.
+     */
     private void saveProfilePicture() {
         if (imageUri == null) {
             Toast.makeText(this, "Please upload a picture first", Toast.LENGTH_SHORT).show();
@@ -107,6 +121,13 @@ public class AddProfilePictureActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is called when the user selects an image from the gallery.
+     * It sets the image URI to the selected image and displays the image in the image view.
+     * @param requestCode The request code of the activity result.
+     * @param resultCode The result code of the activity result.
+     * @param data The data returned by the activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -125,6 +146,10 @@ public class AddProfilePictureActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is called when the activity is destroyed.
+     * It sends the existing image URL to the previous activity if the image is not saved.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

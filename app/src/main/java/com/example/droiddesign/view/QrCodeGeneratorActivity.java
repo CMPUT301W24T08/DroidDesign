@@ -40,7 +40,6 @@ import java.io.ByteArrayOutputStream;
  * This activity allows users to generate a QR code based on an input string (event ID)
  * and upload the generated QR code image to Firebase Storage.
  */
-
 public class QrCodeGeneratorActivity extends AppCompatActivity {
 
     /**
@@ -58,6 +57,8 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
      */
 
     private QRcode shareQrCode, checkInQrCode;
+    private String shareQrUrl, checkInQrUrl;
+    private int uploadCount = 0;
 
     /**
      * Initializes the activity, setting up UI components and button click listeners.
@@ -70,13 +71,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qr_code_generator);
 
         Button buttonGenerate = findViewById(R.id.button_generate);
-        /**
-         * Image view to display the generated QR code.
-         */
         ImageView mImageViewQrCode = findViewById(R.id.qr_code);
-        /**
-         * Button to trigger saving the generated QR code.
-         */
         Button mButtonSaveQrCode = findViewById(R.id.button_save_qr);
         Button buttonBack = findViewById(R.id.button_back);
 
@@ -100,17 +95,56 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (shareQrCode.getmQrBitmap() != null && checkInQrCode.getmQrBitmap() != null) {
-                    uploadQrCode(shareQrCode);
-                    uploadQrCode(checkInQrCode);
+                    uploadQrCode(shareQrCode, new OnQrCodeUploadListener() {
+                        @Override
+                        public void onQrCodeUploadSuccess(String qrUrl) {
+                            shareQrUrl = qrUrl;
+                            uploadCount++;
+                            checkUploadCompletion();
+                        }
+
+                        @Override
+                        public void onQrCodeUploadFailure(String errorMessage) {
+                            Toast.makeText(QrCodeGeneratorActivity.this, "Share QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    // Upload the check-in QR code
+                    uploadQrCode(checkInQrCode, new OnQrCodeUploadListener() {
+                        @Override
+                        public void onQrCodeUploadSuccess(String qrUrl) {
+                            checkInQrUrl = qrUrl;
+                            uploadCount++;
+                            checkUploadCompletion();
+                        }
+
+                        @Override
+                        public void onQrCodeUploadFailure(String errorMessage) {
+                            Toast.makeText(QrCodeGeneratorActivity.this, "Check-in QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     Toast.makeText(QrCodeGeneratorActivity.this, "No QR Code generated", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            /**
+             * Checks if both QR codes have been uploaded successfully.
+             * If so, sends the URLs of the uploaded QR codes back to the calling activity.
+             */
+            private void checkUploadCompletion() {
+                if (uploadCount == 2) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("shareQrUrl", shareQrUrl);
+                    resultIntent.putExtra("shareQrId", shareQrCode.getQrId());
+                    resultIntent.putExtra("checkInQrUrl", checkInQrUrl);
+                    resultIntent.putExtra("checkInId", checkInQrCode.getQrId());
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
                 }
             }
         });
@@ -122,8 +156,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
      * Uploads the generated QR code image to Firebase Storage and saves its metadata to Firestore.
      * @param qrCode The QRcode to be uploaded to the firestore.
      */
-
-    private void uploadQrCode(QRcode qrCode) {
+    private void uploadQrCode(QRcode qrCode, final OnQrCodeUploadListener listener) {
         Bitmap bitmap = qrCode.getmQrBitmap();
         String qrId = qrCode.getQrId();
         String eventId = qrCode.getEventId();
@@ -142,30 +175,18 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                         fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                // Assuming 'Upload' class has been updated to include new fields
                                 UploadQR upload = new UploadQR(uri.toString(), eventId, type);
                                 mFirestoreDb.collection("qrcodes").document(qrId).set(upload)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Toast.makeText(QrCodeGeneratorActivity.this, "QR Code and details saved", Toast.LENGTH_LONG).show();
-                                                Intent resultIntent = new Intent();
-                                                // Differentiating the result based on the QR code type
-                                                if ("share".equalsIgnoreCase(type)) {
-                                                    resultIntent.putExtra("shareQrUrl", uri.toString());
-                                                    resultIntent.putExtra("shareQrId", qrId);
-                                                } else if ("check_in".equalsIgnoreCase(type)) {
-                                                    resultIntent.putExtra("checkInQrUrl", uri.toString());
-                                                    resultIntent.putExtra("checkInId", qrId);
-                                                }
-                                                setResult(RESULT_OK, resultIntent);
-                                                finish();
+                                                listener.onQrCodeUploadSuccess(uri.toString());
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(QrCodeGeneratorActivity.this, "Save failed", Toast.LENGTH_SHORT).show();
+                                                listener.onQrCodeUploadFailure(e.getMessage());
                                             }
                                         });
                             }
@@ -175,9 +196,16 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(QrCodeGeneratorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        listener.onQrCodeUploadFailure(e.getMessage());
                     }
                 });
     }
 
+    /**
+     * Listener interface for handling QR code upload events.
+     */
+    private interface OnQrCodeUploadListener {
+        void onQrCodeUploadSuccess(String qrUrl);
+        void onQrCodeUploadFailure(String errorMessage);
+    }
 }

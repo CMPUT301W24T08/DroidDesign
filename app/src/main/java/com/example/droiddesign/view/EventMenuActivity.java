@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -20,6 +21,7 @@ import com.example.droiddesign.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -98,8 +100,15 @@ public class EventMenuActivity extends AppCompatActivity {
 		} else {
 			// No userId found in SharedPreferences, fetch it from FirebaseAuth
 			fetchUserRole();
-			userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-			prefsHelper.saveUserProfile(userId,userRole,userEmail);
+			FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+			if (currentUser != null) {
+				userId = currentUser.getUid();
+				prefsHelper.saveUserProfile(userId, userRole, userEmail);
+			} else {
+				Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(EventMenuActivity.this, BasicLoginFragment.class);
+				startActivity(intent);
+			}
 		}
 
 		if ("Organizer".equalsIgnoreCase(userRole)) {
@@ -150,7 +159,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			Intent intent = new Intent(EventMenuActivity.this, QrCodeScanActivity.class);
 			startActivity(intent);
 		});
-
 
 		navigationMenu.getMenu().clear();
 
@@ -205,7 +213,6 @@ public class EventMenuActivity extends AppCompatActivity {
 		});
 	}
 
-
 	/**
 	 * Sets up the RecyclerView with its layout manager and adapter.
 	 */
@@ -233,7 +240,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * Initializes the events list.
 	 * @return An empty ArrayList of Event objects.
 	 */
-
 	private List<Event> initializeEventsList() {
 		return new ArrayList<>();
 	}
@@ -248,7 +254,6 @@ public class EventMenuActivity extends AppCompatActivity {
 			navigationMenu.setVisibility(View.VISIBLE);
 		}
 	}
-
 
 	/**
 	 * Fetches the events the user has signed up for and updates the UI accordingly.
@@ -282,12 +287,10 @@ public class EventMenuActivity extends AppCompatActivity {
 		}).addOnFailureListener(e -> Log.e("EventMenuActivity", "Error fetching user data", e));
 	}
 
-
 	/**
 	 * Fetches details for each event the user has signed up for using their IDs.
 	 * @param eventIds List of event IDs the user has signed up for.
 	 */
-
 	private void fetchEventsByIds(List<String> eventIds) {
 		signedUpEvents = new ArrayList<>();
 		for (String eventId : eventIds) {
@@ -306,7 +309,6 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Called when the activity resumes. Fetches the signed-up events again to refresh the list.
 	 */
-
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -355,13 +357,15 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Updates the UI to display the latest list of events.
 	 */
-
 	private void updateUI() {
 		eventsAdapter.setEvents(signedUpEvents);
 		eventsAdapter.notifyDataSetChanged();
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
 
+	/**
+	 * Updates the FCM token for the current user in Firestore.
+	 */
 	void updateTokenIfNeeded(){
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){
@@ -372,5 +376,4 @@ public class EventMenuActivity extends AppCompatActivity {
 			}
 		});
 	}
-
 }

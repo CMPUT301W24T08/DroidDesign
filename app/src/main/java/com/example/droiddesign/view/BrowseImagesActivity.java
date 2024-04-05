@@ -24,14 +24,22 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used to browse and delete images from the database.
+ * The user can select the type of images to browse and delete them.
+ */
 public class BrowseImagesActivity extends AppCompatActivity {
-	private RecyclerView imagesRecyclerView;
 	private ImagesAdapter imagesAdapter;
 	private List<ImageItem> imageItemList;
 	private FirebaseFirestore firestore;
 	private Spinner imageTypeSpinner;
 	String selection;
 
+	/**
+	 * This method is called when the activity is created.
+	 * It initializes the activity layout and loads the images from the database.
+	 * @param savedInstanceState The saved instance state of the activity.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,7 +48,7 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		try {
 			firestore = FirebaseFirestore.getInstance();
 			imageItemList = new ArrayList<>();
-			imagesRecyclerView = findViewById(R.id.images_recyclerview);
+			RecyclerView imagesRecyclerView = findViewById(R.id.images_recyclerview);
 			imageTypeSpinner = findViewById(R.id.image_type_spinner);
 
 			imagesAdapter = new ImagesAdapter(imageItemList);
@@ -56,6 +64,10 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It sets up the spinner to select the type of images to browse.
+	 */
 	private void setupSpinner() {
 		try {
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -82,6 +94,10 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It loads the user profile images from the database.
+	 */
 	private void loadUserProfileImages() {
 		try {
 			firestore.collection("Users")
@@ -105,6 +121,10 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It loads the event posters from the database.
+	 */
 	private void loadEventPosters() {
 		try {
 			firestore.collection("EventsDB")
@@ -128,6 +148,11 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * This method is called when the user clicks on an image.
+	 * It shows a dialog with the image and the option to delete it.
+	 * @param imageItem The image item that was clicked.
+	 */
 	public void showImageDialog(ImageItem imageItem) {
 		try {
 			Dialog dialog = new Dialog(this);
@@ -151,12 +176,17 @@ public class BrowseImagesActivity extends AppCompatActivity {
 			}
 		}
 
+		/**
+		 * This method is called when the user clicks on the delete button in the dialog.
+		 * It deletes the image from the database.
+		 * @param imageItem The image item to be deleted.
+		 */
 		private void deleteImage(ImageItem imageItem) {
 			try {
 				if ("User Profile Pics".equals(selection)) {
 					// Delete user profile picture
 					firestore.collection("Users")
-							.document(imageItem.getOwnerId()) // Assuming ImageItem has an ID field
+							.document(imageItem.getOwnerId())
 							.update("profilePic", null)
 							.addOnSuccessListener(aVoid -> {
 								Toast.makeText(BrowseImagesActivity.this, "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
@@ -168,7 +198,7 @@ public class BrowseImagesActivity extends AppCompatActivity {
 				} else if ("Event Posters".equals(selection)) {
 					// Delete event poster
 					firestore.collection("EventsDB")
-							.document(imageItem.getOwnerId()) // Assuming ImageItem has an ID field
+							.document(imageItem.getOwnerId())
 							.update("imagePosterId", null)
 							.addOnSuccessListener(aVoid -> {
 								Toast.makeText(BrowseImagesActivity.this, "Event poster removed successfully.", Toast.LENGTH_SHORT).show();
@@ -182,4 +212,3 @@ public class BrowseImagesActivity extends AppCompatActivity {
 				Toast.makeText(this, "An error occurred while deleting the image: " + e.getMessage(), Toast.LENGTH_LONG).show();
 			}
 		}	}
-

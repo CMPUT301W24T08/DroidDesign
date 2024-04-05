@@ -26,7 +26,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
         <activity
-            android:name=".view.SendAnnouncementsActivity"
+            android:name=".view.SendAnnouncementActivity"
             android:exported="false" />
         <activity
             android:name=".view.AdminBrowseUsersActivity"
@@ -36,6 +36,9 @@
             android:exported="false" />
         <activity
             android:name=".view.CurrentAttendanceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.SignUpsActivity"
             android:exported="false" />
         <activity
             android:name=".view.AddProfilePictureActivity"
@@ -80,7 +83,6 @@
         <activity android:name=".view.ProfileSettingsActivity" />
         <activity android:name=".view.AddEventActivity" />
         <activity android:name=".view.AddEventSecondActivity" />
-        <activity android:name=".view.SendAnnouncementActivity" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"

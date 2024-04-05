@@ -18,15 +18,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This activity is used to display the current attendance list of an event.
+ * The activity displays the milestone, total sign-ups, and check-ins for the event.
+ */
 public class CurrentAttendanceActivity extends AppCompatActivity {
-    private RecyclerView attendanceListView;
     private UserListAdapter attendanceListAdapter;
 
     List<User> users = new ArrayList<>(); // Initialize the list
-    private HashMap<String, Integer> checkedInUsers = new HashMap<>(); // Initialize the map
+    private final HashMap<String, Integer> checkedInUsers = new HashMap<>(); // Initialize the map
     private String eventId;
     private FirebaseFirestore firestore;
 
+    /**
+     * This method is called when the activity is created.
+     * It initializes the activity layout and retrieves the event and attendance list.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +43,16 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         eventId = getIntent().getStringExtra("EVENT_ID");
 
-        // What you need to track current attendance and milestone
+        // track current attendance and milestone
         TextView milestoneTextView = findViewById(R.id.milestone_textview);
         TextView totalSignUpTextView = findViewById(R.id.total_sign_up_textview);
         TextView checkInsTextView = findViewById(R.id.check_ins_textview);
-        attendanceListView = findViewById(R.id.attendance_list_recycler_view);
+        RecyclerView attendanceListView = findViewById(R.id.attendance_list_recycler_view);
         attendanceListView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize the adapter with the empty list and map
         attendanceListAdapter = new UserListAdapter(users, checkedInUsers, user -> {
-            // Handle user item click event if necessary
+            // Do nothing
         });
         attendanceListView.setAdapter(attendanceListAdapter);
 
@@ -56,6 +64,9 @@ public class CurrentAttendanceActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is used to retrieve the event details and the attendance list from Firestore.
+     */
     private void retrieveEventAndAttendanceList() {
         firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
             try {

@@ -11,8 +11,7 @@ public class SharedPreferenceHelper {
 	private static final String KEY_USER_ID = "userId";
 	private static final String KEY_EMAIL = "email";
 	private static final String KEY_ROLE = "role";
-
-	private SharedPreferences sharedPreferences;
+	private final SharedPreferences sharedPreferences;
 
 	/**
 	 * Constructs a new SharedPreferencesHelper instance.
@@ -26,7 +25,7 @@ public class SharedPreferenceHelper {
 	 * Saves the user profile information (userId and role) to SharedPreferences.
 	 * @param userId The user ID to be saved.
 	 * @param role The role to be saved.
-	 * @param email The email to be saved if loged in.
+	 * @param email The email to be saved if logged in.
 	 */
 	public void saveUserProfile(String userId, String role, String email) {
 		SharedPreferences.Editor editor = sharedPreferences.edit();

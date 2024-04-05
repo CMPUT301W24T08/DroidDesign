@@ -24,16 +24,36 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * EditEventFragment is a Fragment class that allows users to edit the details of an existing event.
+ * It provides UI components for users to update the event name, description, maximum number of attendees,
+ * start date, start time, and end time. The user can save the edited event details by clicking the "Save" button.
+ */
 public class EditEventFragment extends Fragment implements DatePickerFragment.DatePickerListener {
     private Event event;
     private Button backButton, saveButton;
-    private String eventId;
-    private Button startDateButton, endDateButton, startTimeButton, endTimeButton;
+    private Button startDateButton;
+    private Button startTimeButton;
+    private Button endTimeButton;
     private ImageButton eventPoster, locationPreview;
     private final Calendar startTimeCalendar = Calendar.getInstance();
     private final Calendar endTimeCalendar = Calendar.getInstance();
     private EditText eventName, maxAttendees, milestones, eventDescription;
 
+    /**
+     * Called when the fragment is first attached to its context.
+     * Confirms that the host context implements the required DatePickerListener interface.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
@@ -43,7 +63,7 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
         Button saveButton = view.findViewById(R.id.button_save);
         eventName = view.findViewById(R.id.event_name_input);
         startDateButton = view.findViewById(R.id.button_start_date);
-        endDateButton = view.findViewById(R.id.button_end_date);
+        Button endDateButton = view.findViewById(R.id.button_end_date);
         startTimeButton = view.findViewById(R.id.button_start_time);
         endTimeButton = view.findViewById(R.id.button_end_time);
         ImageButton eventPosterButton = view.findViewById(R.id.button_event_poster);
@@ -58,7 +78,7 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
         endDateText.setVisibility(View.INVISIBLE);
         endDateButton.setVisibility(View.INVISIBLE);
 
-        eventId = getArguments().getString("EVENT_ID");
+        String eventId = getArguments().getString("EVENT_ID");
         if (eventId == null || eventId.isEmpty()) {
             Toast.makeText(requireContext(), "Event ID is missing.", Toast.LENGTH_LONG).show();
             requireActivity().finish();
@@ -86,7 +106,7 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
             @Override
             public void onClick(View v) {
                 DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(requireFragmentManager(), "startTimePicker");
+                timePicker.show(getParentFragmentManager(), "startTimePicker");
             }
         });
 
@@ -94,7 +114,7 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
             @Override
             public void onClick(View v) {
                 DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(requireFragmentManager(), "endTimePicker");
+                timePicker.show(getParentFragmentManager(), "endTimePicker");
             }
         });
 
@@ -165,25 +185,8 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
     }
 
     /**
-     * Saves the edited event details by retrieving the updated values from the UI components and updating the existing
-     * Event object in Firestore. The updated event details include the event name, description, maximum number of attendees,
-     * start date, start time, and end time. These details are extracted from the respective UI components, compiled into a map,
-     * and then used to update the Event object in Firestore.
-     * <p>
-     * If the Event object is not yet loaded or is null (indicating the event data is not available), a toast message is displayed
-     * to inform the user that the event data is not loaded or is null.
-     * <p>
-     * Note: This method is private and intended to be called within the class it is defined in, typically in response to a UI
-     * action such as pressing a "Save" button after editing event details.
-     * <p>
-     * Preconditions:
-     * - UI components for event name, description, max attendees, start date, start time, and end time must be initialized and accessible.
-     * <p>
-     * Postconditions:
-     * - If the Event object is not null, the event is updated in Firestore with the new details.
-     * - If the Event object is null, a toast message is shown to the user indicating the data is not available.
-     * <p>
-     * TODO: Implement milestones properly as part of the event update process.
+     * Saves the edited event details to Firestore. This method retrieves the updated event details from the
+     * UI components and prepares a map of the fields to update. It then updates the existing Event object in Firestore.
      */
     private void saveEditedEvent() {
         // Retrieve the updated event details from the UI components
@@ -202,7 +205,6 @@ public class EditEventFragment extends Fragment implements DatePickerFragment.Da
         updatedFields.put("eventDate", updatedStartDate);
         updatedFields.put("startTime", updatedStartTime);
         updatedFields.put("endTime", updatedEndTime);
-        // TODO: Properly implement milestones
 
         // Check if the event object is not null
         if (event != null) {

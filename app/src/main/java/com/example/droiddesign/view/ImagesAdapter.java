@@ -13,15 +13,30 @@ import com.bumptech.glide.Glide;
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.ImageItem;
 
+/**
+ * Adapter class for populating the RecyclerView with images.
+ */
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
 
-	private List<ImageItem> imageItemList;
+	private final List<ImageItem> imageItemList;
 	private Context context;
 
+	/**
+	 * Constructor for the ImagesAdapter.
+	 *
+	 * @param imageItemList List of ImageItem objects to be displayed.
+	 */
 	public ImagesAdapter(List<ImageItem> imageItemList) {
 		this.imageItemList = imageItemList;
 	}
 
+	/**
+	 * Inflates the layout for each image card.
+	 *
+	 * @param parent   The parent view group.
+	 * @param viewType The type of view to be inflated.
+	 * @return A ViewHolder object representing the inflated view.
+	 */
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,6 +45,12 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 		return new ViewHolder(view);
 	}
 
+	/**
+	 * Binds the image URL to the ImageView in the ViewHolder.
+	 *
+	 * @param holder   The ViewHolder object.
+	 * @param position The position of the item in the RecyclerView.
+	 */
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 		ImageItem imageItem = imageItemList.get(position);
@@ -44,14 +65,27 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 		});
 	}
 
+	/**
+	 * Returns the number of items in the RecyclerView.
+	 *
+	 * @return The number of items in the RecyclerView.
+	 */
 	@Override
 	public int getItemCount() {
 		return imageItemList.size();
 	}
 
+	/**
+	 * ViewHolder class for the ImagesAdapter.
+	 */
 	static class ViewHolder extends RecyclerView.ViewHolder {
 		ImageView imageView;
 
+		/**
+		 * Constructor for the ViewHolder.
+		 *
+		 * @param itemView The view to be held by the ViewHolder.
+		 */
 		ViewHolder(View itemView) {
 			super(itemView);
 			imageView = itemView.findViewById(R.id.imageView);
