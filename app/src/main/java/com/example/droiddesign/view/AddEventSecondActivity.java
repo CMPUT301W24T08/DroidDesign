@@ -89,6 +89,15 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(view -> finish());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null && requestCode == UPLOAD_IMAGE_REQUEST) {
+                imagePosterId = data.getStringExtra("imagePosterUrl");
+        }
+    }
+
     private void populateEventFromIntent(Intent intent) {
         try {
             eventName = intent.getStringExtra("eventName");
