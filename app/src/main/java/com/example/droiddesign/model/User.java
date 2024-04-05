@@ -206,10 +206,20 @@ public class User {
 		this.role = role;
 	}
 
+	/**
+	 * Gets the registered status of the user.
+	 *
+	 * @return The registered status of the user.
+	 */
 	public String getRegistered() {
 		return registered;
 	}
 
+	/**
+	 * Sets the registered status of the user.
+	 *
+	 * @param registered The new registered status to be set.
+	 */
 	public void setRegistered(String registered) {
 		this.registered = registered;
 	}
@@ -285,10 +295,20 @@ public class User {
 		return phone;
 	}
 
+	/**
+	 * Gets the FCM token of the user.
+	 *
+	 * @return The FCM token of the user.
+	 */
 	public String getToken() {
 		return token;
 	}
 
+	/**
+	 * Sets the FCM token of the user.
+	 *
+	 * @param token The new FCM token to be set.
+	 */
 	public void setToken(String token) {
 		this.token = token;
 	}
@@ -375,15 +395,21 @@ public class User {
 		this.managedEventsList = managedEventsList;
 	}
 
-	// New getter for notification preference
+	/**
+	 * Gets the notification preference of the user.
+	 *
+	 * @return The notification preference of the user.
+	 */
 	public String getNotificationPreference() {
 		return notificationPreference;
 	}
 
-	// New setter for notification preference
+	/**
+	 * Sets the notification preference of the user.
+	 *
+	 * @param notificationPreference The notification preference of the user.
+	 */
 	public void setNotificationPreference(String notificationPreference) {
 		this.notificationPreference = notificationPreference;
 	}
-
 }
-

@@ -15,12 +15,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used by the admin to browse all the users in the application.
+ * The admin can view the details of each user by clicking on the user.
+ */
 public class AdminBrowseUsersActivity extends AppCompatActivity {
-    private RecyclerView usersRecyclerView;
     private UserListAdapter usersListAdapter;
     List<User> users = new ArrayList<>();
     private FirebaseFirestore firestore;
 
+    /**
+     * This method is called when the activity is created.
+     * It initializes the activity layout and the user list adapter.
+     * It also fetches all the users from the database.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +37,7 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
 
         try {
             firestore = FirebaseFirestore.getInstance();
-            usersRecyclerView = findViewById(R.id.admin_users_recyclerview);
+            RecyclerView usersRecyclerView = findViewById(R.id.admin_users_recyclerview);
             usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
             // Initialize the adapter with the users list
@@ -52,6 +61,10 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * This method is called when the activity is resumed.
+     * It fetches all the users from the database.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -62,6 +75,9 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method fetches all the users from the database and updates the user list.
+     */
     private void fetchAllUsers() {
         try {
             firestore.collection("Users").get().addOnCompleteListener(task -> {

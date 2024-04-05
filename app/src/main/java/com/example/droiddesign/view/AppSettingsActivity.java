@@ -20,13 +20,22 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This activity is used to display the application settings.
+ * The user can enable or disable geolocation and select the notification preference.
+ */
 public class AppSettingsActivity extends AppCompatActivity {
 
 	private SwitchCompat switchGeolocation;
 	private Spinner spinnerNotificationPreference;
 	private FirebaseFirestore db; // Firestore database reference
-	private String currentUserId = getCurrentUserId();
+	private final String currentUserId = getCurrentUserId();
 
+	/**
+	 * This method is called when the activity is created.
+	 * It initializes the activity layout and loads the user settings from Firestore.
+	 * @param savedInstanceState The saved instance state of the activity.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,15 +51,21 @@ public class AppSettingsActivity extends AppCompatActivity {
 
 		// Load user settings
 		loadUserSettings();
-
-
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It sets up the listeners for the UI components.
+	 */
 	private void setupBackButton() {
 		ImageButton backButton = findViewById(R.id.button_back);
 		backButton.setOnClickListener(v -> finish());
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It sets up the listeners for the UI components.
+	 */
 	private void setupSwitchGeolocation() {
 		switchGeolocation = findViewById(R.id.switch_geo_location);
 		Drawable thumbDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.thumb_selector);
@@ -59,6 +74,10 @@ public class AppSettingsActivity extends AppCompatActivity {
 		switchGeolocation.setTrackDrawable(trackDrawable);
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It sets up the listeners for the UI components.
+	 */
 	private void setupSpinner() {
 		spinnerNotificationPreference = findViewById(R.id.settings_spinner);
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
@@ -68,6 +87,12 @@ public class AppSettingsActivity extends AppCompatActivity {
 		spinnerNotificationPreference.setAdapter(adapter);
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It updates the Firestore database with the new settings.
+	 * @param field The field to be updated.
+	 * @param value The new value of the field.
+	 */
 	private void updateFirestore(String field, Object value) {
 		Map<String, Object> updates = new HashMap<>();
 		updates.put(field, value);
@@ -77,6 +102,11 @@ public class AppSettingsActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Log.e("Firestore", "Error updating " + field, e));
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It gets the current user ID from Firebase Authentication.
+	 * @return The current user ID.
+	 */
 	private String getCurrentUserId() {
 		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 		if (user != null) {
@@ -110,6 +140,10 @@ public class AppSettingsActivity extends AppCompatActivity {
 				.addOnFailureListener(e -> Log.e("AppSettings", "Error loading user settings", e));
 	}
 
+	/**
+	 * This method is called when the activity is resumed.
+	 * It sets up the listeners for the UI components.
+	 */
 	private void setupListeners() {
 		switchGeolocation.setOnCheckedChangeListener((buttonView, isChecked) -> {
 			updateFirestore("geolocation", isChecked);
@@ -134,5 +168,4 @@ public class AppSettingsActivity extends AppCompatActivity {
 			}
 		});
 	}
-
 }

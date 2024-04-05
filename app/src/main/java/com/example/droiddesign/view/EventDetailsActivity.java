@@ -51,9 +51,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 	private boolean isUserSignedUp;
 
-
-
-
 	/**
 	 * Initializes the activity, sets the content view, and initiates the process to fetch and display event details.
 	 * Sets up the interaction logic for UI elements like back button and sign up button.
@@ -62,9 +59,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-
-
 		setContentView(R.layout.activity_event_details);
 		String origin = getIntent().getStringExtra("ORIGIN");
 
@@ -83,8 +77,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 			userRole = prefsHelper.getRole();
 		} //At this point, user details are valid
 
-
-
 		Button signUpButton = findViewById(R.id.sign_up_button);
 		DocumentReference userRef = db.collection("Users").document(userId);
 		userRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -102,8 +94,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 			}
 		});
 
-
-
 		ImageButton menuButton = findViewById(R.id.button_menu);
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -112,7 +102,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
 			navigationMenu.inflateMenu(R.menu.menu_event_details);
-
 
 			// Check if eventId is in user.manageEventList
 			userRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -134,10 +123,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 			findViewById(R.id.sign_up_button).setVisibility("SignedEventsActivity".equals(origin) ? View.GONE : View.VISIBLE);
 		}
 
-
-
 		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
-
 
 		Event.loadFromFirestore(eventId, event -> {
 			if (event != null) {
@@ -146,7 +132,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 				Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
 			}
 		});
-
 
 		ImageButton backButton = findViewById(R.id.back_button);
 		backButton.setOnClickListener(v -> {
@@ -162,10 +147,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 			if (!isUserSignedUp) {
 				signUpForEvent();
 			} else {
-				//Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(EventDetailsActivity.this, "Already signed up for this event.", Toast.LENGTH_SHORT).show();
 			}
 		});
-
 
 		// Set the navigation item selection listener
 		navigationMenu.setNavigationItemSelectedListener(item -> {
@@ -206,10 +190,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 						toggleNavigationMenu();
 					}
 				});
-			} else if (id == R.id.remove_event_menu){
-				// get event and remove event id from managelist of User TODO: implementation slide to delete
-			} else if (id == R.id.remove_event_poster_menu){
-				// get event id and remove the poster of the event.poster  TODO: implementation
 			} else if(id == R.id.edit_event_details_menu){
 				intent = new Intent(this, EditEventFragment.class);
 			} else if (id == R.id.remove_event_poster){
@@ -258,7 +238,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 * Populates the event details in the activity's UI components.
 	 * @param event Event object containing the details to be displayed.
 	 */
-
 	private void populateEventDetails(Event event) {
 		TextView eventName = findViewById(R.id.event_name);
 		TextView eventDateAndTime = findViewById(R.id.date_and_time);
@@ -280,7 +259,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 * Signs up the current logged-in user for the event and updates the user's event list in the Firestore database.
 	 * Shows a toast message based on the success or failure of the operation.
 	 */
-
 	private void signUpForEvent() {
 
 		isUserSignedUp = true;
@@ -336,15 +314,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 					}
 				})
 				.addOnFailureListener(e -> Toast.makeText(EventDetailsActivity.this, "Failed to fetch event data.", Toast.LENGTH_SHORT).show());
-
 	}
-
 
 	/**
 	 * Retrieves the ID of the currently logged-in user from FirebaseAuth.
 	 * @return The current user's ID or null if no user is logged in.
 	 */
-
 	private String getCurrentUserId() {
 		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 		return (user != null) ? user.getUid() : null;

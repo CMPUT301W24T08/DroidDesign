@@ -27,7 +27,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	/**
 	 * A list containing Event objects to be displayed in the RecyclerView.
 	 */
-	private List<Event> eventsList;
+	private final List<Event> eventsList;
 
 	/**
 	 * An interface defining the onItemClick method to handle item click events in the RecyclerView.
@@ -38,7 +38,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	/**
 	 * Interface for handling item click events.
 	 */
-
 	public interface OnItemClickListener {
 		void onItemClick(Event event);
 	}
@@ -49,12 +48,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	 * @param eventsList List of events to be displayed.
 	 * @param listener   Listener for item click events.
 	 */
-
 	public EventsAdapter(List<Event> eventsList, OnItemClickListener listener) {
 		this.eventsList = eventsList;
 		this.listener = listener;
 	}
-
 
 	/**
 	 * Inflates the layout for each event card.
@@ -76,7 +73,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	 * @param holder   The view holder to bind data to.
 	 * @param position The position of the item within the RecyclerView.
 	 */
-
 	@Override
 	public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
 		Event event = eventsList.get(position);
@@ -124,13 +120,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	 *
 	 * @param events List of events to be displayed.
 	 */
-
 	public void setEvents(List<Event> events) {
 		this.eventsList.clear();
 		this.eventsList.addAll(events);
 		notifyDataSetChanged();
 	}
-
 
 	/**
 	 * Gets the number of events in the list.
@@ -167,7 +161,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 			dateYear = itemView.findViewById(R.id.date_year);
 		}
 
-
 		/**
 		 * Binds event data to the views and sets click listener.
 		 *
@@ -177,8 +170,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 		public void bind(Event event, OnItemClickListener listener) {
 			// Bind event data to the views
 			itemView.setOnClickListener(v -> listener.onItemClick(event));
-
 		}
 	}
 }
-

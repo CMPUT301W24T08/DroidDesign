@@ -1,5 +1,6 @@
 package com.example.droiddesign.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -13,13 +14,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for displaying signed up users.
+ * This activity displays a list of users who have signed up for an event.
+ */
 public class SignedUpUsersActivity extends AppCompatActivity {
-    private RecyclerView usersRecyclerView;
     private UserListAdapter usersListAdapter;
-    List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
     private String eventId;
     private FirebaseFirestore firestore;
 
+    /**
+     * Method called when the activity is created.
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +37,11 @@ public class SignedUpUsersActivity extends AppCompatActivity {
             firestore = FirebaseFirestore.getInstance();
             eventId = getIntent().getStringExtra("EVENT_ID");
 
-            usersRecyclerView = findViewById(R.id.signup_recyclerview);
+            RecyclerView usersRecyclerView = findViewById(R.id.signup_recyclerview);
             usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
             usersListAdapter = new UserListAdapter(users, null, user -> {
-                // Handle user item click event if necessary
+                // Do nothing
             });
             usersRecyclerView.setAdapter(usersListAdapter);
 
@@ -48,6 +56,10 @@ public class SignedUpUsersActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Retrieves the list of attendees for the event.
+     */
+    @SuppressLint("NotifyDataSetChanged")
     private void retrieveAttendees() {
         firestore.collection("EventsDB").document(eventId).get().addOnCompleteListener(task -> {
             try {

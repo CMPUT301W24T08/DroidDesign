@@ -17,9 +17,17 @@ public class UserUnitTest {
     private User attendeeUser;
     private User adminUser;
     private User organizerUser;
+    private User user;
 
     @Before
     public void setUp() {
+        // Initialize user
+        user = new User("userId123", "user");
+        user.setProfileName("John Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPhone("1234567890");
+        user.setProfilePic("profilePicUrl");
+
         // Initialize attendee user
         attendeeUser = new User("attendeeId123", "attendee");
         attendeeUser.setProfileName("Attendee Name");
@@ -57,11 +65,10 @@ public class UserUnitTest {
 
     @Test
     public void testToMap() {
-        HashMap<String, Object> map = attendeeUser.toMap();
-
+        HashMap<String, Object> map = user.toMap();
         assertEquals("userId should match", "userId123", map.get("userId"));
         assertEquals("role should match", "user", map.get("role"));
-        assertEquals("registered status should match", false, map.get("registered"));
+        assertEquals("registered status should match", null, map.get("registered"));
         assertEquals("profileName should match", "John Doe", map.get("profileName"));
         assertEquals("email should match", "john.doe@example.com", map.get("email"));
         assertEquals("phone should match", "1234567890", map.get("phone"));

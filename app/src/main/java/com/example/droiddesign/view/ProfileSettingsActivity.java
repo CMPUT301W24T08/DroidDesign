@@ -28,30 +28,28 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.UUID;
-
+/**
+ * The ProfileSettingsActivity class represents the user profile settings screen. It allows users to view and edit their profile settings, including their username, email, contact number, company, and profile picture.
+ */
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private EditText editUsername, editUserEmail, editUserContactNumber, editUserCompany, editDisplayUserName, editDisplayUserCompany;
-    private Button saveButton, editProfilePicButton, deleteProfilePicButton, editProfileButton, deleteProfileButton;
+    private Button saveButton;
     private ImageView profileImageView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
-
     private Uri imageUri;
-
     String profilePicUrl;
     private StorageReference mStorageRef;
-
     SharedPreferenceHelper prefsHelper;
-
     private String imageUrl;
-
-
     String userId;
-
     String avatarUrl;
 
-
+    /**
+     * Called when the activity is starting..
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,16 +63,17 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         editDisplayUserName= findViewById(R.id.UserDisplayName);
         editDisplayUserCompany = findViewById(R.id.UserCompanyDisplay);
         profileImageView = findViewById(R.id.profile_image_view);
-        editProfilePicButton = findViewById(R.id.edit_image_button);
-        deleteProfilePicButton = findViewById(R.id.delete_image_button);
-        editProfileButton = findViewById(R.id.edit_profile_button);
-        deleteProfileButton = findViewById(R.id.delete_profile);
+        Button editProfilePicButton = findViewById(R.id.edit_image_button);
+        Button deleteProfilePicButton = findViewById(R.id.delete_image_button);
+        Button editProfileButton = findViewById(R.id.edit_profile_button);
+        Button deleteProfileButton = findViewById(R.id.delete_profile);
         saveButton = findViewById(R.id.buttonSave);
         ImageButton backButton = findViewById(R.id.button_back);
         deleteProfileButton.setVisibility(View.GONE);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) throw new AssertionError();
         userId = currentUser.getUid();
 
         prefsHelper = new SharedPreferenceHelper(this);
@@ -122,14 +121,14 @@ public class ProfileSettingsActivity extends AppCompatActivity {
             }
         });
 
+        // Set up profile picture upload button
         editProfilePicButton.setOnClickListener(view -> ImagePicker.with(ProfileSettingsActivity.this)
                 .crop()  // Crop image (optional)
                 .compress(1024)  // Final image size will be less than 1 MB (optional)
                 .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080 (optional)
                 .start());
 
-
-
+        // Set up text change listeners
         editUsername.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -181,6 +180,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         editDisplayUserCompany.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Do nothing
             }
 
             @Override
@@ -193,12 +193,38 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // Do nothing
             }
         });
 
+        editUserContactNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String phoneNumber = s.toString();
+                if (phoneNumber.length() != 10) {
+                    editUserContactNumber.setError("Phone number must be 10 digits");
+                } else {
+                    editUserContactNumber.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phoneNumber = s.toString();
+                if (phoneNumber.length() != 10) {
+                    editUserContactNumber.setError("Phone number must be 10 digits");
+                } else {
+                    editUserContactNumber.setError(null);
+                }
+            }
+        });
 
         // Initialize Buttons
-
 
         // Set initial state of EditTexts to be non-editable
         setEditingEnabled(false);
@@ -217,6 +243,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Enables or disables editing of the profile settings.
+     * @param isEnabled True if editing should be enabled, false otherwise.
+     */
     private void setEditingEnabled(boolean isEnabled) {
         editUsername.setEnabled(isEnabled);
         editUserEmail.setEnabled(isEnabled);
@@ -227,6 +257,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         saveButton.setVisibility(isEnabled ? View.VISIBLE : View.INVISIBLE);
     }
 
+    /**
+     * Loads the user's profile settings from Firestore and populates the EditTexts.
+     */
     private void loadProfileSettings() {
         // Fetch user settings from Firestore and populate EditTexts
 
@@ -257,6 +290,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves the updated profile settings to Firestore.
+     */
     private void saveProfileSettings() {
         // Save updated settings to Firestore
         if (currentUser != null) {
@@ -265,17 +301,29 @@ public class ProfileSettingsActivity extends AppCompatActivity {
             String newUserContactNumber = editUserContactNumber.getText().toString();
             String newUserCompany = editUserCompany.getText().toString();
 
-            db.collection("Users").document(userId)
-                    .update("userName", newUsername, "email", newUserEmail, "phone", newUserContactNumber, "company", newUserCompany, "profilePic", profilePicUrl)
-                    .addOnSuccessListener(aVoid -> {
-                        // Handle success
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle failure
-                    });
+            if (newUsername.isEmpty() || newUserEmail.isEmpty() || newUserContactNumber.isEmpty() || newUserCompany.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            } else if (!newUserEmail.contains("@") || !newUserEmail.contains(".")) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            } else if (newUserContactNumber.length() != 10) {
+                Toast.makeText(this, "Please enter a valid 10-digit phone number", Toast.LENGTH_SHORT).show();
+            } else {
+                db.collection("Users").document(userId)
+                        .update("userName", newUsername, "email", newUserEmail, "phone", newUserContactNumber, "company", newUserCompany, "profilePic", profilePicUrl)
+                        .addOnSuccessListener(aVoid -> {
+                            // Handle success
+
+                        })
+                        .addOnFailureListener(e -> {
+                            // Handle failure
+                        });
+            }
         }
     }
 
+    /**
+     * Saves the profile picture to Firebase Storage.
+     */
     private void saveProfilePicture() {
 
         if (imageUri == null) {
@@ -304,7 +352,12 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Called when an activity you launched exits, giving the requestCode it started with, the resultCode it returned, and any additional data from it.
+     * @param requestCode The integer request code originally supplied to startActivityForResult().
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
