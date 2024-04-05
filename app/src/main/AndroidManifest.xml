@@ -84,7 +84,8 @@
             android:exported="true" />
         <activity android:name=".view.AttendeeAndOrganizer.AppSettingsActivity" />
         <activity android:name=".view.AttendeeAndOrganizer.ProfileSettingsActivity" />
-        <activity android:name=".view.Organizer.AddEventActivity" />
+        <activity
+            android:name=".view.Organizer.AddEventActivity" />
         <activity android:name=".view.Organizer.AddEventSecondActivity" />
         <activity android:name=".view.AttendeeAndOrganizer.SendAnnouncementActivity" />
         <activity
