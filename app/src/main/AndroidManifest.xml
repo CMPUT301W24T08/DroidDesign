@@ -35,34 +35,28 @@
             android:value="@string/default_notification_channel_id" />
 
         <activity
-            android:name=".view.SendAnnouncementsActivity"
+            android:name=".view.Admin.AdminBrowseUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".view.AdminBrowseUsersActivity"
+            android:name=".view.Organizer.SignedUpUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SignedUpUsersActivity"
+            android:name=".view.Organizer.CurrentAttendanceActivity"
             android:exported="false" />
         <activity
-            android:name=".view.CurrentAttendanceActivity"
+            android:name=".view.AttendeeAndOrganizer.AddProfilePictureActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SignUpsActivity"
+            android:name=".view.Organizer.SignedEventsActivity"
             android:exported="false" />
         <activity
-            android:name=".view.AddProfilePictureActivity"
+            android:name=".view.AttendeeAndOrganizer.DiscoverEventsActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SignedEventsActivity"
+            android:name=".view.Admin.BrowseImagesActivity"
             android:exported="false" />
         <activity
-            android:name=".view.DiscoverEventsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.BrowseImagesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.LaunchScreenActivity"
+            android:name=".view.Everybody.LaunchScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,29 +65,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.ImageUploadActivity"
+            android:name=".view.Organizer.ImageUploadActivity"
             android:exported="true" />
         <activity
-            android:name=".view.QrCodeGeneratorActivity"
+            android:name=".view.Organizer.QrCodeGeneratorActivity"
             android:exported="true" />
         <activity
-            android:name=".view.QrCodeScanActivity"
+            android:name=".view.Organizer.QrCodeScanActivity"
             android:exported="true" />
         <activity
-            android:name=".view.RoleSelectionActivity"
+            android:name=".view.Everybody.RoleSelectionActivity"
             android:exported="true" />
         <activity
-            android:name=".view.EventMenuActivity"
+            android:name=".view.Everybody.EventMenuActivity"
             android:exported="true" />
         <activity
-            android:name=".view.EventDetailsActivity"
+            android:name=".view.Everybody.EventDetailsActivity"
             android:exported="true" />
-        <activity android:name=".view.AppSettingsActivity" />
-        <activity android:name=".view.ProfileSettingsActivity" />
-        <activity android:name=".view.AddEventActivity" />
-        <activity android:name=".view.AddEventSecondActivity" />
-        <activity android:name=".view.SendAnnouncementActivity" />
-        <activity android:name=".view.ShareQrFragment" />
+        <activity android:name=".view.AttendeeAndOrganizer.AppSettingsActivity" />
+        <activity android:name=".view.AttendeeAndOrganizer.ProfileSettingsActivity" />
+        <activity android:name=".view.Organizer.AddEventActivity" />
+        <activity android:name=".view.Organizer.AddEventSecondActivity" />
+        <activity android:name=".view.AttendeeAndOrganizer.SendAnnouncementActivity" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
