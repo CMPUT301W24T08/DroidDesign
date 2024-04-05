@@ -1,21 +1,41 @@
 package com.example.droiddesign.view.Organizer;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.view.Organizer.AddEventSecondActivity;
+import com.example.droiddesign.view.Organizer.DatePickerFragment;
+import com.example.droiddesign.view.Organizer.TimePickerFragment;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AddressComponent;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -28,6 +48,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
      * Button to trigger the end date picker.
      */
     private Button btnEndDate;
+
+    private String selectedEventLocation = "";
+    double latitude;
+    double longitude;
 
     /**
      * Button to trigger the start date picker.
@@ -75,12 +99,22 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
 
+        // Initialize the Places SDK
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), "AIzaSyACpWJ8UeqCMkWrP8hmVrTkoJCVSK7OiY4");
+        }
+
+        // Setup Places Client
+        PlacesClient placesClient = Places.createClient(this);
+
+        // Initialize the AutocompleteSupportFragment and specify the types of place data to return.
+        setupAutocompleteFragment();
+
         Button btnCancelAdd = findViewById(R.id.button_cancel);
 
         try {
             // Get event name and location as Strings
             TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-            TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
             // Initialize Start date button to have the current date + 1 day
             btnStartDate = findViewById(R.id.button_start_date);
@@ -181,10 +215,8 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             public void onClick(View view) {
                 try {
                     TextInputEditText eventNameInput = findViewById(R.id.text_input_event_name);
-                    TextInputEditText eventLocationInput = findViewById(R.id.text_input_location);
 
                     String eventName = eventNameInput.getText().toString();
-                    String eventLocation = eventLocationInput.getText().toString();
                     String startTime = btnStartTime.getText().toString();
                     String endTime = btnEndTime.getText().toString();
                     String startDate = btnStartDate.getText().toString();
@@ -192,11 +224,18 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
                     Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                     intent.putExtra("eventName", eventName);
-                    intent.putExtra("eventLocation", eventLocation);
                     intent.putExtra("startTime", startTime);
                     intent.putExtra("endTime", endTime);
                     intent.putExtra("startDate", startDate);
                     intent.putExtra("endDate", endDate);
+                    intent.putExtra("eventLocation", selectedEventLocation);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("latitude", latitude);
+
+                    // Assuming `longitude` and `latitude` are your double variables
+                    Log.d("AddEventActivity", "Longitude: " + longitude);
+                    Log.d("AddEventActivity", "Latitude: " + latitude);
+
 
                     startActivity(intent);
                 } catch (Exception e) {
@@ -206,9 +245,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
     }
 
-    /**
-     * Shows the date picker dialog to allow the user to select a date.
-     */
     private void showDatePickerDialog() {
         try {
             DialogFragment datePicker = new DatePickerFragment();
@@ -218,13 +254,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-    /**
-     * Callback method to receive the selected date from the date picker dialog.
-     *
-     * @param year  The selected year.
-     * @param month The selected month.
-     * @param day   The selected day.
-     */
     public void onDateSet(int year, int month, int day) {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -244,13 +273,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-    /**
-     * Callback method to receive the selected time from the time picker dialog.
-     *
-     * @param tag       The tag to identify the time picker dialog.
-     * @param hourOfDay The selected hour of the day.
-     * @param minute    The selected minute.
-     */
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         try {
             String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
@@ -274,4 +296,59 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             Toast.makeText(this, "Error setting time", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+    private void setupAutocompleteFragment() {
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.ADDRESS,
+                Place.Field.ADDRESS_COMPONENTS,
+                Place.Field.LAT_LNG
+        ));
+
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                String city = "";
+                String state = "";
+
+                if (place.getAddressComponents() != null) {
+                    for (AddressComponent component : place.getAddressComponents().asList()) {
+                        for (String type : component.getTypes()) {
+                            if ("locality".equals(type)) {
+                                city = component.getName();
+                            } else if ("administrative_area_level_1".equals(type)) {
+                                state = component.getName();
+                            }
+                        }
+                    }
+                }
+
+                selectedEventLocation = city + ", " + state;
+                Log.i(TAG, "Selected location: " + selectedEventLocation);
+
+                if (place.getLatLng() != null) {
+                    latitude = place.getLatLng().latitude;
+                    longitude = place.getLatLng().longitude;
+
+                    // You can store these latitude and longitude in your class variables
+                    Log.i(TAG, "Coordinates: " + latitude + ", " + longitude);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+    }
+
+
 }

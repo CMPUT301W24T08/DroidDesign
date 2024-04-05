@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -22,11 +23,21 @@ import com.example.droiddesign.view.AttendeeAndOrganizer.SendAnnouncementActivit
 import com.example.droiddesign.view.Organizer.CurrentAttendanceActivity;
 import com.example.droiddesign.view.Organizer.EditEventFragment;
 import com.example.droiddesign.view.Organizer.SignedUpUsersActivity;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +46,7 @@ import java.util.List;
  * Activity class that presents the details of an event.
  * It retrieves the event data from Firestore based on the passed event ID and allows the user to sign up for the event.
  */
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 	/**
 	 * The ID of the event whose details are to be displayed.
@@ -50,8 +61,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 	 * Navigation menu for accessing different sections of the app.
 	 */
 	public NavigationView navigationMenu;
+
+
 	private String userId, userRole;
 	SharedPreferenceHelper prefsHelper;
+
+	private GoogleMap map;
 
 	private boolean isUserSignedUp;
 
@@ -65,6 +80,12 @@ public class EventDetailsActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_details);
 		String origin = getIntent().getStringExtra("ORIGIN");
+
+		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.map_fragment);
+		if (mapFragment != null) {
+			mapFragment.getMapAsync(this);
+		}
 
 		eventId = getIntent().getStringExtra("EVENT_ID");
 		if (eventId == null || eventId.isEmpty()) {
@@ -323,4 +344,55 @@ public class EventDetailsActivity extends AppCompatActivity {
 		FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 		return (user != null) ? user.getUid() : null;
 	}
+
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		Log.d("EventDetails", "Map is ready");
+		this.map = googleMap;
+		// Configure the map as needed
+		map.getUiSettings().setAllGesturesEnabled(true); // Disable interaction for the preview
+		Log.d("EventDetailsActivity", "Fetching event location for ID: " + eventId);
+
+		displayEventLocationOnMap(); // Function to display the check-in locations
+	}
+
+	private void displayEventLocationOnMap() {
+		Log.d("EventDetailsActivity", "Fetching event location for ID: " + eventId);
+
+		db.collection("EventsDB").document(eventId)
+				.get()
+				.addOnCompleteListener(task -> {
+					if (task.isSuccessful() && task.getResult() != null) {
+						DocumentSnapshot document = task.getResult();
+						if (document.exists()) {
+							Log.d("EventDetailsActivity", "Document found in EventsDB");
+
+							Event event = document.toObject(Event.class);
+							if (event != null) {
+								double latitude = event.getEventLatitude();
+								double longitude = event.getEventLongitude();
+
+								Log.d("EventDetailsActivity", "Event latitude: " + latitude);
+								Log.d("EventDetailsActivity", "Event longitude: " + longitude);
+
+								LatLng eventLocation = new LatLng(latitude, longitude);
+								map.addMarker(new MarkerOptions()
+										.position(eventLocation)
+										.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+								map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, 15)); // Adjust the zoom level as needed
+								Log.d("EventDetailsActivity", "Map updated with event location");
+							} else {
+								Log.d("EventDetailsActivity", "Event data is null");
+							}
+						} else {
+							Log.d("EventDetailsActivity", "No such document in EventsDB for ID: " + eventId);
+						}
+					} else {
+						Log.e("EventDetailsActivity", "Failed to fetch document: ", task.getException());
+					}
+				});
+	}
+
 }
