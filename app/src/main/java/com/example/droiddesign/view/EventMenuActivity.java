@@ -68,7 +68,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * List of events the user has signed up for.
 	 */
-	private List<Event> signedUpEvents;
+	private List<Event> eventsToDisplay;
 
 	/**
 	 * Initializes the activity, setting up UI components and event listeners.
@@ -298,13 +298,13 @@ public class EventMenuActivity extends AppCompatActivity {
 	 */
 
 	private void fetchEventsByIds(List<String> eventIds) {
-		signedUpEvents = new ArrayList<>();
+		eventsToDisplay = new ArrayList<>();
 		for (String eventId : eventIds) {
 			db.collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
 				Event event = documentSnapshot.toObject(Event.class);
 				if (event != null) {
-					signedUpEvents.add(event);
-					if (signedUpEvents.size() == eventIds.size()) {
+					eventsToDisplay.add(event);
+					if (eventsToDisplay.size() == eventIds.size()) {
 						updateUI();
 					}
 				}
@@ -353,8 +353,8 @@ public class EventMenuActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (signedUpEvents != null && !signedUpEvents.isEmpty()) {
-			signedUpEvents.clear();
+		if (eventsToDisplay != null && !eventsToDisplay.isEmpty()) {
+			eventsToDisplay.clear();
 			fetchEvents();
 		}
 	}
@@ -364,7 +364,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	 */
 
 	private void updateUI() {
-		eventsAdapter.setEvents(signedUpEvents);
+		eventsAdapter.setEvents(eventsToDisplay);
 		eventsAdapter.notifyDataSetChanged();
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
