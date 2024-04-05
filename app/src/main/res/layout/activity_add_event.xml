@@ -267,15 +267,15 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/bg_light"
         android:clickable="true"
+        android:contentDescription="@string/next"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.929"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.98"
-        app:srcCompat="@drawable/chevron_right_white"
-        android:focusable="true"
-        android:contentDescription="@string/next" />
+        app:layout_constraintVertical_bias="0.991"
+        app:srcCompat="@drawable/chevron_right_white" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_cancel"
@@ -296,8 +296,8 @@
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="373dp"
         android:layout_height="63dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="72dp"
         android:fontFamily="@font/opensans"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
