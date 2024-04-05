@@ -98,35 +98,39 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
         mButtonSaveQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (shareQrCode.getmQrBitmap() != null && checkInQrCode.getmQrBitmap() != null) {
-                    uploadQrCode(shareQrCode, new OnQrCodeUploadListener() {
-                        @Override
-                        public void onQrCodeUploadSuccess(String qrUrl) {
-                            shareQrUrl = qrUrl;
-                            uploadCount++;
-                            checkUploadCompletion();
-                        }
+                if (shareQrCode != null && checkInQrCode != null) {
+                    if (shareQrCode.getmQrBitmap() != null && checkInQrCode.getmQrBitmap() != null) {
+                        uploadQrCode(shareQrCode, new OnQrCodeUploadListener() {
+                            @Override
+                            public void onQrCodeUploadSuccess(String qrUrl) {
+                                shareQrUrl = qrUrl;
+                                uploadCount++;
+                                checkUploadCompletion();
+                            }
 
-                        @Override
-                        public void onQrCodeUploadFailure(String errorMessage) {
-                            Toast.makeText(QrCodeGeneratorActivity.this, "Share QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onQrCodeUploadFailure(String errorMessage) {
+                                Toast.makeText(QrCodeGeneratorActivity.this, "Share QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                    // Upload the check-in QR code
-                    uploadQrCode(checkInQrCode, new OnQrCodeUploadListener() {
-                        @Override
-                        public void onQrCodeUploadSuccess(String qrUrl) {
-                            checkInQrUrl = qrUrl;
-                            uploadCount++;
-                            checkUploadCompletion();
-                        }
+                        // Upload the check-in QR code
+                        uploadQrCode(checkInQrCode, new OnQrCodeUploadListener() {
+                            @Override
+                            public void onQrCodeUploadSuccess(String qrUrl) {
+                                checkInQrUrl = qrUrl;
+                                uploadCount++;
+                                checkUploadCompletion();
+                            }
 
-                        @Override
-                        public void onQrCodeUploadFailure(String errorMessage) {
-                            Toast.makeText(QrCodeGeneratorActivity.this, "Check-in QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onQrCodeUploadFailure(String errorMessage) {
+                                Toast.makeText(QrCodeGeneratorActivity.this, "Check-in QR Code upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(QrCodeGeneratorActivity.this, "No QR Code generated", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(QrCodeGeneratorActivity.this, "No QR Code generated", Toast.LENGTH_SHORT).show();
                 }

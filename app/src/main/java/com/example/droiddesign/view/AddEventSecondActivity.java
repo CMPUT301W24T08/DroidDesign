@@ -1,16 +1,16 @@
 package com.example.droiddesign.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,28 +20,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
-import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.Inet4Address;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-/**
- * This activity allows users to add an event to the app.
- * The user can enter details about the event, upload an image poster for the event,
- * and generate a QR code for the event.
- */
 public class AddEventSecondActivity extends AppCompatActivity {
     private static final int UPLOAD_IMAGE_REQUEST = 1;
+    private static final int GENERATE_QR_REQUEST = 2;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ActivityResultLauncher<Intent> qrGeneratorLauncher;
-    private ActivityResultLauncher<Intent> scanQrLauncher;
     // Generate a UUID for the event
     private final String uniqueID = UUID.randomUUID().toString();
     private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
+
+    private List<Integer> milestoneList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,36 +63,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     }
                 });
 
-        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            shareQrId = data.getStringExtra("SCANNED_QR_DATA");
-                            Bitmap qrBitmap = data.getParcelableExtra("SCANNED_QR_BITMAP");
-                            Log.d("AddEventSecondActivity", "Scanned QR Code ID: " + shareQrId);
 
-                            // Create a QR code object from the scanned QR code and upload it to Firebase Storage
-                            QRcode shareQr = new QRcode(uniqueID, shareQrId, qrBitmap);
-                            shareQr.upload(new QRcode.OnQrCodeUploadListener() {
-                                @Override
-                                public void onQrCodeUploadSuccess() {
-                                    shareQrUrl = shareQr.getUri();
-                                    Log.d("AddEventSecondActivity", "Share QR code uploaded successfully. URL: " + shareQrUrl);
-                                }
-
-                                @Override
-                                public void onQrCodeUploadFailure(String errorMessage) {
-                                    // Handle upload failure
-                                    Log.e("AddEventSecondActivity", "Share QR code upload failed: " + errorMessage);
-                                    // Display an error message or take appropriate action
-                                }
-                            });
-                            // Generate the check-in QR code
-                            generateCheckInQrCode();
-                        }
-                    }
-                });
 
         Intent intent = getIntent();
         populateEventFromIntent(intent);
@@ -100,6 +71,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
         MaterialButton buttonUploadPoster = findViewById(R.id.button_upload_poster);
         AutoCompleteTextView dropdownMenu = findViewById(R.id.QR_menu);
         Button finishAddButton = findViewById(R.id.finish_add_button);
+        Button setMilestonesButton = findViewById(R.id.set_milestones_button);
+        setMilestonesButton.setOnClickListener(view -> showMilestonesDialog());
 
         setupDropdownMenu(dropdownMenu);
 
@@ -116,10 +89,15 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(view -> finish());
     }
 
-    /**
-     * Populates the event details from the intent.
-     * @param intent The intent containing the event details.
-     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null && requestCode == UPLOAD_IMAGE_REQUEST) {
+                imagePosterId = data.getStringExtra("imagePosterUrl");
+        }
+    }
+
     private void populateEventFromIntent(Intent intent) {
         try {
             eventName = intent.getStringExtra("eventName");
@@ -134,10 +112,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Sets up the dropdown menu for selecting QR code options.
-     * @param dropdownMenu The dropdown menu to set up.
-     */
     private void setupDropdownMenu(AutoCompleteTextView dropdownMenu) {
         try {
             String[] listItems = new String[]{"Generate New QR", "Use Existing QR"};
@@ -151,10 +125,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     qrGeneratorIntent.putExtra("eventID", uniqueID);
                     qrGeneratorLauncher.launch(qrGeneratorIntent);
                 } else if ("Use Existing QR".equals(selectedItem)) {
-                    Intent intent = new Intent(AddEventSecondActivity.this, QrCodeScanActivity.class);
-                    scanQrLauncher.launch(intent);
-                }
 
+
+                }
             });
         } catch (Exception e) {
             Log.e("AddEventSecondActivity", "Error setting up dropdown menu", e);
@@ -162,48 +135,60 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Generates a share QR code for the event.
-     * @return The QR code object.
-     */
-    private void generateCheckInQrCode() {
-        QRcode checkInQrCode = new QRcode(uniqueID, "check_in");
-        checkInQrId = checkInQrCode.getQrId();
+    private void showMilestonesDialog() {
+        Dialog milestonesDialog = new Dialog(this);
+        milestonesDialog.setContentView(R.layout.dialog_milestones);
 
-        checkInQrCode.upload(new QRcode.OnQrCodeUploadListener() {
-            @Override
-            public void onQrCodeUploadSuccess() {
-                checkInQrUrl = checkInQrCode.getUri();
-                Log.d("AddEventSecondActivity", "Check-in QR code uploaded successfully. URL: " + checkInQrUrl);
-            }
+        LinearLayout milestoneContainer = milestonesDialog.findViewById(R.id.milestone_container);
+        final int[] milestoneCount = {1}; // Use an array to hold the count
 
-            @Override
-            public void onQrCodeUploadFailure(String errorMessage) {
-                // Handle upload failure
-                Log.e("CheckInQRCode", "Check-in QR code upload failed: " + errorMessage);
-                // Display an error message or take appropriate action
-            }
+        Button addMilestoneButton = milestonesDialog.findViewById(R.id.add_milestone);
+        Button doneButton = milestonesDialog.findViewById(R.id.done_button);
+        Button cancelButton = milestonesDialog.findViewById(R.id.dialog_cancel_button);
+
+        addMilestoneButton.setOnClickListener(v -> {
+            milestoneCount[0]++; // Increment the count in the array
+            EditText newMilestoneEditText = new EditText(this);
+            newMilestoneEditText.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            newMilestoneEditText.setHint("Milestone " + milestoneCount[0]);
+            milestoneContainer.addView(newMilestoneEditText); // Add the new EditText to the container
         });
+
+        doneButton.setOnClickListener(v -> {
+            milestoneList.clear(); // Clear the list to prevent duplicates if the dialog is opened again
+            for (int i = 0; i < milestoneContainer.getChildCount(); i++) {
+                View child = milestoneContainer.getChildAt(i);
+                if (child instanceof EditText) {
+                    String milestoneText = ((EditText) child).getText().toString();
+                    if (!milestoneText.isEmpty()) {
+                        int milestoneValue = Integer.parseInt(milestoneText);
+                        milestoneList.add(milestoneValue);
+                    }
+                }
+            }
+            milestonesDialog.dismiss();
+        });
+        cancelButton.setOnClickListener(v -> milestonesDialog.dismiss());
+
+        milestonesDialog.show();
     }
 
-    /**
-     * Saves the event details to Firestore.
-     */
+
+
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
         Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
         TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
-        TextView milestoneTextView = findViewById(R.id.input_number_milestone);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
-        String milestoneString = milestoneTextView.getText().toString().trim();
+
 
         int maxAttendees = 0;
-        int milestone = 0;
-        if (!maxAttendeesString.isEmpty() && !milestoneString.isEmpty()) {
+        if (!maxAttendeesString.isEmpty()) {
             try {
                 maxAttendees = Integer.parseInt(maxAttendeesString);
-                milestone = Integer.parseInt(milestoneString);
             } catch (NumberFormatException e) {
                 Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
                 return;
@@ -215,7 +200,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         String currentUserId = prefsHelper.getUserId();
 
         Event event = new Event(uniqueID, eventName, eventDate, eventLocation, eventStartTime, eventEndTime, eventLocation,
-                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestone, shareQrUrl,
+                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestoneList, shareQrUrl,
                 checkInQrUrl, shareQrId, checkInQrId);
 
         event.saveToFirestore();

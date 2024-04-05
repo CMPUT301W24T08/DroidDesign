@@ -62,7 +62,6 @@ public class Event {
      */
     private String organizerOwnerId;
 
-    private HashMap<String, Integer> checkedInUsers = new HashMap<>();
 
 
     /**
@@ -78,16 +77,16 @@ public class Event {
     /**
      * Limit on the number of signups allowed for the event.
      */
-    private int signupLimit;
+    private Integer signupLimit;
 
     /**
      * Count of current attendees signed up for the event.
      */
-    private int attendeesCount;
+    private Integer attendeesCount;
     /**
      * List of milestone attendance numbers for the event
      */
-    private int milestones;
+    private List<Integer> milestones;
 
     /**
      * QR code URL associated with the event for easy sharing and identification.
@@ -119,6 +118,8 @@ public class Event {
     /**
      * Default constructor used for data retrieval from Firestore.
      */
+
+
     public Event() {}
 
     /**
@@ -142,7 +143,7 @@ public class Event {
     public Event(String eventId, String eventName, String eventDate,
                  String eventLocation, String startTime, String endTime,
                  String geolocation, String organizerOwnerId, String imagePosterId,
-                 String description, int signupLimit, int attendeesCount, int milestones,
+                 String description, int signupLimit, int attendeesCount, List<Integer> milestones,
                  String shareQrCode, String checkInQrCode, String shareQrId, String checkInQrId) {
         this.eventId = eventId;
         this.eventName = eventName;
@@ -223,6 +224,15 @@ public class Event {
         this.eventName = eventName;
         updateFirestore("eventName", eventName);
     }
+
+    public List<Integer> getMilestones() {
+        return milestones;
+    }
+
+    public void setMilestones(List<Integer> milestones) {
+        this.milestones = milestones;
+    }
+
 
     /**
      * Retrieves the scheduled date of the event.
@@ -405,30 +415,11 @@ public class Event {
         return attendeesCount;
     }
 
-    /**
-     * Retrieves the list of event attendance milestones.
-     * @return
-     */
-    public Integer getMilestones() {
-        return milestones;
-    }
 
-    public void setMilestones(Integer milestone) {
-        this.milestones = milestone;
-    }
-
-    /**
-     * Sets the count of attendees for the event and updates the corresponding field in Firestore.
-     *
-     * @param attendeesCount The new attendees count.
-     */
-    public void setAttendeesCount(Integer attendeesCount) {
-        this.attendeesCount = attendeesCount;
-        updateFirestore("attendeesCount", attendeesCount);
-    }
 
     /**
      * Retrieves the QR code associated with the event.
+     *
      * @return The QR code string.
      */
     public String getShareQrCode() {
@@ -448,10 +439,6 @@ public class Event {
         updateFirestore("shareQrId", qrCodeId);
     }
 
-    /**
-     * Retrieves the QR code ID associated with the event.
-     * @return The QR code ID string.
-     */
     public void setCheckInQrCode(String qrCodeUrl, String qrCodeId) {
         this.checkInQrCode = qrCodeUrl;
         this.checkInQrId = qrCodeId;
@@ -461,6 +448,7 @@ public class Event {
 
     /**
      * Retrieves the list of attendee IDs for the event.
+     *
      * @return The list of attendee IDs.
      */
     public List<String> getAttendeeList() {
@@ -479,6 +467,7 @@ public class Event {
 
     /**
      * Retrieves the list of messages from the organizer associated with the event.
+     *
      * @return The list of organizer messages.
      */
     public List<OrganizerMessage> getOrganizerMessages() {
@@ -487,6 +476,7 @@ public class Event {
 
     /**
      * Sets the list of organizer messages for the event and updates the corresponding field in Firestore.
+     *
      * @param organizerMessages The new list of organizer messages.
      */
     public void setOrganizerMessages(List<OrganizerMessage> organizerMessages) {
@@ -496,66 +486,11 @@ public class Event {
 
     /**
      * Generates a random hash ID.
+     *
      * @return A randomly generated unique identifier.
      */
     public String getHashId() {
         return UUID.randomUUID().toString();
-    }
-
-    /**
-     * Retrieves the QR code associated with the event.
-     * @return The QR code string.
-     */
-    public void setShareQrCode(String shareQrCode) {
-        this.shareQrCode = shareQrCode;
-    }
-
-    /**
-     * Retrieves the QR code ID associated with the event.
-     * @return The QR code ID string.
-     */
-    public String getCheckInQrCode() {
-        return checkInQrCode;
-    }
-
-    /**
-     * Sets the QR code for the event and updates the corresponding field in Firestore.
-     * @param checkInQrCode
-     */
-    public void setCheckInQrCode(String checkInQrCode) {
-        this.checkInQrCode = checkInQrCode;
-    }
-
-    /**
-     * Retrieves the QR code ID associated with the event.
-     * @return The QR code ID string.
-     */
-    public String getCheckInQrId() {
-        return checkInQrId;
-    }
-
-    /**
-     * Sets the QR code ID for the event and updates the corresponding field in Firestore.
-     * @param checkInQrId
-     */
-    public void setCheckInQrId(String checkInQrId) {
-        this.checkInQrId = checkInQrId;
-    }
-
-    /**
-     * Retrieves the QR code ID associated with the event.
-     * @return The QR code ID string.
-     */
-    public String getShareQrId() {
-        return shareQrId;
-    }
-
-    /**
-     * Sets the QR code ID for the event and updates the corresponding field in Firestore.
-     * @param shareQrId
-     */
-    public void setShareQrId(String shareQrId) {
-        this.shareQrId = shareQrId;
     }
 
     /**
@@ -612,36 +547,11 @@ public class Event {
         }
     }
 
-    /**
-     * Checks in a user to the event.
-     *
-     * @param userId The ID of the user to check in.
-     */
-    public void checkInUser(String userId) {
-        Integer count = checkedInUsers.getOrDefault(userId, 0);
-        checkedInUsers.put(userId, count + 1);
-        Log.d("checkInUser", "Checking in user: " + userId + " with count: " + (count + 1));
-        updateFirestore("checkedInUsers", checkedInUsers);
-    }
 
-    /**
-     * Retrieves the list of checked-in users for the event.
-     *
-     * @return A map of user IDs and their check-in counts.
-     */
-    public HashMap<String, Integer> getCheckedInUsers() {
-        return checkedInUsers;
-    }
 
-    /**
-     * Sets the list of checked-in users for the event and updates the corresponding field in Firestore.
-     *
-     * @param checkedInUsers A map of user IDs and their check-in counts.
-     */
-    public void setCheckedInUsers(HashMap<String, Integer> checkedInUsers) {
-        this.checkedInUsers = checkedInUsers;
-        updateFirestore("checkedInUsers", checkedInUsers);
-    }
+
+
+
 
     /**
      * Converts the current event object into a map representation, suitable for Firestore storage.
@@ -669,8 +579,6 @@ public class Event {
         map.put("checkInQrId", checkInQrId);
         map.put("attendeeList", attendeeList);
         map.put("organizerMessages", organizerMessages);
-        map.put("checkedInUsers", checkedInUsers);
-
         return map;
     }
 

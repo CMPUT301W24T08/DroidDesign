@@ -42,6 +42,6 @@ public class TimePickerFragment extends DialogFragment
      */
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        ((AddEventActivity) Objects.requireNonNull(getActivity())).onTimeSet(getTag(), hourOfDay, minute);
+        ((AddEventActivity) requireActivity()).onTimeSet(getTag(), hourOfDay, minute);
     }
 }

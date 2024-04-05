@@ -126,16 +126,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 		DocumentReference eventRef = db.collection("EventsDB").document(eventId);
 
 		Event.loadFromFirestore(eventId, event -> {
-            if (event != null) {
-                populateEventDetails(event);
-            } else {
-                Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
-            }
-        });
+			if (event != null) {
+				populateEventDetails(event);
+			} else {
+				Toast.makeText(EventDetailsActivity.this, "Unable to retrieve event details.", Toast.LENGTH_LONG).show();
+			}
+		});
 
 		ImageButton backButton = findViewById(R.id.back_button);
 		backButton.setOnClickListener(v -> {
-			if ("AddEventSecondActivity".equals(origin)) {
+			if ("AddEventSecondActivity".equals(origin) || "QrCodeScanActivity".equals(origin) ) {
 				Intent intent = new Intent(EventDetailsActivity.this, EventMenuActivity.class);
 				startActivity(intent);
 			} else {
