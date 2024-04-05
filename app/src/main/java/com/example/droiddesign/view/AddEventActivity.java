@@ -93,7 +93,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
         // Initialize the Places SDK
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), "AIzaSyBrp292RbeEZVL79orFd-0OvnVbNpZAzio");
+            Places.initialize(getApplicationContext(), "AIzaSyACpWJ8UeqCMkWrP8hmVrTkoJCVSK7OiY4");
         }
 
         // Setup Places Client
