@@ -59,7 +59,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		}
 
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+				PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
 
 		new Handler(Looper.getMainLooper( )).post(new Runnable( ) {
 			@Override
@@ -90,8 +92,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 	private void sendNotification(String messageBody) {
 		Intent intent = new Intent(this, EventDetailsActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-				PendingIntent.FLAG_IMMUTABLE);
+				PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 		String channelId = "fcm_default_channel";
 		Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

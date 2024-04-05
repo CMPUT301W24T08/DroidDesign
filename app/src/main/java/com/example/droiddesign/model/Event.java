@@ -86,7 +86,7 @@ public class Event {
     /**
      * List of milestone attendance numbers for the event
      */
-    private Integer milestones;
+    private List<Integer> milestones;
 
     /**
      * QR code URL associated with the event for easy sharing and identification.
@@ -143,7 +143,7 @@ public class Event {
     public Event(String eventId, String eventName, String eventDate,
                  String eventLocation, String startTime, String endTime,
                  String geolocation, String organizerOwnerId, String imagePosterId,
-                 String description, int signupLimit, int attendeesCount, int milestones,
+                 String description, int signupLimit, int attendeesCount, List<Integer> milestones,
                  String shareQrCode, String checkInQrCode, String shareQrId, String checkInQrId) {
         this.eventId = eventId;
         this.eventName = eventName;
@@ -224,6 +224,15 @@ public class Event {
         this.eventName = eventName;
         updateFirestore("eventName", eventName);
     }
+
+    public List<Integer> getMilestones() {
+        return milestones;
+    }
+
+    public void setMilestones(List<Integer> milestones) {
+        this.milestones = milestones;
+    }
+
 
     /**
      * Retrieves the scheduled date of the event.
@@ -406,17 +415,6 @@ public class Event {
         return attendeesCount;
     }
 
-    /**
-     * Retrieves the list of event attendance milestones.
-     * @return
-     */
-    public Integer getMilestones() {
-        return milestones;
-    }
-
-    public void setMilestones(Integer milestone) {
-        this.milestones = milestone;
-    }
 
 
     /**

@@ -1,12 +1,16 @@
 package com.example.droiddesign.view;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +27,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.Inet4Address;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
@@ -33,6 +39,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
     // Generate a UUID for the event
     private final String uniqueID = UUID.randomUUID().toString();
     private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
+
+    private List<Integer> milestoneList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +63,16 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     }
                 });
 
+
+
         Intent intent = getIntent();
         populateEventFromIntent(intent);
 
         MaterialButton buttonUploadPoster = findViewById(R.id.button_upload_poster);
         AutoCompleteTextView dropdownMenu = findViewById(R.id.QR_menu);
         Button finishAddButton = findViewById(R.id.finish_add_button);
+        Button setMilestonesButton = findViewById(R.id.set_milestones_button);
+        setMilestonesButton.setOnClickListener(view -> showMilestonesDialog());
 
         setupDropdownMenu(dropdownMenu);
 
@@ -113,21 +126,60 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
+    private void showMilestonesDialog() {
+        Dialog milestonesDialog = new Dialog(this);
+        milestonesDialog.setContentView(R.layout.dialog_milestones);
+
+        LinearLayout milestoneContainer = milestonesDialog.findViewById(R.id.milestone_container);
+        final int[] milestoneCount = {1}; // Use an array to hold the count
+
+        Button addMilestoneButton = milestonesDialog.findViewById(R.id.add_milestone);
+        Button doneButton = milestonesDialog.findViewById(R.id.done_button);
+        Button cancelButton = milestonesDialog.findViewById(R.id.dialog_cancel_button);
+
+        addMilestoneButton.setOnClickListener(v -> {
+            milestoneCount[0]++; // Increment the count in the array
+            EditText newMilestoneEditText = new EditText(this);
+            newMilestoneEditText.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            newMilestoneEditText.setHint("Milestone " + milestoneCount[0]);
+            milestoneContainer.addView(newMilestoneEditText); // Add the new EditText to the container
+        });
+
+        doneButton.setOnClickListener(v -> {
+            milestoneList.clear(); // Clear the list to prevent duplicates if the dialog is opened again
+            for (int i = 0; i < milestoneContainer.getChildCount(); i++) {
+                View child = milestoneContainer.getChildAt(i);
+                if (child instanceof EditText) {
+                    String milestoneText = ((EditText) child).getText().toString();
+                    if (!milestoneText.isEmpty()) {
+                        int milestoneValue = Integer.parseInt(milestoneText);
+                        milestoneList.add(milestoneValue);
+                    }
+                }
+            }
+            milestonesDialog.dismiss();
+        });
+        cancelButton.setOnClickListener(v -> milestonesDialog.dismiss());
+
+        milestonesDialog.show();
+    }
+
+
+
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
         Log.d("AddEvent", "Max Attendees String: '" + eventDescription + "'");
         TextView maxAttendeesTextView = findViewById(R.id.input_number_max_attendees);
-        TextView milestoneTextView = findViewById(R.id.input_number_milestone);
         String maxAttendeesString = maxAttendeesTextView.getText().toString().trim();
-        String milestoneString = milestoneTextView.getText().toString().trim();
+
 
         int maxAttendees = 0;
-        int milestone = 0;
-        if (!maxAttendeesString.isEmpty() && !milestoneString.isEmpty()) {
+        if (!maxAttendeesString.isEmpty()) {
             try {
                 maxAttendees = Integer.parseInt(maxAttendeesString);
-                milestone = Integer.parseInt(milestoneString);
             } catch (NumberFormatException e) {
                 Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
                 return;
@@ -139,7 +191,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         String currentUserId = prefsHelper.getUserId();
 
         Event event = new Event(uniqueID, eventName, eventDate, eventLocation, eventStartTime, eventEndTime, eventLocation,
-                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestone, shareQrUrl,
+                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestoneList, shareQrUrl,
                 checkInQrUrl, shareQrId, checkInQrId);
 
         event.saveToFirestore();
@@ -156,7 +208,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
         startActivity(detailsIntent);
 
         finish();
-
     }
 }
 

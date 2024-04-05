@@ -23,6 +23,7 @@ import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 //import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
@@ -54,23 +55,24 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
                         new String[]{Manifest.permission.POST_NOTIFICATIONS},101);
             }
         }
-//        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-//
-//        FirebaseMessaging.getInstance().subscribeToTopic("annoucementChannel")
-//                .addOnCompleteListener(new OnCompleteListener<Void>( ) {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        String msg = "Done";
-//                        if (!task.isSuccessful( )) {
-//                            msg = "Failed";
-//                        }
-//                    }
-//                });
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-//            }
-//        }
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("annoucementChannel")
+                .addOnCompleteListener(new OnCompleteListener<Void>( ) {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Done";
+                        if (!task.isSuccessful( )) {
+                            msg = "Failed";
+                        }
+                    }
+                });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
 
 
         try {
