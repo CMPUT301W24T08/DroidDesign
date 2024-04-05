@@ -19,6 +19,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.view.Organizer.AddEventSecondActivity;
+import com.example.droiddesign.view.Organizer.DatePickerFragment;
+import com.example.droiddesign.view.Organizer.TimePickerFragment;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -230,9 +233,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
     }
 
-    /**
-     * Shows the date picker dialog to allow the user to select a date.
-     */
     private void showDatePickerDialog() {
         try {
             DialogFragment datePicker = new DatePickerFragment();
@@ -242,13 +242,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-    /**
-     * Callback method to receive the selected date from the date picker dialog.
-     *
-     * @param year  The selected year.
-     * @param month The selected month.
-     * @param day   The selected day.
-     */
     public void onDateSet(int year, int month, int day) {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -268,13 +261,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-    /**
-     * Callback method to receive the selected time from the time picker dialog.
-     *
-     * @param tag       The tag to identify the time picker dialog.
-     * @param hourOfDay The selected hour of the day.
-     * @param minute    The selected minute.
-     */
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         try {
             String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);

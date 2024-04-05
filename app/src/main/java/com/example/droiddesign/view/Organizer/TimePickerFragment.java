@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.droiddesign.view.Organizer.AddEventActivity;
-
 import java.util.Calendar;
 
 /**
