@@ -3,7 +3,6 @@
 
     <group
         android:id="@+id/group1" >
-
         <item
             android:id="@+id/current_attendance_menu"
             android:title="@string/current_attendance_menu" />
@@ -11,11 +10,11 @@
             android:id="@+id/announcement_menu"
             android:title="@string/announcements" />
         <item
+            android:id="@+id/edit_event_details_menu"
+            android:title="@string/edit_event_details" />
+        <item
             android:id="@+id/sign_ups_menu"
             android:title="@string/sign_ups" />
-        <item
-            android:id="@+id/geo_check_menu"
-            android:title="@string/geo_check_ins" />
         <item
             android:id="@+id/share_qr_menu"
             android:title="@string/share_qr_code" />

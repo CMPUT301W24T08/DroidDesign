@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rounded_edittext_dark"
-    tools:context="com.example.droiddesign.view.DiscoverEventsActivity">
+    tools:context="com.example.droiddesign.view.AttendeeAndOrganizer.DiscoverEventsActivity">
 
     <ImageView
         android:layout_width="845dp"

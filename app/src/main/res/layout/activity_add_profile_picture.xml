@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="20dp"
-    tools:context=".view.AddProfilePictureActivity"
+    tools:context=".view.AttendeeAndOrganizer.AddProfilePictureActivity"
     android:background="@drawable/gradient_background">
 
     <FrameLayout

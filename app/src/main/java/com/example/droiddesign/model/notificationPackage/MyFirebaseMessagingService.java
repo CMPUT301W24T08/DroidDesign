@@ -21,7 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.droiddesign.R;
-import com.example.droiddesign.view.EventDetailsActivity;
+import com.example.droiddesign.view.Everybody.EventDetailsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
