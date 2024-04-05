@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
-    private static final int UPLOAD_IMAGE_REQUEST = 1;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ActivityResultLauncher<Intent> qrGeneratorLauncher;
     // Generate a UUID for the event
@@ -40,6 +39,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
     private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
 
     private List<Integer> milestoneList = new ArrayList<>();
+
+    private ActivityResultLauncher<Intent> imageUploadLauncher;
+
 
 
     @Override
@@ -75,10 +77,23 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
         setupDropdownMenu(dropdownMenu);
 
+        imageUploadLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        imagePosterId = data.getStringExtra("imagePosterUrl");
+                        // Do something with the result, like updating the UI
+                    }
+                }
+        );
+
         buttonUploadPoster.setOnClickListener(view -> {
             Intent imageUploadIntent = new Intent(AddEventSecondActivity.this, ImageUploadActivity.class);
-            startActivityForResult(imageUploadIntent, UPLOAD_IMAGE_REQUEST);
+            imageUploadLauncher.launch(imageUploadIntent);
         });
+
+
 
         finishAddButton.setOnClickListener(view -> {
             saveEvent();
@@ -88,14 +103,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(view -> finish());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK && data != null && requestCode == UPLOAD_IMAGE_REQUEST) {
-                imagePosterId = data.getStringExtra("imagePosterUrl");
-        }
-    }
 
     private void populateEventFromIntent(Intent intent) {
         try {
