@@ -27,7 +27,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Activity representing the main menu for the event application.
@@ -322,7 +321,8 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * to update the UI elements based on the user's role.
 	 */
 	private void fetchUserRole() {
-		String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+		FirebaseUser user;
+		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
 			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
 				userRole = documentSnapshot.getString("role");

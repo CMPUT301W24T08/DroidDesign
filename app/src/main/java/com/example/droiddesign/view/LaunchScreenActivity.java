@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -111,10 +110,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 101) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted. You can proceed with showing the notification.
-                Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
-            } else {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // Permission denied. You can notify the user that the feature requires permission.
                 new AlertDialog.Builder(this)
                         .setTitle("Notification Permission Denied")
