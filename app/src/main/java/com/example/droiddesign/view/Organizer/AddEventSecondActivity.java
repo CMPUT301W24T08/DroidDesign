@@ -42,6 +42,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> imageUploadLauncher;
 
+    private double eventLongitude, eventLatitude;
+
 
 
     @Override
@@ -112,6 +114,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
             eventEndTime = intent.getStringExtra("endTime");
             eventDate = intent.getStringExtra("startDate");
             eventGeo = intent.getStringExtra("eventLocation");
+            eventLongitude = intent.getDoubleExtra("longitude", -113.5257417);
+            eventLatitude = intent.getDoubleExtra("latitude", 53.5281589);
+
         } catch (Exception e) {
             Log.e("AddEventSecondActivity", "Error populating event from intent", e);
             Toast.makeText(this, "Error loading event details", Toast.LENGTH_SHORT).show();
@@ -205,9 +210,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
         SharedPreferenceHelper prefsHelper = new SharedPreferenceHelper(this);
         String currentUserId = prefsHelper.getUserId();
 
-        Event event = new Event(uniqueID, eventName, eventDate, eventLocation, eventStartTime, eventEndTime, eventLocation,
-                currentUserId, imagePosterId, eventDescription, maxAttendees, 0, milestoneList, shareQrUrl,
-                checkInQrUrl, shareQrId, checkInQrId);
+        Event event = new Event(
+                uniqueID, eventName, eventDate, eventLocation, eventLongitude, eventLatitude, eventStartTime, eventEndTime, eventLocation, currentUserId,
+                imagePosterId, eventDescription, maxAttendees, 0, milestoneList, shareQrUrl, checkInQrUrl, shareQrId, checkInQrId);
 
         event.saveToFirestore();
 

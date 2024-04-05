@@ -115,6 +115,8 @@ public class Event {
     private String checkInQrId;
     private String shareQrId;
 
+    private double eventLongitude, eventLatitude;
+
     /**
      * Default constructor used for data retrieval from Firestore.
      */
@@ -141,7 +143,7 @@ public class Event {
      * @param checkInQrCode The QR code associated with checking in to the event.
      */
     public Event(String eventId, String eventName, String eventDate,
-                 String eventLocation, String startTime, String endTime,
+                 String eventLocation, double eventLongitude, double eventLatitude, String startTime, String endTime,
                  String geolocation, String organizerOwnerId, String imagePosterId,
                  String description, int signupLimit, int attendeesCount, List<Integer> milestones,
                  String shareQrCode, String checkInQrCode, String shareQrId, String checkInQrId) {
@@ -162,6 +164,8 @@ public class Event {
         this.shareQrId = shareQrId;
         this.checkInQrId = checkInQrId;
         this.milestones = milestones;
+        this.eventLongitude = eventLongitude;
+        this.eventLatitude = eventLatitude;
     }
 
 // Getters and setters with JavaDoc comments
@@ -547,6 +551,15 @@ public class Event {
         }
     }
 
+    public double getEventLongitude() {
+        return eventLongitude;
+    }
+
+    public double getEventLatitude() {
+        return eventLatitude;
+    }
+
+
 
 
 
@@ -578,7 +591,8 @@ public class Event {
         map.put("checkInQrCode", checkInQrCode);
         map.put("checkInQrId", checkInQrId);
         map.put("attendeeList", attendeeList);
-        map.put("organizerMessages", organizerMessages);
+        map.put("eventLongitude", eventLongitude);
+        map.put("eventLatitude", eventLatitude);
         return map;
     }
 
