@@ -2,7 +2,6 @@ package com.example.droiddesign.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,10 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.model.UsersDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -95,35 +97,37 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 * @param role The role selected by the user.
 	 */
 	private void handleRoleSelection(String role) {
-		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
 		// New user scenario
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
 		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
-		prefsHelper = new SharedPreferenceHelper(this);
 
 		// Add AuthStateListener
-		mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-			@Override
-			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-				FirebaseUser user = firebaseAuth.getCurrentUser();
-				if (user != null) {
-					// User is signed in
-					String userId = user.getUid();
-					User newUser = new User(userId, role, false);
-					// Save user profile to SharedPreferences
-					prefsHelper.saveUserProfile(userId, role, null);
+		mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+				@Override
+				public void onComplete(@NonNull Task<AuthResult> task) {
+				if (task.isSuccessful()) {
+					FirebaseUser user = mAuth.getCurrentUser();
+					User newUser = null;
+					if (user != null) {
+						// User is signed
+						newUser = new User(user.getUid(), role, false);
+						// Save user profile to SharedPreferences
+						prefsHelper.saveUserProfile(user.getUid(), role, null);
 
-					UsersDB userdb = new UsersDB(firestore);
-					userdb.addUser(newUser);
+						UsersDB userdb = new UsersDB(firestore);
+						userdb.addUser(newUser);
+						navigateToEventMenu();
 				} else {
 					// User is signed out
-					Log.d("AuthStateListener", "onAuthStateChanged:signed_out");
+					Toast.makeText(RoleSelectionActivity.this, "User ID not saved: ", Toast.LENGTH_SHORT).show();
 				}
 			}
-		});
+		}
 
-		navigateToEventMenu();
+
+	});
 	}
 
 	/**
