@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.example.droiddesign.R;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.example.droiddesign.model.AttendanceDB;
-import com.example.droiddesign.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;

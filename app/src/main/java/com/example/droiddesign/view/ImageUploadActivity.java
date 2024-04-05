@@ -101,7 +101,6 @@ public class ImageUploadActivity extends AppCompatActivity {
 
         mButtonChooseImage = findViewById(R.id.button_choose_image);
         mButtonUpload = findViewById(R.id.button_upload);
-        mEditTextFileName = findViewById(R.id.edit_text_file_name);
         mImageView = findViewById(R.id.image_preview);
         mProgressBar = findViewById(R.id.progress_bar);
         Button buttonBack = findViewById(R.id.button_back_upload);
@@ -163,7 +162,7 @@ public class ImageUploadActivity extends AppCompatActivity {
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Upload upload = new Upload(mEditTextFileName.getText().toString().trim(), uri.toString());
+                                    Upload upload = new Upload("", uri.toString());
                                     String uploadId = mFirestoreDb.collection("uploads").document().getId();
                                     mFirestoreDb.collection("uploads").document(uploadId).set(upload)
                                             .addOnSuccessListener(documentReference -> {
