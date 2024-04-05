@@ -350,6 +350,14 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (signedUpEvents != null && !signedUpEvents.isEmpty()) {
+			signedUpEvents.clear();
+			fetchEvents();
+		}
+	}
 
 	/**
 	 * Updates the UI to display the latest list of events.
