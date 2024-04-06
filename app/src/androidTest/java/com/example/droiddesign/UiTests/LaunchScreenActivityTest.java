@@ -1,39 +1,46 @@
 package com.example.droiddesign.UiTests;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import android.Manifest;
+
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.view.Everybody.LaunchScreenActivity;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4.class)
 public class LaunchScreenActivityTest {
 
-    @Test
-    public void testSkipButton() {
-        onView(withId(R.id.skip_button)).perform(click());
-        // Add checks to ensure the new activity is opened, if any
-    }
+    @Rule
+    public ActivityScenarioRule<LaunchScreenActivity> activityScenarioRule
+            = new ActivityScenarioRule<>(LaunchScreenActivity.class);
+
+    @Rule
+    public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS);
 
     @Test
-    public void testSignUp() {
-        onView(withId(R.id.button_sign_up)).perform(click());
-        // Add checks for the Sign Up dialog
+    public void testLaunchScreen() {
+        // Check if the enter button is displayed
+        Espresso.onView(ViewMatchers.withId(R.id.button_enter))
+                .check(matches(isDisplayed()));
+
+        // Check if the enter button is enabled
+        Espresso.onView(ViewMatchers.withId(R.id.button_enter))
+                .check(matches(isEnabled()));
+
+        // Simulate a button click to open the login fragment
+        Espresso.onView(ViewMatchers.withId(R.id.button_enter))
+                .perform(ViewActions.click());
+
     }
 
-    @Test
-    public void testLoginWithEmail() {
-        onView(withId(R.id.continue_with_email)).perform(click());
-        // Fill in the email and password fields and submit
-    }
-
-    @Test
-    public void testContinueWithGoogle() {
-        onView(withId(R.id.button_continue_with_google)).perform(click());
-    }
 }

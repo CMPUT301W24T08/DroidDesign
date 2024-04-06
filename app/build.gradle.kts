@@ -37,7 +37,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.credentials:credentials:1.3.0-alpha01")
+    implementation("androidx.credentials:credentials:1.3.0-alpha02")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.zxing:core:3.5.3")
@@ -59,6 +59,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("androidx.activity:activity:1.8.2")
     implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("androidx.test.uiautomator:uiautomator-v18:2.2.0-alpha1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -82,14 +83,10 @@ dependencies {
 
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.11.2")
-
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1") // or a later version
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1") // or a later version
-    testImplementation ("org.mockito:mockito-core:3.11.2") // or a later version
     testImplementation ("org.mockito:mockito-junit-jupiter:3.6.0") // or a later version
 
-    testImplementation("com.google.firebase:firebase-firestore:24.11.0")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     implementation("androidx.activity:activity-ktx:1.8.2")
@@ -115,7 +112,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
 
-
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("org.mockito:mockito-android:4.0.0")
+    androidTestImplementation ("org.mockito:mockito-core:4.0.0")
+    androidTestImplementation ("androidx.test:runner:1.5.2")
 
 
 }
