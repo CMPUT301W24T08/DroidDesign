@@ -262,8 +262,7 @@ public class BasicLoginFragment extends DialogFragment {
     private String determineProfilePicUrl(String userName) {
         try {
             if (profilePicUrl == null || profilePicUrl.isEmpty()) {
-                String initials = getInitials(userName);
-                return "https://ui-avatars.com/api/?name=" + initials + "&background=random";
+                return "https://ui-avatars.com/api/?name=" + userName + "&background=random";
             }
             return profilePicUrl;
         } catch (Exception e) {
@@ -272,31 +271,6 @@ public class BasicLoginFragment extends DialogFragment {
         }
     }
 
-    /**
-     * Get the initials of the user's name
-     * @param userName The user's name
-     * @return The initials of the user's name
-     */
-    private String getInitials(String userName) {
-        try {
-            if (userName == null || userName.isEmpty()) {
-                return "XX"; // Return some default initials
-            }
-
-            String[] nameParts = userName.split(" ");
-            StringBuilder initials = new StringBuilder();
-            for (String part : nameParts) {
-                if (!part.isEmpty()) {
-                    initials.append(part.charAt(0));
-                }
-            }
-
-            return initials.toString().toUpperCase();
-        } catch (Exception e) {
-            Log.e("BasicLoginFragment", "Error getting initials for profile picture", e);
-            return "XX"; // Return some default initials in case of an error
-        }
-    }
 
     /**
      * Navigate to the event menu activity
