@@ -4,28 +4,41 @@ import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.droiddesign.R;
+import com.example.droiddesign.controller.UploadQR;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.example.droiddesign.model.AttendanceDB;
+import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -35,6 +48,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
+import java.io.ByteArrayOutputStream;
+import java.util.UUID;
+
 /**
  * An activity that handles QR code scanning using the camera.
  * This activity requests camera permissions, handles user permissions responses,
@@ -43,7 +59,19 @@ import com.google.android.gms.location.LocationResult;
 public class QrCodeScanActivity extends AppCompatActivity {
 
     /**
+     * Firebase Storage reference for storing QR code images.
+     */
+    private StorageReference mStorageRef;
+
+    /**
+     * Firestore database instance for saving QR code metadata.
+     */
+    private FirebaseFirestore mFirestoreDb;
+
+    /**
      * Binding instance for the activity_qr_code_scan layout.
+     *
+     *
      */
     private ActivityQrCodeScanBinding binding;
 
@@ -61,10 +89,21 @@ public class QrCodeScanActivity extends AppCompatActivity {
         initBinding();
         initViews();
 
+        mStorageRef = FirebaseStorage.getInstance().getReference("qrcodes");
+        mFirestoreDb = FirebaseFirestore.getInstance();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         attendanceDB = new AttendanceDB();
         ImageButton backButton = findViewById(R.id.button_back2);
         backButton.setOnClickListener(v -> finish());
+
+        Intent intent = getIntent();
+        String origin = intent.getStringExtra("ORIGIN");
+
+        if ("AddEventSecondActivity".equals(origin)) {
+            TextView header = findViewById(R.id.header);
+            header.setText("Recycle QRs!");
+        }
     }
 
     /**
@@ -95,46 +134,113 @@ public class QrCodeScanActivity extends AppCompatActivity {
     /**
      * Processes the QR code result and starts the EventDetailsActivity with the scanned event ID.
      *
-     * @param qrCodeId The scanned content from the QR code.
+     * @param contents The scanned content from the QR code.
      */
 
-    private void setResult(String qrCodeId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference qrCodeRef = db.collection("qrcodes").document(qrCodeId);
+    private void setResult(String contents) {
 
-        qrCodeRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot qrCodeDocument = task.getResult();
-                String eventId = qrCodeDocument.getString("eventId");
-                String type = qrCodeDocument.getString("type");
+        Intent returnIntent = new Intent();
+        if ("AddEventSecondActivity".equals(getIntent().getStringExtra("ORIGIN"))) {
+            String eventId = getIntent().getStringExtra("EVENT_ID"); // Retrieve the event ID passed from AddEventSecondActivity
 
-                if (eventId != null && type != null) {
-                    Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
-                    intent.putExtra("EVENT_ID", eventId);
-                    intent.putExtra("ORIGIN", "QrCodeScanActivity");
+            // Generate a new check-in QR code
+            QRcode checkInQrCode = new QRcode(eventId, "check_in");
+            String qrId = UUID.randomUUID().toString(); // Generate a unique ID for this QR code
+            String type = "check_in"; // Assuming you want to store this as a check-in type
 
-
-                    if ("check_in".equals(type)) {
-                        // Get user ID
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                        // Fetch location and check in
-                        getCurrentLocation((latitude, longitude) -> {
-                            attendanceDB.checkInUser(eventId, userId, latitude, longitude);
-                            Toast.makeText(QrCodeScanActivity.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
-                        });
-
-                    }
-
-                    startActivity(intent);
-                    //finish();
-                } else {
-                    Log.e("QrCodeScanActivity", "Event ID or Type not found in QR code document.");
+            uploadQrCode(qrId, eventId, type, contents, new OnQrCodeUploadListener() {
+                @Override
+                public void onQrCodeUploadSuccess(String qrUrl) {
+                    // Send back the new check-in QR code ID and the original QR code URL
+                    returnIntent.putExtra("checkInQrId", qrId);
+                    returnIntent.putExtra("checkInQrUrl", qrUrl); // Use the contents as the QR URL
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
                 }
-            } else {
-                Log.e("QrCodeScanActivity", "Failed to fetch QR code document.", task.getException());
-            }
+
+                @Override
+                public void onQrCodeUploadFailure(String errorMessage) {
+                    Toast.makeText(QrCodeScanActivity.this, "Upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference qrCodeRef = db.collection("qrcodes").document(contents);
+
+            qrCodeRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                    DocumentSnapshot qrCodeDocument = task.getResult();
+                    String eventId = qrCodeDocument.getString("eventId");
+                    String type = qrCodeDocument.getString("type");
+
+                    if (eventId != null && type != null) {
+                        Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
+                        intent.putExtra("EVENT_ID", eventId);
+                        intent.putExtra("ORIGIN", "QrCodeScanActivity");
+
+                        if ("check_in".equals(type)) {
+                            checkInUser(eventId);
+                            startActivity(intent);
+                            finish();
+                        } else if ("share".equals(type)) {
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        Log.e("QrCodeScanActivity", "Event ID or Type not found in QR code document.");
+                    }
+                } else {
+                    // No document found by ID, try to find by qrurl
+                    searchByQRUrl(contents);
+                }
+            });
+        }
+
+    }
+
+    private void checkInUser(String eventId) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        getCurrentLocation((latitude, longitude) -> {
+            attendanceDB.checkInUser(eventId, userId, latitude, longitude);
+            Toast.makeText(QrCodeScanActivity.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
         });
+
+    }
+
+    private void searchByQRUrl(String qrUrl) {
+        Log.d("QrCodeScanActivity", "Searching for QR URL: " + qrUrl);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("qrcodes").whereEqualTo("qrUrl", qrUrl).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    String eventId = document.getString("eventId");
+                    if (eventId != null) {
+                        checkInUser(eventId);
+                        Intent intent = new Intent(QrCodeScanActivity.this, EventDetailsActivity.class);
+                        intent.putExtra("EVENT_ID", eventId);
+                        intent.putExtra("ORIGIN", "QrCodeScanActivity");
+                        startActivity(intent);
+                        finish();
+                        return;
+                    }
+                }
+            }
+            Toast.makeText(QrCodeScanActivity.this, "No matching QR code found.", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+
+    private void uploadQrCode(String qrId, String eventId, String type, String contents, final OnQrCodeUploadListener listener) {
+        UploadQR upload = new UploadQR(contents, eventId, type);  // Use contents directly as qrUrl
+        mFirestoreDb.collection("qrcodes").document(qrId).set(upload)
+                .addOnSuccessListener(aVoid -> listener.onQrCodeUploadSuccess(contents))  // Return contents as qrUrl
+                .addOnFailureListener(e -> listener.onQrCodeUploadFailure(e.getMessage()));
+    }
+
+    public interface OnQrCodeUploadListener {
+        void onQrCodeUploadSuccess(String qrUrl);
+        void onQrCodeUploadFailure(String errorMessage);
     }
 
     private void getCurrentLocation(MyLocationCallback callback) {
