@@ -36,7 +36,8 @@ import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ActivityResultLauncher<Intent> qrGeneratorLauncher;
+    private ActivityResultLauncher<Intent> qrGeneratorLauncher, scanQrLauncher;
+
     // Generate a UUID for the event
     private final String uniqueID = UUID.randomUUID().toString();
     private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
@@ -73,7 +74,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         // Handle upload failure
         // Display an error message or take appropriate action
         // Generate the check-in QR code
-        ActivityResultLauncher<Intent> scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
