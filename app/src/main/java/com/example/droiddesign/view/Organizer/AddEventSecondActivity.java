@@ -74,36 +74,49 @@ public class AddEventSecondActivity extends AppCompatActivity {
         // Handle upload failure
         // Display an error message or take appropriate action
         // Generate the check-in QR code
-        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            shareQrId = data.getStringExtra("SCANNED_QR_DATA");
-                            Bitmap qrBitmap = data.getParcelableExtra("SCANNED_QR_BITMAP");
-                            Log.d("AddEventSecondActivity", "Scanned QR Code ID: " + shareQrId);
+//        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        Intent data = result.getData();
+//                        if (data != null) {
+//                            shareQrId = data.getStringExtra("SCANNED_QR_DATA");
+//                            Bitmap qrBitmap = data.getParcelableExtra("SCANNED_QR_BITMAP");
+//                            Log.d("AddEventSecondActivity", "Scanned QR Code ID: " + shareQrId);
+//
+//                            // Create a QR code object from the scanned QR code and upload it to Firebase Storage
+//                            QRcode shareQr = new QRcode(uniqueID, shareQrId, qrBitmap);
+//                            shareQr.upload(new QRcode.OnQrCodeUploadListener() {
+//                                @Override
+//                                public void onQrCodeUploadSuccess() {
+//                                    shareQrUrl = shareQr.getUri();
+//                                    Log.d("AddEventSecondActivity", "Share QR code uploaded successfully. URL: " + shareQrUrl);
+//                                }
+//
+//                                @Override
+//                                public void onQrCodeUploadFailure(String errorMessage) {
+//                                    // Handle upload failure
+//                                    Log.e("AddEventSecondActivity", "Share QR code upload failed: " + errorMessage);
+//                                    // Display an error message or take appropriate action
+//                                }
+//                            });
+//                            // Generate the check-in QR code
+//                            generateCheckInQrCode();
+//                        }
+//                    }
+//                });
 
-                            // Create a QR code object from the scanned QR code and upload it to Firebase Storage
-                            QRcode shareQr = new QRcode(uniqueID, shareQrId, qrBitmap);
-                            shareQr.upload(new QRcode.OnQrCodeUploadListener() {
-                                @Override
-                                public void onQrCodeUploadSuccess() {
-                                    shareQrUrl = shareQr.getUri();
-                                    Log.d("AddEventSecondActivity", "Share QR code uploaded successfully. URL: " + shareQrUrl);
-                                }
+        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    // Retrieve the check-in QR code URL and ID from the result
+                    checkInQrUrl = data.getStringExtra("checkInQrUrl");
+                    checkInQrId = data.getStringExtra("checkInQrId");
+                    generateShareQrCode();
 
-                                @Override
-                                public void onQrCodeUploadFailure(String errorMessage) {
-                                    // Handle upload failure
-                                    Log.e("AddEventSecondActivity", "Share QR code upload failed: " + errorMessage);
-                                    // Display an error message or take appropriate action
-                                }
-                            });
-                            // Generate the check-in QR code
-                            generateCheckInQrCode();
-                        }
-                    }
-                });
+                }
+            }
+        });
 
 
 
@@ -124,7 +137,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Intent data = result.getData();
                         imagePosterId = data.getStringExtra("imagePosterUrl");
-                        // Do something with the result, like updating the UI
+
                     }
                 }
         );
@@ -180,6 +193,8 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     qrGeneratorLauncher.launch(qrGeneratorIntent);
                 } else if ("Use Existing QR".equals(selectedItem)) {
                     Intent intent = new Intent(AddEventSecondActivity.this, QrCodeScanActivity.class);
+                    intent.putExtra("ORIGIN", "AddEventSecondActivity");
+                    intent.putExtra("EVENT_ID", uniqueID);
                     scanQrLauncher.launch(intent);
                 }
 
@@ -234,14 +249,14 @@ public class AddEventSecondActivity extends AppCompatActivity {
      * Generates a share QR code for the event.
      * @return The QR code object.
      */
-    private void generateCheckInQrCode() {
-        QRcode checkInQrCode = new QRcode(uniqueID, "check_in");
-        checkInQrId = checkInQrCode.getQrId();
+    private void generateShareQrCode() {
+        QRcode shareQrCode = new QRcode(uniqueID, "share");
+        shareQrId = shareQrCode.getQrId();
 
-        checkInQrCode.upload(new QRcode.OnQrCodeUploadListener() {
+        shareQrCode.upload(new QRcode.OnQrCodeUploadListener() {
             @Override
             public void onQrCodeUploadSuccess() {
-                checkInQrUrl = checkInQrCode.getUri();
+                shareQrUrl = shareQrCode.getUri();
                 Log.d("AddEventSecondActivity", "Check-in QR code uploaded successfully. URL: " + checkInQrUrl);
             }
 
