@@ -9,10 +9,10 @@
             android:title="@string/browse_events" />
         <item
             android:id="@+id/profile"
-            android:title="@string/Profile" />
+            android:title="@string/profile_settings" />
         <item
             android:id="@+id/settings"
-            android:title="@string/Settings" />
+            android:title="@string/app_settings" />
         <item
             android:id="@+id/log_out"
             android:title="@string/log_out" />
