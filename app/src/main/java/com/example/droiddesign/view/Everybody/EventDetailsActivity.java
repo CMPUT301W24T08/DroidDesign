@@ -109,7 +109,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 				User user = documentSnapshot.toObject(User.class);
 				if (user != null) {
 					boolean isEventManaged = user.getManagedEventsList().contains(eventId);
-					if ("SignedEventsActivity".equals(origin) || isEventManaged || "EventMenuActivity".equals(origin)) {
+					if ("SignedEventsActivity".equals(origin) || isEventManaged || "EventMenuActivity".equals(origin) || "admin".equalsIgnoreCase(userRole)) {
 						Log.d("EventDetailsActivity", "Origin: " + origin);
 						signUpButton.setVisibility(View.GONE);
 					} else {

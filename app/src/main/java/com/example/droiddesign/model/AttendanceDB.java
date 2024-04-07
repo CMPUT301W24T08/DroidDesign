@@ -4,7 +4,6 @@ import android.util.Log;
 
 import okhttp3.MediaType;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import org.json.JSONArray;
@@ -31,7 +30,7 @@ public class AttendanceDB {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void checkInUser(String eventId, String userId, double latitude, double longitude) {
+    public void checkInUser(String eventId, String userId, Double latitude, Double longitude) {
         String documentId = eventId + "_" + userId;
 
         db.collection("AttendanceDB")

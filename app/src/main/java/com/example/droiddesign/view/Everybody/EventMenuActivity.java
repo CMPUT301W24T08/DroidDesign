@@ -188,12 +188,12 @@ public class EventMenuActivity extends AppCompatActivity{
 			navigationMenu.inflateMenu(R.menu.menu_navigation_attendee);
 		}
 
+
 		// Set the navigation item selection listener
 		String finalUserId = userId;
 		navigationMenu.setNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			Intent intent = null;
-
 			if (id == R.id.browse_events) {
 				intent = new Intent(this, DiscoverEventsActivity.class);
 			} else if (id == R.id.profile) {
