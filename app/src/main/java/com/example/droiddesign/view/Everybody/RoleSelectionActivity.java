@@ -86,9 +86,39 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 * Defines the actions to be taken when each role button is clicked.
 	 */
 	private void setRoleSelectionListeners() {
-		attendeeImage.setOnClickListener(v -> handleRoleSelection("attendee"));
-		organizerImage.setOnClickListener(v -> handleRoleSelection("organizer"));
-		adminImage.setOnClickListener(v -> handleRoleSelection("admin"));
+		attendeeImage.setOnClickListener(v -> handleRoleSelection("attendee", new InterfaceAuthCallback( ) {
+			@Override
+			public void onSuccess() {
+				navigateToEventMenu();
+				System.out.println("Authentication succeeded.");
+			}
+			@Override
+			public void onFailure() {
+				System.out.println("Authentication failed to add user");
+			}
+		}));
+		organizerImage.setOnClickListener(v -> handleRoleSelection("organizer", new InterfaceAuthCallback( ) {
+			@Override
+			public void onSuccess() {
+				navigateToEventMenu();
+				System.out.println("Authentication succeeded.");
+			}
+			@Override
+			public void onFailure() {
+				System.out.println("Authentication failed to add user");
+			}
+		}));
+		adminImage.setOnClickListener(v -> handleRoleSelection("admin",new InterfaceAuthCallback( ) {
+			@Override
+			public void onSuccess() {
+				navigateToEventMenu();
+				System.out.println("Authentication succeeded.");
+			}
+			@Override
+			public void onFailure() {
+				System.out.println("Authentication failed to add user");
+			}
+		}));
 	}
 
 	/**
@@ -96,7 +126,7 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 * Depending on the role selected, it performs actions such as creating a new user or navigating to the EventMenuActivity.
 	 * @param role The role selected by the user.
 	 */
-	private void handleRoleSelection(String role) {
+	private void handleRoleSelection(String role , InterfaceAuthCallback authCallBck) {
 //		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
 		// New user scenario
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
@@ -118,7 +148,8 @@ public class RoleSelectionActivity extends AppCompatActivity {
 
 						UsersDB userdb = new UsersDB(firestore);
 						userdb.addUser(newUser);
-						navigateToEventMenu();
+						authCallBck.onSuccess();
+//						navigateToEventMenu();
 				} else {
 					// User is signed out
 					Toast.makeText(RoleSelectionActivity.this, "User ID not saved: ", Toast.LENGTH_SHORT).show();

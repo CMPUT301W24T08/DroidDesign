@@ -1,5 +1,8 @@
 package com.example.droiddesign.model.notificationPackage;
 
+import static com.example.droiddesign.view.Everybody.FirebaseServiceUtils.getFirebaseAuth;
+import static com.example.droiddesign.view.Everybody.FirebaseServiceUtils.getFirestore;
+
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,7 +25,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -125,11 +128,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 	public void onNewToken(@NonNull String token) {
 		Log.d("FCM", "The new token is: " + token);
 		// Assume you have a method to get the current user's ID
-		String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		if(userId != null) {
+		FirebaseUser currentUser = getFirebaseAuth().getCurrentUser();
+		if(currentUser != null) {
+			String userId = currentUser.getUid();
+			FirebaseFirestore db = getFirestore();
 			FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 				if(task.isSuccessful()){
-					FirebaseFirestore.getInstance().collection("Users").document(userId).update("fcmToken",token)
+					db.collection("Users").document(userId).update("fcmToken",token)
 							.addOnSuccessListener(aVoid -> Log.d("UpdateToken", "Token successfully updated for user: " + userId))
 							.addOnFailureListener(e -> Log.e("UpdateToken", "Error updating token", e));
 				}
