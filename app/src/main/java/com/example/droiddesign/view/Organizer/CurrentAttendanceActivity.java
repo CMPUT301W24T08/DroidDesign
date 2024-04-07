@@ -131,27 +131,37 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (task.getResult().isEmpty()) {
-                            return; // No locations to display, optionally set a default location
+                            return;
                         }
 
                         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            double latitude = document.getDouble("latitude");
-                            double longitude = document.getDouble("longitude");
-                            LatLng location = new LatLng(latitude, longitude);
-                            map.addMarker(new MarkerOptions()
-                                    .position(location)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        boolean hasValidLocations = false;  // Flag to track if there are valid locations
 
-                            boundsBuilder.include(location);
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Double latitude = document.getDouble("latitude");
+                            Double longitude = document.getDouble("longitude");
+
+                            if (latitude != null && longitude != null) {
+                                LatLng location = new LatLng(latitude, longitude);
+                                map.addMarker(new MarkerOptions()
+                                        .position(location)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+                                boundsBuilder.include(location);
+                                hasValidLocations = true;
+                            }
                         }
 
-                        LatLngBounds bounds = boundsBuilder.build();
-                        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)); // 100 is the padding
-                        map.animateCamera(CameraUpdateFactory.zoomTo(10)); // Adjust the zoom level as needed
-
+                        if (hasValidLocations) {
+                            LatLngBounds bounds = boundsBuilder.build();
+                            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                            map.animateCamera(CameraUpdateFactory.zoomTo(10));
+                        }
+                    } else {
+                        Log.e("displayCheckInsOnMap", "Error getting documents: ", task.getException());
                     }
                 });
     }
+
 
 }

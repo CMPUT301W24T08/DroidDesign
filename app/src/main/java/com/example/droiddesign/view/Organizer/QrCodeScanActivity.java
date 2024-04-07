@@ -200,11 +200,26 @@ public class QrCodeScanActivity extends AppCompatActivity {
 
     private void checkInUser(String eventId) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        getCurrentLocation((latitude, longitude) -> {
-            attendanceDB.checkInUser(eventId, userId, latitude, longitude);
-            Toast.makeText(QrCodeScanActivity.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
-        });
 
+        // Fetch the user's geolocation setting from Firestore
+        mFirestoreDb.collection("Users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocation");
+                        if (Boolean.TRUE.equals(geolocationEnabled)) {
+                            getCurrentLocation((latitude, longitude) -> {
+                                attendanceDB.checkInUser(eventId, userId, latitude, longitude);
+                                Toast.makeText(QrCodeScanActivity.this, "Checked in successfully with location", Toast.LENGTH_SHORT).show();
+                            });
+                        } else {
+                            attendanceDB.checkInUser(eventId, userId, null, null);
+                            Toast.makeText(QrCodeScanActivity.this, "Checked in successfully without location", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.e("checkInUser", "User document does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("checkInUser", "Error fetching user geolocation setting", e));
     }
 
     private void searchByQRUrl(String qrUrl) {

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,6 +69,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.buttonSave);
         ImageButton backButton = findViewById(R.id.button_back);
         deleteProfileButton.setVisibility(View.GONE);
+        deleteProfilePicButton.setVisibility(View.GONE);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -113,19 +115,30 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             String currentProfilePic = documentSnapshot.getString("profilePic");
-                            if (currentProfilePic != null && currentProfilePic.startsWith("https://ui-avatars.com")) {
+                            if ((currentProfilePic != null && currentProfilePic.startsWith("https://ui-avatars.com")) || (currentProfilePic != null && currentProfilePic.startsWith("https://robohash.org/"))) {
                                 // Current picture is the default, so don’t delete it
                                 Toast.makeText(ProfileSettingsActivity.this, "Default profile picture cannot be removed.", Toast.LENGTH_SHORT).show();
+
                             } else {
                                 // Picture is not the default, so delete it and set back to the default
                                 String userName = documentSnapshot.getString("userName");
-                                String defaultAvatarUrl = "https://ui-avatars.com/api/?name=" + userName + "&background=random";
+                                String defaultAvatarUrl;
+
+                                if (userName != null && !userName.isEmpty()) {
+                                    // Construct the avatar URL with the userName
+                                    defaultAvatarUrl = "https://ui-avatars.com/api/?name=" + userName + "&background=random";
+                                } else {
+                                    // Use a default avatar URL or another placeholder when userName is null or empty
+                                    defaultAvatarUrl = avatarUrl;
+                                }
+
                                 Glide.with(this).load(defaultAvatarUrl).into(profileImageView);
 
                                 db.collection("Users").document(currentUser.getUid())
                                         .update("profilePic", defaultAvatarUrl)
                                         .addOnSuccessListener(aVoid -> Toast.makeText(ProfileSettingsActivity.this, "Profile picture reset to default.", Toast.LENGTH_SHORT).show())
                                         .addOnFailureListener(e -> Toast.makeText(ProfileSettingsActivity.this, "Failed to remove profile picture.", Toast.LENGTH_SHORT).show());
+                                deleteProfilePicButton.setVisibility(View.GONE);
                             }
                         })
                         .addOnFailureListener(e -> Toast.makeText(ProfileSettingsActivity.this, "Failed to fetch profile picture info.", Toast.LENGTH_SHORT).show());
@@ -136,11 +149,15 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
 
         // Set up profile picture upload button
-        editProfilePicButton.setOnClickListener(view -> ImagePicker.with(ProfileSettingsActivity.this)
-                .crop()  // Crop image (optional)
-                .compress(1024)  // Final image size will be less than 1 MB (optional)
-                .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080 (optional)
-                .start());
+        editProfilePicButton.setOnClickListener(view -> {
+            ImagePicker.with(ProfileSettingsActivity.this)
+                    .crop()  // Crop image (optional)
+                    .compress(1024)  // Final image size will be less than 1 MB (optional)
+                    .maxResultSize(1080, 1080)  // Final image resolution will be less than 1080 x 1080 (optional)
+                    .start();
+
+            deleteProfilePicButton.setVisibility(View.VISIBLE);
+        });
 
         // Set up text change listeners
         editUsername.addTextChangedListener(new TextWatcher() {
@@ -308,7 +325,19 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                             if (profilePicUrl == null || profilePicUrl.isEmpty()) {
                                 profilePicUrl = avatarUrl;
+                                // Update the Firestore document with the avatarUrl for profilePic
+                                db.collection("Users").document(userId)
+                                        .update("profilePic", avatarUrl)
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Profile picture field updated successfully
+                                            Log.d("ProfileSettings", "Profile picture field updated with avatar URL");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // Handle the error
+                                            Log.e("ProfileSettings", "Error updating profile picture", e);
+                                        });
                             }
+
                             Glide.with(this).load(profilePicUrl).into(profileImageView);
                         }
                     })
