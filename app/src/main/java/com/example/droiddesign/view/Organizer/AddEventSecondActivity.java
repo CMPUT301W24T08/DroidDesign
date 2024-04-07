@@ -3,7 +3,8 @@ package com.example.droiddesign.view.Organizer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,13 +24,13 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.view.AttendeeAndOrganizer.QrCodeScanActivity;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -208,6 +209,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
     private void showMilestonesDialog() {
         Dialog milestonesDialog = new Dialog(this);
         milestonesDialog.setContentView(R.layout.dialog_milestones);
+
+        if (milestonesDialog.getWindow() != null) {
+            milestonesDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         LinearLayout milestoneContainer = milestonesDialog.findViewById(R.id.milestone_container);
         final int[] milestoneCount = {1}; // Use an array to hold the count

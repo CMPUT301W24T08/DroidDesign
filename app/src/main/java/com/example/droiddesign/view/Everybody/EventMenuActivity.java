@@ -25,7 +25,7 @@ import com.example.droiddesign.view.Admin.BrowseImagesActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.AppSettingsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.DiscoverEventsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.ProfileSettingsActivity;
-import com.example.droiddesign.view.Organizer.QrCodeScanActivity;
+import com.example.droiddesign.view.AttendeeAndOrganizer.QrCodeScanActivity;
 import com.example.droiddesign.view.Organizer.SignedEventsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;

@@ -174,6 +174,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 listener.onQrCodeUploadSuccess(uri.toString());
+                                                Toast.makeText(QrCodeGeneratorActivity.this,"QR code creation complete!", Toast.LENGTH_SHORT).show();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {

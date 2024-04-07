@@ -1,10 +1,9 @@
-package com.example.droiddesign.view.Organizer;
+package com.example.droiddesign.view.AttendeeAndOrganizer;
 
 import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -13,8 +12,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -29,16 +26,12 @@ import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.example.droiddesign.model.AttendanceDB;
 import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -48,7 +41,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -155,6 +147,7 @@ public class QrCodeScanActivity extends AppCompatActivity {
                     returnIntent.putExtra("checkInQrId", qrId);
                     returnIntent.putExtra("checkInQrUrl", qrUrl); // Use the contents as the QR URL
                     setResult(Activity.RESULT_OK, returnIntent);
+                    Toast.makeText(QrCodeScanActivity.this, "QR code recycled!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
