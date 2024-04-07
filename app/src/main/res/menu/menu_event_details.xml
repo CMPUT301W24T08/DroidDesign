@@ -10,9 +10,6 @@
             android:id="@+id/announcement_menu"
             android:title="@string/announcements" />
         <item
-            android:id="@+id/edit_event_details_menu"
-            android:title="@string/edit_event_details" />
-        <item
             android:id="@+id/sign_ups_menu"
             android:title="@string/sign_ups" />
         <item
