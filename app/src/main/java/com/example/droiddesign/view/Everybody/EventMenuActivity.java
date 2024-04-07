@@ -1,5 +1,7 @@
 package com.example.droiddesign.view.Everybody;
 
+import static com.example.droiddesign.view.Everybody.FirebaseServiceUtils.getFirebaseAuth;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,30 +21,28 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.view.Adapters.EventsAdapter;
-import com.example.droiddesign.view.Organizer.AddEventActivity;
 import com.example.droiddesign.view.Admin.AdminBrowseUsersActivity;
 import com.example.droiddesign.view.Admin.BrowseImagesActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.AppSettingsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.DiscoverEventsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.ProfileSettingsActivity;
+import com.example.droiddesign.view.Organizer.AddEventActivity;
 import com.example.droiddesign.view.Organizer.QrCodeScanActivity;
 import com.example.droiddesign.view.Organizer.SignedEventsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Activity representing the main menu for the event application.
  * It provides the user with a list of events they have signed up for and allows navigation to other features.
  */
-public class EventMenuActivity extends AppCompatActivity {
+public class EventMenuActivity extends AppCompatActivity{
 	/**
 	 * RecyclerView for displaying the list of events.
 	 */
@@ -66,13 +66,14 @@ public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * Firebase Firestore instance for database interaction.
 	 */
-	private FirebaseFirestore db = FirebaseFirestore.getInstance();
+	private FirebaseFirestore firestore;
+	private FirebaseAuth firebaseAuth;
 
 	/**
 	 * User ID and role for personalizing the user experience.
 	 */
 	private String userId, userRole, userEmail;
-	SharedPreferenceHelper prefsHelper;
+	public SharedPreferenceHelper prefsHelper;
 
 	/**
 	 * List of events the user has signed up for.
@@ -85,9 +86,14 @@ public class EventMenuActivity extends AppCompatActivity {
 	 *                           this Bundle contains the data it most recently supplied. Otherwise, it is null.
 	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_menu);
+
+		// Retrieve Firestore and FirebaseAuth instances
+		FirebaseServiceUtils.initialize(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance());
+		firestore = FirebaseServiceUtils.getFirestore();
+		firebaseAuth = getFirebaseAuth();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);
 		navigationMenu = findViewById(R.id.navigation_menu);
@@ -108,11 +114,11 @@ public class EventMenuActivity extends AppCompatActivity {
 			userRole = prefsHelper.getRole();
 		} else {
 			// No userId found in SharedPreferences, fetch it from FirebaseAuth
-			fetchUserRole();
-			FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-			if (currentUser != null) {
-				userId = currentUser.getUid();
+			String currentUserId = getFirebaseAuth().getUid();
+			if (currentUserId != null) {
+				userId = currentUserId;
 				prefsHelper.saveUserProfile(userId, userRole, userEmail);
+				fetchUserRole();
 			} else {
 				Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(EventMenuActivity.this, BasicLoginFragment.class);
@@ -272,8 +278,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * Fetches the events the user has signed up for and updates the UI accordingly.
 	 */
 	private void fetchEvents() {
-		String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+		firestore.collection("Users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
 			User user = documentSnapshot.toObject(User.class);
 			if (user != null) {
 				List<String> eventIdsToFetch;
@@ -309,7 +314,7 @@ public class EventMenuActivity extends AppCompatActivity {
 	private void fetchEventsByIds(List<String> eventIds) {
 		eventsToDisplay = new ArrayList<>();
 		for (String eventId : eventIds) {
-			db.collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
+			firestore.collection("EventsDB").document(eventId).get().addOnSuccessListener(documentSnapshot -> {
 				Event event = documentSnapshot.toObject(Event.class);
 				if (event != null) {
 					eventsToDisplay.add(event);
@@ -327,9 +332,8 @@ public class EventMenuActivity extends AppCompatActivity {
 	 * using the current user's ID. Once the role is fetched, it calls {@link #configureUIBasedOnRole()}
 	 * to update the UI elements based on the user's role.
 	 */
-	private void fetchUserRole() {
-		String currentUserId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-		db.collection("Users").document(currentUserId).get().addOnSuccessListener(documentSnapshot -> {
+	public void fetchUserRole() {
+		firestore.collection("Users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
 			if (documentSnapshot.exists() && documentSnapshot.contains("role")) {
 				userRole = documentSnapshot.getString("role");
 				userEmail = documentSnapshot.getString("email");
@@ -382,7 +386,7 @@ public class EventMenuActivity extends AppCompatActivity {
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){
 				String token = task.getResult();
-				db.collection("Users").document(userId).update("fcmToken",token)
+				firestore.collection("Users").document(userId).update("fcmToken",token)
 						.addOnSuccessListener(aVoid -> Log.d("UpdateToken", "Token successfully updated for user: " + userId))
 						.addOnFailureListener(e -> Log.e("UpdateToken", "Error updating token", e));
 			}

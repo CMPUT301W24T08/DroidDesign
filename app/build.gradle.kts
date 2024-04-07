@@ -33,6 +33,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        // Resolve duplicate file issue by picking the first occurrence
+        pickFirst ("mockito-extensions/org.mockito.plugins.MockMaker")
+    }
 }
 
 dependencies {
@@ -81,8 +85,6 @@ dependencies {
     implementation ("androidx.multidex:multidex:2.0.1")
     implementation ("com.google.android.gms:play-services-base:18.3.0")
 
-
-    testImplementation("junit:junit:4.13.2")
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1") // or a later version
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1") // or a later version
     testImplementation ("org.mockito:mockito-junit-jupiter:3.6.0") // or a later version
@@ -110,6 +112,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    testImplementation ("org.robolectric:robolectric:4.5.1")
 
 
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
@@ -118,5 +121,10 @@ dependencies {
     androidTestImplementation ("org.mockito:mockito-core:4.0.0")
     androidTestImplementation ("androidx.test:runner:1.5.2")
 
+    androidTestImplementation ("org.powermock:powermock-module-junit4:2.0.9")
+    androidTestImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation ("org.powermock:powermock-classloading-xstream:2.0.9")
+// The xstream classloader is often not needed directly; you can usually use the default one
+    androidTestImplementation ("org.powermock:powermock-classloading-base:2.0.9")
 
 }
