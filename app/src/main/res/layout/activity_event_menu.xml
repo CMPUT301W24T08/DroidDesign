@@ -8,6 +8,7 @@
     tools:context="com.example.droiddesign.view.Everybody.EventMenuActivity">
 
     <ImageView
+        android:id="@+id/activity_event_menu"
         android:layout_width="845dp"
         android:layout_height="845dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,12 +65,13 @@
         app:layout_constraintVertical_bias="0.5">
 
         <TextView
+            android:id="@+id/admin_text_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/admin_roles_description"
             android:fontFamily="@font/opensans_semibold"
-            android:textColor="@color/white"
             android:padding="16dp"
+            android:text="@string/admin_roles_description"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </androidx.cardview.widget.CardView>
 

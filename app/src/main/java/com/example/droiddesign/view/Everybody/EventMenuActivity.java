@@ -1,6 +1,7 @@
 package com.example.droiddesign.view.Everybody;
 
 import static com.example.droiddesign.view.Everybody.FirebaseServiceUtils.getFirebaseAuth;
+import static com.example.droiddesign.view.Everybody.FirebaseServiceUtils.getFirestore;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -92,7 +93,7 @@ public class EventMenuActivity extends AppCompatActivity{
 
 		// Retrieve Firestore and FirebaseAuth instances
 		FirebaseServiceUtils.initialize(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance());
-		firestore = FirebaseServiceUtils.getFirestore();
+		firestore = getFirestore();
 		firebaseAuth = getFirebaseAuth();
 
 		eventsRecyclerView = findViewById(R.id.events_recycler_view);

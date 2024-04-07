@@ -117,8 +117,7 @@ dependencies {
 
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation ("org.mockito:mockito-android:4.0.0")
-    androidTestImplementation ("org.mockito:mockito-core:4.0.0")
+    androidTestImplementation ("org.mockito:mockito-core:5.11.0")
     androidTestImplementation ("androidx.test:runner:1.5.2")
 
     androidTestImplementation ("org.powermock:powermock-module-junit4:2.0.9")
@@ -126,5 +125,11 @@ dependencies {
     testImplementation ("org.powermock:powermock-classloading-xstream:2.0.9")
 // The xstream classloader is often not needed directly; you can usually use the default one
     androidTestImplementation ("org.powermock:powermock-classloading-base:2.0.9")
+    implementation ("org.mockito:mockito-android:5.11.0")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation ("androidx.test:runner:1.5.2")
+    androidTestImplementation ("androidx.test:rules:1.5.0")
 
 }
