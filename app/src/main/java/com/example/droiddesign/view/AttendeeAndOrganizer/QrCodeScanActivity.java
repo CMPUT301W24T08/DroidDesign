@@ -406,6 +406,13 @@ public class QrCodeScanActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * An ActivityResultLauncher to handle the result of location permission request.
+     * It triggers an action based on whether the location permission is granted or not.
+     * If the permission is granted, it proceeds with operations that require location access.
+     * If the permission is denied, it displays an AlertDialog informing the user of the importance
+     * of location permission and provides a way to navigate to the app's settings to enable it.
+     */
     private final ActivityResultLauncher<String> requestLocationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -427,7 +434,11 @@ public class QrCodeScanActivity extends AppCompatActivity {
                 }
             });
 
-
+    /**
+     * Requests location permission from the user.
+     * If the permission is not already granted, this method triggers a prompt asking the user for location access.
+     * The result of this request is handled by the {@code requestLocationPermissionLauncher} ActivityResultLauncher.
+     */
     private void requestLocationPermission() {
         requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }

@@ -22,14 +22,31 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Manages the attendance database operations such as user check-ins and milestone notifications.
+ */
 public class AttendanceDB {
 
+    /**
+     * The Firestore database instance used for database operations.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Initializes a new instance of the AttendanceDB class with a reference to the Firestore database.
+     */
     public AttendanceDB() {
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Checks in a user for an event and increments their check-in count in the database.
+     *
+     * @param eventId  The ID of the event where the user is checking in.
+     * @param userId   The ID of the user who is checking in.
+     * @param latitude  The latitude of the check-in location, can be null if location is not provided.
+     * @param longitude The longitude of the check-in location, can be null if location is not provided.
+     */
     public void checkInUser(String eventId, String userId, Double latitude, Double longitude) {
         String documentId = eventId + "_" + userId;
 
@@ -62,7 +79,12 @@ public class AttendanceDB {
                 })
                 .addOnFailureListener(e -> Log.e("AttendanceDB", "Error fetching document", e));
     }
-
+    /**
+     * Checks if the current check-ins for an event have reached any of the predefined milestones
+     * and sends a notification if a milestone is reached.
+     *
+     * @param eventId The ID of the event to check milestones for.
+     */
     private void checkEventMilestones(String eventId) {
         Log.d("AttendanceDB", "Entering checkEventMilestones method for eventId: " + eventId);
 
@@ -104,7 +126,13 @@ public class AttendanceDB {
                 .addOnFailureListener(e -> Log.e("AttendanceDB", "Error counting total check-ins for eventId: " + eventId, e));
     }
 
-
+    /**
+     * Sends a notification to the event organizer when a milestone of check-ins is reached.
+     *
+     * @param organizerOwnerId The user ID of the event organizer.
+     * @param totalCheckIns    The total number of check-ins for the event.
+     * @param eventId          The ID of the event where the milestone was reached.
+     */
     private void sendNotification(String organizerOwnerId, int totalCheckIns, String eventId) {
         Log.d("AttendanceDB", "Entering sendNotification method for event: " + eventId + " with total check-ins: " + totalCheckIns + " for organizer: " + organizerOwnerId);
 
@@ -135,7 +163,14 @@ public class AttendanceDB {
                 .addOnFailureListener(e -> Log.e("AttendanceDB", "Failed to fetch FCM token for user: " + organizerOwnerId, e));
     }
 
-
+    /**
+     * Sends notifications to specified tokens using Firebase Cloud Messaging (FCM).
+     *
+     * @param title    The title of the notification.
+     * @param tokens   The FCM tokens to which the notification will be sent.
+     * @param message  The message body of the notification.
+     * @param eventId  The ID of the event related to the notification.
+     */
     private void sendNotificationsToTokens(String title, List<String> tokens, String message, String eventId) {
         Log.d("AttendanceDB", "Entering sendNotificationsToTokens method");
         Log.d("AttendanceDB", "Title: " + title + ", Message: " + message + ", Event ID: " + eventId);
