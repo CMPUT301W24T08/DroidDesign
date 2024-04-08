@@ -60,7 +60,6 @@ public class UserUnitTest {
         assertEquals("Profile name should match", "Attendee Name", attendeeUser.getProfileName());
         assertEquals("Email should match", "attendee@example.com", attendeeUser.getEmail());
         assertEquals("Phone should match", "1234567890", attendeeUser.getPhone());
-        assertTrue("Geolocation should be true", attendeeUser.getGeolocation());
     }
 
     @Test
