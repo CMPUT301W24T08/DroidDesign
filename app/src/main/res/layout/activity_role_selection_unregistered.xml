@@ -23,9 +23,10 @@
         android:layout_height="845dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.414"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/role_choice_query"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.158"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
 
     <TextView
@@ -92,6 +93,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
+        android:id="@+id/imageView8"
         android:layout_width="75dp"
         android:layout_height="75dp"
         app:layout_constraintBottom_toBottomOf="@+id/attendee_button"
@@ -103,24 +105,37 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/organizer_button"
-        app:layout_constraintEnd_toEndOf="@+id/organizer_button"
-        app:layout_constraintStart_toStartOf="@+id/organizer_button"
-        app:layout_constraintTop_toTopOf="@+id/organizer_button"
-        app:layout_constraintVertical_bias="0.29000002"
+        android:layout_width="74dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toBottomOf="@+id/attendee_button"
+        app:layout_constraintEnd_toEndOf="@+id/attendee_button"
+        app:layout_constraintHorizontal_bias="0.531"
+        app:layout_constraintStart_toStartOf="@+id/attendee_button"
+        app:layout_constraintTop_toTopOf="@+id/attendee_button"
+        app:layout_constraintVertical_bias="0.281"
         app:srcCompat="@drawable/organizer" />
 
     <ImageView
         android:id="@+id/admin_image"
         android:layout_width="75dp"
         android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/organizer_button"
+        app:layout_constraintEnd_toEndOf="@+id/organizer_button"
+        app:layout_constraintHorizontal_bias="0.387"
+        app:layout_constraintStart_toStartOf="@+id/organizer_button"
+        app:layout_constraintTop_toTopOf="@+id/organizer_button"
+        app:layout_constraintVertical_bias="0.281"
+        app:srcCompat="@drawable/admin2" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="79dp"
+        android:layout_height="75dp"
+        app:layout_constraintBottom_toBottomOf="@+id/admin_button"
         app:layout_constraintEnd_toEndOf="@+id/admin_button"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="@+id/admin_button"
         app:layout_constraintTop_toTopOf="@+id/admin_button"
-        app:layout_constraintVertical_bias="0.050000012"
+        app:layout_constraintVertical_bias="0.378"
         app:srcCompat="@drawable/admin2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
