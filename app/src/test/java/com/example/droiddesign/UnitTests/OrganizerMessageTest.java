@@ -12,15 +12,16 @@ public class OrganizerMessageTest {
     private OrganizerMessage organizerMessage;
     private final String testDate = "2024-01-01";
     private final String testText = "Welcome to our event!";
-    private final String testImageUploadedPictureID = "image123";
+    private final String testTitle = "messageTitle";
 
     @Before
     public void setUp() {
-        organizerMessage = new OrganizerMessage(testDate, testText, testImageUploadedPictureID);
+        organizerMessage = new OrganizerMessage(testTitle, testText, testDate);
     }
 
     @Test
     public void constructor_initializesPropertiesCorrectly() {
+        assertEquals("Constructor should initialize name correctly",testTitle,organizerMessage.getTitle());
         assertEquals("Constructor should initialize date correctly", testDate, organizerMessage.getDate());
         assertEquals("Constructor should initialize text correctly", testText, organizerMessage.getMessage());
     }

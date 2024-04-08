@@ -18,6 +18,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/conclave_logo_small" />
 
+
     <ImageView
         android:id="@+id/logo_large"
         android:layout_width="845dp"
@@ -26,9 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.050000012"
+        app:layout_constraintVertical_bias="0.013"
         app:srcCompat="@drawable/conclave_logo_large_dark" />
-
 
     <TextView
         android:id="@+id/event_name_query"
@@ -38,14 +38,14 @@
         android:text="@string/event_name"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/text_input_layout_event"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/logo_large"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_event_name"
+        app:layout_constraintHorizontal_bias="0.003"
+        app:layout_constraintStart_toStartOf="@+id/text_input_event_name"
         app:layout_constraintTop_toBottomOf="@+id/logo_small"
-        app:layout_constraintVertical_bias="0.808" />
+        app:layout_constraintVertical_bias="0.581" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/text_input_layout_event"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
@@ -56,10 +56,10 @@
         android:hint="@string/event_name"
         android:textColorHint="#80FFFFFF"
         app:boxBackgroundColor="@color/card_bg_light_transparent"
-        app:boxCornerRadiusBottomEnd="12.5dp"
-        app:boxCornerRadiusBottomStart="12.5dp"
-        app:boxCornerRadiusTopEnd="12.5dp"
-        app:boxCornerRadiusTopStart="12.5dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+        app:boxCornerRadiusBottomStart="10dp"
+        app:boxCornerRadiusTopEnd="10dp"
+        app:boxCornerRadiusTopStart="10dp"
         app:boxStrokeColor="@color/white"
         app:boxStrokeWidth="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -69,62 +69,38 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.43">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_input_event_name"
-            android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:fontFamily="@font/opensans"
-            android:text=""
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_start_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="175dp"
+        android:layout_height="70dp"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:drawableLeft="@drawable/calendar_style2_small"
         android:text="@string/_24_january"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintHorizontal_bias="0.11"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.10" />
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_end_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/card_bg_light_transparent"
-        android:drawableLeft="@drawable/calendar_style2_small"
-        android:fontFamily="@font/opensans_semibold"
-        android:text="@string/_25_january"
-        android:textColor="@color/white"
-        app:cornerRadius="12.5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintVertical_bias="0.095" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans"
-        android:text="@string/start_date"
+        android:text="@string/date"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_start_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.22"
+        app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView2"
@@ -142,70 +118,51 @@
         app:layout_constraintVertical_bias="0.10" />
 
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans"
-        android:text="@string/end_date"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_end_date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.77"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.51" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_start_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/card_bg_light_transparent"
-        android:drawableLeft="@drawable/time_clock"
-        android:fontFamily="@font/opensans_semibold"
-        android:text="@string/curr_time"
-        app:cornerRadius="12.5dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
-        app:layout_constraintEnd_toStartOf="@+id/button_end_time"
-        app:layout_constraintHorizontal_bias="0.13"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.671" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_end_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="175dp"
+        android:layout_height="70dp"
         android:backgroundTint="@color/card_bg_light_transparent"
         android:drawableLeft="@drawable/time_clock"
         android:fontFamily="@font/opensans_semibold"
         android:text="@string/time_1hr"
         android:textColor="@color/white"
-        app:cornerRadius="12.5dp"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toEndOf="@+id/button_start_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="0.643" />
+        app:layout_constraintTop_toBottomOf="@+id/button_start_date"
+        app:layout_constraintVertical_bias="0.338" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_start_time"
+        android:layout_width="175dp"
+        android:layout_height="70dp"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:drawableLeft="@drawable/time_clock"
+        android:fontFamily="@font/opensans_semibold"
+        android:text="@string/curr_time"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_start_date"
+        app:layout_constraintVertical_bias="0.338" />
 
     <TextView
         android:id="@+id/text_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
         android:fontFamily="@font/opensans"
         android:text="@string/start_time"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_start_time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.22"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_start_date"
-        app:layout_constraintVertical_bias="1" />
+        app:layout_constraintEnd_toEndOf="@+id/button_start_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/button_start_time" />
 
     <TextView
         android:id="@+id/textView5"
@@ -216,11 +173,9 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button_end_time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.77"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_event"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toEndOf="@+id/button_end_time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/button_end_time" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_location_box"
@@ -244,7 +199,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.86"/>
+        app:layout_constraintVertical_bias="0.86" />
 
     <TextView
         android:id="@+id/textView6"
@@ -254,12 +209,12 @@
         android:text="@string/event_location"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/text_input_location_box"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.105"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/text_input_location_box"
+        app:layout_constraintEnd_toEndOf="@+id/autocomplete_card_view"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/autocomplete_card_view"
         app:layout_constraintTop_toBottomOf="@+id/button_start_time"
-        app:layout_constraintVertical_bias="0.244" />
+        app:layout_constraintVertical_bias="0.305" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_next_page"
@@ -267,15 +222,15 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/bg_light"
         android:clickable="true"
+        android:contentDescription="@string/next"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.98"
-        app:srcCompat="@drawable/chevron_right_white"
-        android:focusable="true"
-        android:contentDescription="@string/next" />
+        app:srcCompat="@drawable/chevron_right_white" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_cancel"
@@ -291,17 +246,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.106" />
 
-    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:layout_width="373dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/autocomplete_card_view"
+        android:layout_width="359dp"
         android:layout_height="63dp"
-        android:layout_marginStart="24dp"
         android:layout_marginBottom="60dp"
+        app:cardBackgroundColor="@color/card_bg_light_transparent"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.2">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/text_input_event_name"
+        android:layout_width="361dp"
+        android:layout_height="66dp"
+        android:background="@drawable/rounded_edittext2"
         android:fontFamily="@font/opensans"
         android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textColor="@color/white"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_name_query"
+        app:layout_constraintVertical_bias="0.157" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
