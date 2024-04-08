@@ -151,6 +151,9 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
 
     /**
      * Initializes the map and sets up the markers based on the check-in locations of attendees.
+     *
+     * Code is inspired by and based off of the following:
+     * Adding a Map with a Marker, 2024-04-04 https://developers.google.com/maps/documentation/android-sdk/map-with-marker, APACHE 2.0 License for Sample Code
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
