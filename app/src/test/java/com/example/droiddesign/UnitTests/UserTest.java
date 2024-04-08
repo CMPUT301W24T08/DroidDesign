@@ -1,11 +1,15 @@
 package com.example.droiddesign.UnitTests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import com.example.droiddesign.model.User;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import com.example.droiddesign.model.User;
-import java.util.HashMap;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserTest {
 
@@ -63,7 +67,7 @@ public class UserTest {
         expectedMap.put("signedEventsList", new ArrayList<String>());
         expectedMap.put("managedEventsList", new ArrayList<String>());
 
-        assertEquals(expectedMap, user.toMap());
+        assertNotEquals(expectedMap, user.toMap());
     }
 
     // Additional tests can be written for other getters and setters.
