@@ -276,6 +276,7 @@
         android:fontFamily="@font/opensans"
         android:text=""
         android:textColor="@color/white"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
