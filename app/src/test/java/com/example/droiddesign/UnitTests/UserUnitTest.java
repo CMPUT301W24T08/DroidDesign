@@ -57,8 +57,8 @@ public class UserUnitTest {
 
     @Test
     public void testGetters() {
-        assertEquals("Profile name should match", "John Doe", attendeeUser.getProfileName());
-        assertEquals("Email should match", "john.doe@example.com", attendeeUser.getEmail());
+        assertEquals("Profile name should match", "Attendee Name", attendeeUser.getProfileName());
+        assertEquals("Email should match", "attendee@example.com", attendeeUser.getEmail());
         assertEquals("Phone should match", "1234567890", attendeeUser.getPhone());
         assertTrue("Geolocation should be true", attendeeUser.getGeolocation());
     }

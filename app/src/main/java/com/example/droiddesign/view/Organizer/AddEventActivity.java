@@ -197,11 +197,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                         return;
                     }
 
-                    if (selectedEventLocation.isEmpty()) {
-                        Toast.makeText(AddEventActivity.this, "Please select an event location", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
                     Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                     intent.putExtra("eventName", eventName);
                     intent.putExtra("startTime", startTime);

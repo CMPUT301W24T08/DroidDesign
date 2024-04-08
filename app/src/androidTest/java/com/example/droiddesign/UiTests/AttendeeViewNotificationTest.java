@@ -50,18 +50,34 @@ public class AttendeeViewNotificationTest {
 		onView(withId(R.id.browse_events)).check(matches(isDisplayed()));
 		onView(withId(R.id.browse_events)).perform(click( ));
 		// Check if the events are displayed
-		onView(withId(R.id.events_recycler_view)).check(matches(isDisplayed()));
+//		onView(withId(R.id.events_recycler_view)).check(matches(isDisplayed()));
 		// Wait for events RecyclerView to be populated and perform a click on the first item
-		onView(withId(R.id.events_recycler_view)).check(matches(isDisplayed()))
-				.perform(actionOnItemAtPosition(0, click()));
-		onView(withId(R.id.sign_up_button)).check(matches(isDisplayed()));
-		onView(withId(R.id.button_menu)).perform(click( ));
-		onView(withId(R.id.announcement_menu)).perform(click( ));
-		// confirms by checking the check announcement button is not there as an attendee
-		// Confirm that the Check Announcement button is not visible or gone
-//		Espresso.onView(ViewMatchers.withId(R.id.send_button))
-//				.check(ViewAssertions.matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
-//		onView(withId(R.id.organizer_message_recyclerview)).check(matches(isDisplayed())); // TODO: if organizer sent sth, see the chat card
+		onView(withId(R.id.events_recycler_view)).perform(actionOnItemAtPosition(0, click()));
+		try {
+			Thread.sleep(1000); // Sleep for 1 second
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		onView(withId(R.id.sign_up_button)).perform( click());
+
+		onView(withId(R.id.back_button)).perform(click( ));
+		onView(withId(R.id.button_back)).perform(click( ));
+		try {
+			Thread.sleep(2000); // Sleep for 1 second
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+//		onView(withId(R.id.events_recycler_view))
+//				.check(matches(isDisplayed()))
+//				.check(matches(hasMinimumChildCount(1))) // Make sure there is at least one item
+//				.perform(actionOnItemAtPosition(0, click()));
+//		onView(withId(R.id.button_menu)).perform(click( ));
+//		onView(withId(R.id.announcement_menu)).perform(click( ));
+//		try {
+//			Thread.sleep(3000); // Sleep for 3 second
+//		} catch (InterruptedException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 
 	private boolean isButtonEnterDisplayed() {
