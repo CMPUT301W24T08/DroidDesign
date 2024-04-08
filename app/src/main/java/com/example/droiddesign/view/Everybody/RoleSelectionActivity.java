@@ -116,11 +116,9 @@ public class RoleSelectionActivity extends AppCompatActivity {
 //		Toast.makeText(RoleSelectionActivity.this, "Quick start!", Toast.LENGTH_SHORT).show();
 		// New user scenario
 		// Now that the user profile information is saved locally, proceed to save the user to Firestore
-		FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-		FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 		// Add AuthStateListener
-		mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+		FirebaseServiceUtils.getFirebaseAuth().signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 				@Override
 				public void onComplete(@NonNull Task<AuthResult> task) {
 				if (task.isSuccessful()) {
