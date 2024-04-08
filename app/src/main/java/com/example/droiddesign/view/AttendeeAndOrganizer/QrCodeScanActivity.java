@@ -124,7 +124,8 @@ public class QrCodeScanActivity extends AppCompatActivity {
         if (result.getContents() == null) {
             Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         } else {
-            setResult(result.getContents());
+            String sanitizedContents = result.getContents().replaceAll("^https?://", "");
+            setResult(sanitizedContents);
         }
     });
 
@@ -234,9 +235,11 @@ public class QrCodeScanActivity extends AppCompatActivity {
      * @param qrUrl The URL to search for in the QR codes collection.
      */
     private void searchByQRUrl(String qrUrl) {
+
+        String sanitizedUrl = qrUrl.replaceAll("^https?://", "");
         Log.d("QrCodeScanActivity", "Searching for QR URL: " + qrUrl);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("qrcodes").whereEqualTo("qrUrl", qrUrl).get().addOnCompleteListener(task -> {
+        db.collection("qrcodes").whereEqualTo("qrUrl", sanitizedUrl).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
                 for (DocumentSnapshot document : task.getResult()) {
                     String eventId = document.getString("eventId");
@@ -266,9 +269,12 @@ public class QrCodeScanActivity extends AppCompatActivity {
      * @param listener The listener to receive callback notifications.
      */
     private void uploadQrCode(String qrId, String eventId, String type, String contents, final OnQrCodeUploadListener listener) {
-        UploadQR upload = new UploadQR(contents, eventId, type);  // Use contents directly as qrUrl
+        // Sanitize the URL before storing it in Firestore
+        String sanitizedUrl = contents.replaceAll("^https?://", "");
+        UploadQR upload = new UploadQR(sanitizedUrl, eventId, type);
+
         mFirestoreDb.collection("qrcodes").document(qrId).set(upload)
-                .addOnSuccessListener(aVoid -> listener.onQrCodeUploadSuccess(contents))  // Return contents as qrUrl
+                .addOnSuccessListener(aVoid -> listener.onQrCodeUploadSuccess(sanitizedUrl))  // Pass the sanitized URL
                 .addOnFailureListener(e -> listener.onQrCodeUploadFailure(e.getMessage()));
     }
 

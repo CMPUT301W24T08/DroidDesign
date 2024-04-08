@@ -88,7 +88,7 @@ public class UserUnitTest {
 
         attendeeUser.addSignedEvent(mockEvent);
 
-	    assertTrue("eventsList should contain the added event ID", attendeeUser.getSignedEventsList().contains("eventId123"));
+        assertTrue("eventsList should contain the added event ID", attendeeUser.getSignedEventsList().contains("eventId123"));
     }
 
     @Test
