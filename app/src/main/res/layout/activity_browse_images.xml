@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.25"
+        app:layout_constraintVertical_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_type_spinner"/>
@@ -31,6 +31,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2"
         app:layout_constraintHorizontal_bias="0.04"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/rounded_edittext_dark"
+        android:text="ℹ️ Click on image to delete"
+        android:textSize="16sp"
+        android:fontFamily="@font/opensans"
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toEndOf="@id/image_type_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.55"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

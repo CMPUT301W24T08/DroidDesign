@@ -278,6 +278,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
         if (!maxAttendeesString.isEmpty()) {
             try {
                 maxAttendees = Integer.parseInt(maxAttendeesString);
+                if (maxAttendees <= 0) {
+                    Toast.makeText(AddEventSecondActivity.this, "Number of maximum attendees must be greater than 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } catch (NumberFormatException e) {
                 Toast.makeText(AddEventSecondActivity.this, "Invalid number for maximum attendees", Toast.LENGTH_SHORT).show();
                 return;

@@ -57,6 +57,18 @@
             android:layout_marginTop="16dp"
             app:cornerRadius="12.5dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/rounded_edittext_dark"
+            android:text="ℹ️ Promo QR also created for easy sharing. Find it in the Event Details section once generated."
+            android:textSize="13sp"
+            android:fontFamily="@font/opensans"
+            android:textColor="#FFFFFF" />
+
     </LinearLayout>
 
 </RelativeLayout>

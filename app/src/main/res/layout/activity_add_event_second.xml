@@ -165,6 +165,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:hint="@string/blank_numbers"
             android:inputType="number"
             android:id="@+id/input_number_max_attendees"

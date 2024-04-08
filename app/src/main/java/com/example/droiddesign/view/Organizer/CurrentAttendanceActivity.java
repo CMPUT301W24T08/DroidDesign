@@ -23,7 +23,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +74,9 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
      */
     TextView checkInsTextView;
 
+    private ListenerRegistration listenerRegistration;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +87,8 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+
 
         firestore = FirebaseFirestore.getInstance();
         eventId = getIntent().getStringExtra("EVENT_ID");
@@ -96,56 +104,14 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
         });
         attendanceListView.setAdapter(attendanceListAdapter);
 
-        retrieveEventAndAttendanceList();
+//        retrieveEventAndAttendanceList();
+        setupRealtimeAttendanceListener();
 
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
             finish();
         });
-    }
 
-    /**
-     * Retrieves the event attendance list from Firestore, including user details and check-in counts.
-     * This method queries the "AttendanceDB" collection to find all check-ins associated with the current event.
-     * For each check-in found, it fetches the corresponding user's details from the "Users" collection.
-     * The method updates the local list of users and their check-in counts, and then refreshes the UI to display this data.
-     */
-    private void retrieveEventAndAttendanceList() {
-        firestore.collection("AttendanceDB")
-                .whereEqualTo("event_id", eventId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        checkedInUsers.clear();
-                        users.clear(); // Clear the existing users before fetching new ones
-
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String userId = document.getString("user_id");
-                            Long checkInCount = document.getLong("check_in_count");
-                            if (userId != null && checkInCount != null) {
-                                checkedInUsers.put(userId, checkInCount.intValue());
-
-                                firestore.collection("Users").document(userId).get().addOnCompleteListener(userTask -> {
-                                    if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                        User user = userTask.getResult().toObject(User.class);
-                                        if (user != null) {
-                                            users.add(user);
-                                            // Update the adapter's dataset and refresh the RecyclerView
-                                            if (users.size() == checkedInUsers.size()) {
-                                                attendanceListAdapter.notifyDataSetChanged();
-                                                checkInsTextView.setText(String.valueOf(users.size()));
-                                            }
-                                        }
-                                    } else {
-                                        Toast.makeText(CurrentAttendanceActivity.this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        }
-                    } else {
-                        Toast.makeText(CurrentAttendanceActivity.this, "Failed to load attendance data.", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 
@@ -202,6 +168,53 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
                         Log.e("displayCheckInsOnMap", "Error getting documents: ", task.getException());
                     }
                 });
+    }
+
+    private void setupRealtimeAttendanceListener() {
+        listenerRegistration = firestore.collection("AttendanceDB")
+                .whereEqualTo("event_id", eventId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("CurrentAttendance", "Listen failed.", error);
+                        return;
+                    }
+
+                    if (value != null) {
+                        processAttendanceData(value);
+                    }
+                });
+    }
+
+    private void processAttendanceData(QuerySnapshot querySnapshot) {
+        checkedInUsers.clear();
+        users.clear(); // Clear before fetching new ones
+
+        for (QueryDocumentSnapshot document : querySnapshot) {
+            String userId = document.getString("user_id");
+            Long checkInCount = document.getLong("check_in_count");
+            if (userId != null && checkInCount != null) {
+                checkedInUsers.put(userId, checkInCount.intValue());
+
+                firestore.collection("Users").document(userId).get().addOnSuccessListener(userSnapshot -> {
+                    User user = userSnapshot.toObject(User.class);
+                    if (user != null) {
+                        users.add(user);
+                        if (users.size() == checkedInUsers.size()) {
+                            attendanceListAdapter.notifyDataSetChanged();
+                            checkInsTextView.setText(String.valueOf(users.size()));
+                        }
+                    }
+                }).addOnFailureListener(e -> Log.e("CurrentAttendance", "Failed to load user details.", e));
+            }
+        }
+        displayCheckInsOnMap(); // Update map if needed
+    }
+
+    protected void onStop() {
+        super.onStop();
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();  // Detach the listener
+        }
     }
 
 

@@ -218,18 +218,33 @@ public class BasicLoginFragment extends DialogFragment {
                 String phoneNumber = editPhoneNumber.getText().toString().trim();
                 String role = roleSpinner.getSelectedItem().toString();
 
+
+                // Check for valid user name
+                if (userName.isEmpty()) {
+                    Toast.makeText(getContext(), "Please enter a username", Toast.LENGTH_SHORT).show();
+                    return;  // Stop further execution
+                } else if (userName.length() == 1) {
+                    Toast.makeText(getContext(), "Username must be more than one character", Toast.LENGTH_SHORT).show();
+                    return;  // Stop further execution
+                }
+
+                // Check for valid phone number length
                 if (phoneNumber.length() != 10) {
                     Toast.makeText(getContext(), "Phone number must be 10 digits", Toast.LENGTH_SHORT).show();
-                } else {
-                    createUser(userName, email, role, company, phoneNumber);
-                    Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
-                    dismiss();
+                    return;  // Stop further execution
                 }
+
+                // If all validations pass, proceed to create the user account
+                createUser(userName, email, role, company, phoneNumber);
+                Toast.makeText(getContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+                dismiss();
+
             } catch (Exception e) {
                 Log.e("BasicLoginFragment", "Error creating user account", e);
                 Toast.makeText(getContext(), "Error creating account", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         profilePicButton.setOnClickListener(v -> {
             try {
