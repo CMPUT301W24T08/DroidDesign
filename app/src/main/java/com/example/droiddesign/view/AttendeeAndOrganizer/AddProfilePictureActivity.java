@@ -28,14 +28,35 @@ import java.util.UUID;
  */
 public class AddProfilePictureActivity extends AppCompatActivity {
 
+    /**
+     * ImageView for displaying the profile picture preview.
+     */
     private ImageView imageView;
+
+    /**
+     * URI of the selected image.
+     */
     private Uri imageUri;
+
+    /**
+     * Reference to Firebase Storage where the profile picture will be uploaded.
+     */
     private StorageReference mStorageRef;
 
+    /**
+     * URL of the uploaded image in Firebase Storage.
+     */
     private String imageUrl;
 
+
+    /**
+     * Flag to indicate whether the image has been saved successfully.
+     */
     private boolean isImageSaved = false;
 
+    /**
+     * URL of the existing profile picture if it exists.
+     */
     private String existingImageUrl;
 
     /**

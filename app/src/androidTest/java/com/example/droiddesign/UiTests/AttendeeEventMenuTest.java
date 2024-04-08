@@ -38,7 +38,9 @@ public class AttendeeEventMenuTest {
 	public void EventAttendeeTest() {
 		if (isButtonEnterDisplayed()) {
 			onView(withId(R.id.button_enter)).perform(click( ));
+			onView(withId(R.id.skip_account_creation)).check(matches(isDisplayed( )));
 			onView(withId(R.id.skip_account_creation)).perform(click( ));
+
 			onView(withId(R.id.attendee_button)).check(matches(isDisplayed( )));
 			onView(withId(R.id.attendee_button)).perform(click( ));
 			while (!isActivityDisplayed( )) {

@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +20,6 @@ import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.view.AttendeeAndOrganizer.SendAnnouncementActivity;
 import com.example.droiddesign.view.Organizer.CurrentAttendanceActivity;
-import com.example.droiddesign.view.Organizer.EditEventFragment;
 import com.example.droiddesign.view.Organizer.SignedUpUsersActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,7 +27,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +34,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -345,7 +341,13 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 		return (user != null) ? user.getUid() : null;
 	}
 
-
+	/**
+	 * Called when the map is ready to be used.
+	 * This callback is triggered when the map has been completely loaded and is ready to display.
+	 * It sets up the map's UI settings and calls the method to display the event's location on the map.
+	 *
+	 * @param googleMap The GoogleMap instance ready to be used.
+	 */
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		Log.d("EventDetails", "Map is ready");
@@ -357,6 +359,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 		displayEventLocationOnMap(); // Function to display the check-in locations
 	}
 
+	/**
+	 * Fetches the event's location from the Firestore database and displays it on the map.
+	 * This method retrieves the latitude and longitude of the event from the Firestore database
+	 * and places a marker on the map at the event's location. It then moves the camera to center on the event's location.
+	 */
 	private void displayEventLocationOnMap() {
 		Log.d("EventDetailsActivity", "Fetching event location for ID: " + eventId);
 

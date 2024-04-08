@@ -69,6 +69,7 @@ public class EventMenuActivityTest {
 		});
 	}
 
+//		onView(withId(R.id.button_menu)).perform(click( ));
 
 //	@Before
 //	public void setup() {
@@ -144,4 +145,3 @@ public class EventMenuActivityTest {
 //				.check(ViewAssertions.matches(isDisplayed()));
 //	}
 }
-

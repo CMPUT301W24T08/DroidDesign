@@ -1,9 +1,6 @@
 package com.example.droiddesign.UiTests;
 
 import com.example.droiddesign.view.Everybody.FirebaseServiceUtils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,20 +11,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class FirebaseUtilEventMockTest {
 
-	private FirebaseFirestore mockFirestore;
+	private FirebaseServiceUtils firebaseServiceUtils;
 
-	private FirebaseAuth mockFirebaseAuth;
-
-	private FirebaseUser mockFirebaseUser;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+//		mockFirebaseWrapper = mock(FirebaseWrapper.class);
+//		roleSelectionActivity = new RoleSelectionActivity();
+//		roleSelectionActivity.setFirebaseWrapper(mockFirebaseWrapper);
 //		when(mockFirebaseAuth.getCurrentUser()).thenReturn(mockFirebaseUser);
 //		when(mockFirebaseUser.getUid()).thenReturn("uniqueUserId123");
 
 		// Initialize FirebaseServiceUtils with mocks
-		FirebaseServiceUtils.initialize(mockFirestore, mockFirebaseAuth);
+		FirebaseServiceUtils.initialize();
 	}
 
 	@Test

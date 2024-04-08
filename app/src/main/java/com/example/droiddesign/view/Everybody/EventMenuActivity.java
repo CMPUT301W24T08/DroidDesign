@@ -22,13 +22,13 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.view.Adapters.EventsAdapter;
+import com.example.droiddesign.view.Organizer.AddEventActivity;
 import com.example.droiddesign.view.Admin.AdminBrowseUsersActivity;
 import com.example.droiddesign.view.Admin.BrowseImagesActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.AppSettingsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.DiscoverEventsActivity;
 import com.example.droiddesign.view.AttendeeAndOrganizer.ProfileSettingsActivity;
-import com.example.droiddesign.view.Organizer.AddEventActivity;
-import com.example.droiddesign.view.Organizer.QrCodeScanActivity;
+import com.example.droiddesign.view.AttendeeAndOrganizer.QrCodeScanActivity;
 import com.example.droiddesign.view.Organizer.SignedEventsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -43,7 +43,7 @@ import java.util.List;
  * Activity representing the main menu for the event application.
  * It provides the user with a list of events they have signed up for and allows navigation to other features.
  */
-public class EventMenuActivity extends AppCompatActivity{
+public class EventMenuActivity extends AppCompatActivity {
 	/**
 	 * RecyclerView for displaying the list of events.
 	 */
@@ -364,6 +364,10 @@ public class EventMenuActivity extends AppCompatActivity{
 		}
 	}
 
+	/**
+	 * Called when the activity has been resumed and is now visible to the user.
+	 * This method ensures that the events list is refreshed each time the activity comes into the foreground.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -383,6 +387,12 @@ public class EventMenuActivity extends AppCompatActivity{
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
 
+
+	/**
+	 * Updates the Firebase Messaging Service token for the current user in the Firestore database if needed.
+	 * This method retrieves the latest FCM token and updates it in the Firestore database under the user's document.
+	 * Success or failure of the update operation is logged accordingly.
+	 */
 	void updateTokenIfNeeded(){
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){

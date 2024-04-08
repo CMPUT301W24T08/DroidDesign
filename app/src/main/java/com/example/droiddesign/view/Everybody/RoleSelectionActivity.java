@@ -15,10 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Activity to allow the user to select a role (Admin, Organizer, Attendee).
@@ -35,17 +32,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
 	 */
 	private MaterialButton adminImage, organizerImage, attendeeImage;
 
-	/**
-	 * An instance of FirebaseFirestore, providing access to the Firebase Firestore database.
-	 * Used here to interact with the 'users' collection in Firestore.
-	 */
-	private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-	/**
-	 * Reference to the 'users' collection in the Firestore database.
-	 * This collection contains documents where each document represents a user and their associated data.
-	 */
-	CollectionReference usersCollection = db.collection("UsersDB");
 
 	/**
 	 * Constant used as a key in SharedPreferences to store and retrieve the user's ID.
@@ -138,15 +124,16 @@ public class RoleSelectionActivity extends AppCompatActivity {
 				@Override
 				public void onComplete(@NonNull Task<AuthResult> task) {
 				if (task.isSuccessful()) {
-					FirebaseUser user = mAuth.getCurrentUser();
-					User newUser = null;
+					FirebaseUser user = FirebaseServiceUtils.getFirebaseAuth().getCurrentUser();
+					User newUser;
 					if (user != null) {
 						// User is signed
 						newUser = new User(user.getUid(), role, false);
 						// Save user profile to SharedPreferences
 						prefsHelper.saveUserProfile(user.getUid(), role, null);
 
-						UsersDB userdb = new UsersDB(firestore);
+						UsersDB userdb = new UsersDB(FirebaseServiceUtils.getFirestore());
+						Toast.makeText(RoleSelectionActivity.this, "User Test "+user.getUid(), Toast.LENGTH_SHORT).show();
 						userdb.addUser(newUser);
 						authCallBck.onSuccess();
 //						navigateToEventMenu();

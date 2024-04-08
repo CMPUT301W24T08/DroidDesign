@@ -14,6 +14,7 @@ import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.User;
 import com.example.droiddesign.view.Adapters.EventsAdapter;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
+import com.example.droiddesign.view.Everybody.EventMenuActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -47,7 +48,12 @@ public class DiscoverEventsActivity extends AppCompatActivity {
         fetchEvents();
 
         ImageButton backButton = findViewById(R.id.button_back);
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EventMenuActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
     }
 
     /**

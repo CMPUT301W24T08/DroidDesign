@@ -52,10 +52,6 @@ public class Event {
      */
     private String date;
 
-    /**
-     * Geolocation data for the event, typically representing latitude and longitude.
-     */
-    private String geolocation;
 
     /**
      * User ID of the organizer who owns the event.
@@ -133,7 +129,6 @@ public class Event {
      * @param eventLocation The location where the event will take place.
      * @param startTime The start time of the event.
      * @param endTime The end time of the event.
-     * @param geolocation The geolocation data for the event.
      * @param organizerOwnerId The ID of the user who organized the event.
      * @param imagePosterId The ID for the image poster of the event.
      * @param description A description of the event.
@@ -143,8 +138,7 @@ public class Event {
      * @param checkInQrCode The QR code associated with checking in to the event.
      */
     public Event(String eventId, String eventName, String eventDate,
-                 String eventLocation, double eventLongitude, double eventLatitude, String startTime, String endTime,
-                 String geolocation, String organizerOwnerId, String imagePosterId,
+                 String eventLocation, double eventLongitude, double eventLatitude, String startTime, String endTime, String organizerOwnerId, String imagePosterId,
                  String description, int signupLimit, int attendeesCount, List<Integer> milestones,
                  String shareQrCode, String checkInQrCode, String shareQrId, String checkInQrId) {
         this.eventId = eventId;
@@ -153,7 +147,6 @@ public class Event {
         this.eventLocation = eventLocation;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.geolocation = geolocation;
         this.organizerOwnerId = organizerOwnerId;
         this.imagePosterId = imagePosterId;
         this.description = description;
@@ -314,24 +307,6 @@ public class Event {
         updateFirestore("date", date);
     }
 
-    /**
-     * Retrieves the geolocation of the event.
-     *
-     * @return The geolocation string of the event.
-     */
-    public String getGeolocation() {
-        return geolocation;
-    }
-
-    /**
-     * Sets the geolocation of the event and updates the corresponding field in Firestore.
-     *
-     * @param geolocation The new geolocation for the event.
-     */
-    public void setGeolocation(String geolocation) {
-        this.geolocation = geolocation;
-        updateFirestore("geolocation", geolocation);
-    }
 
     /**
      * Retrieves the organizer's user ID for the event.
@@ -579,7 +554,6 @@ public class Event {
         map.put("eventLocation", eventLocation);
         map.put("startTime", startTime);
         map.put("endTime", endTime);
-        map.put("geolocation", geolocation);
         map.put("organizerOwnerId", organizerOwnerId);
         map.put("imagePosterId", imagePosterId);
         map.put("description", description);

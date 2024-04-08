@@ -18,6 +18,10 @@ public class FirebaseServiceUtils {
 		FirebaseServiceUtils._firestore = fireStore;
 		FirebaseServiceUtils._firebaseAuth = firebaseAuth;
 	}
+	public static void initialize() {
+		FirebaseServiceUtils._firestore = FirebaseFirestore.getInstance();
+		FirebaseServiceUtils._firebaseAuth = FirebaseAuth.getInstance();
+	}
 
 	public static FirebaseFirestore getFirestore() {
 		if (_firestore == null) {

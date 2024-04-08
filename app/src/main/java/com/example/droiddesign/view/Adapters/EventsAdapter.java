@@ -77,7 +77,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 	public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
 		Event event = eventsList.get(position);
 		holder.textEventName.setText(event.getEventName());
-		holder.textLocation.setText(event.getGeolocation());
+		holder.textLocation.setText(event.getEventLocation());
 
 		// Adjusted date parsing to handle strings like "08 Mar" or "14 March"
 		String dateString = event.getEventDate();

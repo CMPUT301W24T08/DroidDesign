@@ -33,10 +33,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    packagingOptions {
-        // Resolve duplicate file issue by picking the first occurrence
-        pickFirst ("mockito-extensions/org.mockito.plugins.MockMaker")
-    }
 }
 
 dependencies {
@@ -114,11 +110,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     testImplementation ("org.robolectric:robolectric:4.5.1")
 
-
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation ("androidx.test.ext:junit:1.1.5")
     androidTestImplementation ("org.mockito:mockito-core:5.11.0")
-    androidTestImplementation ("androidx.test:runner:1.5.2")
 
     androidTestImplementation ("org.powermock:powermock-module-junit4:2.0.9")
     androidTestImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
@@ -127,9 +120,7 @@ dependencies {
     androidTestImplementation ("org.powermock:powermock-classloading-base:2.0.9")
     implementation ("org.mockito:mockito-android:5.11.0")
     androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
-    androidTestImplementation ("androidx.test:runner:1.5.2")
     androidTestImplementation ("androidx.test:rules:1.5.0")
-
+    implementation ("com.google.protobuf:protobuf-javalite:3.22.3")
 }
