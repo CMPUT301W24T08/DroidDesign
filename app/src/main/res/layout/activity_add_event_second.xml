@@ -56,6 +56,7 @@
             android:id="@+id/text_input_event_description"
             android:layout_width="match_parent"
             android:layout_height="61dp"
+            android:textColor="@color/white"
             android:fontFamily="@font/opensans" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -168,6 +169,7 @@
             android:hint="@string/blank_numbers"
             android:inputType="number"
             android:id="@+id/input_number_max_attendees"
+            android:textColor="@color/white"
             android:fontFamily="@font/opensans"/>
     </com.google.android.material.textfield.TextInputLayout>
 
