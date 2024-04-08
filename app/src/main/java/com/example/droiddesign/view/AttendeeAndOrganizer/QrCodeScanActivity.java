@@ -14,19 +14,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.Uri;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.droiddesign.R;
 import com.example.droiddesign.controller.UploadQR;
 import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.example.droiddesign.model.AttendanceDB;
 import com.example.droiddesign.model.QRcode;
+import com.example.droiddesign.model.SharedPreferenceHelper;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -360,13 +365,65 @@ public class QrCodeScanActivity extends AppCompatActivity {
      * @param context The context in which the activity is running.
      */
     private void checkPermissionAndShowActivity(Context context) {
+        String origin = getIntent().getStringExtra("ORIGIN");
+        boolean isFromAddEventSecondActivity = "AddEventSecondActivity".equals(origin);
+        SharedPreferenceHelper preferenceHelper = new SharedPreferenceHelper(QrCodeScanActivity.this);
+        String currentUserId = preferenceHelper.getUserId();
+
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            showCamera();
+            if (!isFromAddEventSecondActivity) {
+                mFirestoreDb.collection("Users").document(currentUserId).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocation");
+                            if (geolocationEnabled != null && geolocationEnabled) {
+                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // Request location permission
+                                    requestLocationPermission();
+                                } else {
+                                    showCamera();
+                                }
+                            } else {
+                                showCamera();
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("QrCodeScanActivity", "Error fetching user geolocation setting", e);
+                            showCamera();  // Proceed with showing the camera if there's an error fetching the setting
+                        });
+            } else {
+                showCamera();
+            }
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
             Toast.makeText(context, "Camera permission required", Toast.LENGTH_SHORT).show();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
+    }
+
+    private final ActivityResultLauncher<String> requestLocationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Location permission granted, proceed with the operation that requires location
+                } else {
+                    // Inform the user that location permission is needed
+                    new AlertDialog.Builder(this)
+                            .setTitle("Location Permission Denied")
+                            .setMessage("Location permission is needed for accurate check-ins. Please consider enabling it in your app settings.")
+                            .setPositiveButton("Go to Settings", (dialogInterface, i) -> {
+                                // Intent to open app settings for location permission
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", getPackageName(), null));
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("Dismiss", (dialog, which) -> dialog.dismiss())
+                            .create()
+                            .show();
+                }
+            });
+
+
+    private void requestLocationPermission() {
+        requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     /**
