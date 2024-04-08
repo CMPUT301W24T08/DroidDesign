@@ -37,7 +37,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.credentials:credentials:1.3.0-alpha01")
+    implementation("androidx.credentials:credentials:1.3.0-alpha02")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.zxing:core:3.5.3")
@@ -59,6 +59,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("androidx.activity:activity:1.8.2")
     implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("androidx.test.uiautomator:uiautomator-v18:2.2.0-alpha1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -80,16 +81,10 @@ dependencies {
     implementation ("androidx.multidex:multidex:2.0.1")
     implementation ("com.google.android.gms:play-services-base:18.3.0")
 
-
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.11.2")
-
     testImplementation ("org.junit.jupiter:junit-jupiter-api:5.8.1") // or a later version
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.8.1") // or a later version
-    testImplementation ("org.mockito:mockito-core:3.11.2") // or a later version
     testImplementation ("org.mockito:mockito-junit-jupiter:3.6.0") // or a later version
 
-    testImplementation("com.google.firebase:firebase-firestore:24.11.0")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     implementation("androidx.activity:activity-ktx:1.8.2")
@@ -113,9 +108,19 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    testImplementation ("org.robolectric:robolectric:4.5.1")
 
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("org.mockito:mockito-core:5.11.0")
 
+    androidTestImplementation ("org.powermock:powermock-module-junit4:2.0.9")
+    androidTestImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation ("org.powermock:powermock-classloading-xstream:2.0.9")
+// The xstream classloader is often not needed directly; you can usually use the default one
+    androidTestImplementation ("org.powermock:powermock-classloading-base:2.0.9")
 
-
-
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation ("androidx.test:rules:1.5.0")
+    implementation ("com.google.protobuf:protobuf-javalite:3.22.3")
 }

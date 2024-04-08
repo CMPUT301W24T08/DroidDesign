@@ -14,6 +14,7 @@ Conclave is an innovative Android application designed to streamline the event o
 | Fardil Iqbal     | fardil   | [@FardilIqbal](https://github.com/FardilIqbal) |
 | Chris Vanderveen | cjvander | [@chris-vanderveen](https://github.com/chris-vanderveen) |
 | Samad Zeeshan    | mzeesha1 | [@samad-zeeshan](https://github.com/samad-zeeshan) |
+| Arjun Dhaliwal   | Adhaliw4 | [@adloading](https://github.com/adloading)    |
 
 
 ## Wiki
