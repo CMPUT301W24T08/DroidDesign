@@ -170,7 +170,6 @@
             android:hint="@string/blank_numbers"
             android:inputType="number"
             android:id="@+id/input_number_max_attendees"
-            android:textColor="@color/white"
             android:fontFamily="@font/opensans"/>
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -124,4 +124,5 @@ dependencies {
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation ("androidx.test:rules:1.5.0")
     implementation ("com.google.protobuf:protobuf-javalite:3.22.3")
+    androidTestImplementation ("androidx.test.uiautomator:uiautomator:2.3.0")
 }
