@@ -131,7 +131,6 @@ public class RoleSelectionActivity extends AppCompatActivity {
 						prefsHelper.saveUserProfile(user.getUid(), role, null);
 
 						UsersDB userdb = new UsersDB(FirebaseServiceUtils.getFirestore());
-						Toast.makeText(RoleSelectionActivity.this, "User Test "+user.getUid(), Toast.LENGTH_SHORT).show();
 						userdb.addUser(newUser);
 						authCallBck.onSuccess();
 //						navigateToEventMenu();
