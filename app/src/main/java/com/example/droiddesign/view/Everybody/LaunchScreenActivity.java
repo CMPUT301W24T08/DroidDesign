@@ -37,6 +37,9 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
      */
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /**
+     * Helper for managing shared preferences, used for storing and retrieving small amounts of data persistently.
+     */
     SharedPreferenceHelper prefsHelper;
 
     /**
@@ -103,6 +106,16 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
 
 
     }
+
+    /**
+     * Callback for the result from requesting permissions.
+     * This method is invoked for every call on requestPermissions(android.app.Activity, String[], int).
+     *
+     * @param requestCode  The request code passed in requestPermissions(android.app.Activity, String[], int).
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions which is either
+     *                     PackageManager.PERMISSION_GRANTED or PackageManager.PERMISSION_DENIED. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -136,7 +149,13 @@ public class LaunchScreenActivity extends AppCompatActivity implements BasicLogi
         finish();
     }
 
-    // Declare the launcher at the top of your Activity/Fragment:
+    /**
+     * Launcher for the result of a permission request.
+     * This launcher initiates a request for permission and handles the callback for the result.
+     * If the permission is granted, it allows the Firebase Cloud Messaging SDK to post notifications.
+     * If denied, it alerts the user that the application will not be able to show notifications,
+     * and provides an option to go to the app settings to enable the permission.
+     */
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {

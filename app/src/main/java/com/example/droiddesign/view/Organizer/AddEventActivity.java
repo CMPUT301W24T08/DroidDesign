@@ -224,6 +224,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
     }
 
+    /**
+     * Shows the date picker dialog for the user to select a date.
+     * Catches and handles any exceptions by showing an error toast.
+     */
     private void showDatePickerDialog() {
         try {
             DialogFragment datePicker = new DatePickerFragment();
@@ -233,6 +237,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
+    /**
+     * Callback method for when a date is set in the date picker dialog.
+     * Updates the UI with the selected date and handles any exceptions by showing an error toast.
+     *
+     * @param year  The selected year.
+     * @param month The selected month.
+     * @param day   The selected day.
+     */
     public void onDateSet(int year, int month, int day) {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -250,6 +262,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
+    /**
+     * Callback method for when a time is set in the time picker dialog.
+     * Updates the UI with the selected time and handles any exceptions by showing an error toast.
+     *
+     * @param tag       Identifier for the time picker instance.
+     * @param hourOfDay The selected hour of the day.
+     * @param minute    The selected minute.
+     */
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         try {
             String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
@@ -274,8 +294,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-
-
+    /**
+     * Sets up the autocomplete fragment for location search.
+     * Initializes the fragment with necessary fields and sets a place selection listener to handle selected place.
+     */
     private void setupAutocompleteFragment() {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);

@@ -33,13 +33,43 @@ import java.util.UUID;
 public class ProfileSettingsActivity extends AppCompatActivity {
 
     private EditText editUsername, editUserEmail, editUserContactNumber, editUserCompany, editDisplayUserName, editDisplayUserCompany;
+    /**
+     * Button for saving the profile settings.
+     */
     private Button saveButton;
+
+    /**
+     * ImageView for displaying the user's profile picture.
+     */
     private ImageView profileImageView;
+
+    /**
+     * Instance of FirebaseFirestore used for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Instance of the current FirebaseUser.
+     */
     private FirebaseUser currentUser;
+    /**
+     * URI of the selected image for the profile picture.
+     */
     private Uri imageUri;
+
+    /**
+     * URL of the user's profile picture in Firebase Storage.
+     */
     String profilePicUrl;
+
+    /**
+     * Reference to Firebase Storage where the profile picture will be uploaded.
+     */
     private StorageReference mStorageRef;
+
+    /**
+     * Helper class for managing shared preferences.
+     */
     SharedPreferenceHelper prefsHelper;
     private String imageUrl;
     String userId;
@@ -381,6 +411,14 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Validates the input fields for the profile settings.
+     *
+     * This method checks if the username, email, contact number, and company fields are filled in.
+     * It also validates the email format and the length of the contact number.
+     *
+     * @return true if all fields are valid, false otherwise.
+     */
     private boolean validateProfileFields() {
         String newUsername = editUsername.getText().toString();
         String newUserEmail = editUserEmail.getText().toString();
@@ -400,11 +438,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         return true;
     }
-
-
-
-
-
 
 
 

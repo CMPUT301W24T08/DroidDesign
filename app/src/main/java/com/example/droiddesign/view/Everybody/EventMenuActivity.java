@@ -359,6 +359,10 @@ public class EventMenuActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Called when the activity has been resumed and is now visible to the user.
+	 * This method ensures that the events list is refreshed each time the activity comes into the foreground.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -378,6 +382,12 @@ public class EventMenuActivity extends AppCompatActivity {
 		Log.d("EventMenuActivity", "Adapter item count: " + eventsAdapter.getItemCount());
 	}
 
+
+	/**
+	 * Updates the Firebase Messaging Service token for the current user in the Firestore database if needed.
+	 * This method retrieves the latest FCM token and updates it in the Firestore database under the user's document.
+	 * Success or failure of the update operation is logged accordingly.
+	 */
 	void updateTokenIfNeeded(){
 		FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
 			if(task.isSuccessful()){

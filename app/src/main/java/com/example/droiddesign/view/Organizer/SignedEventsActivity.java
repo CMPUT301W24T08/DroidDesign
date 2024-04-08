@@ -26,9 +26,24 @@ import java.util.List;
  */
 public class SignedEventsActivity extends AppCompatActivity {
 
+    /**
+     * The RecyclerView used to display the list of events the user has signed up for.
+     */
     private RecyclerView eventsRecyclerView;
+
+    /**
+     * Instance of FirebaseFirestore used for database operations.
+     */
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * List storing the IDs of the events that the user has signed up for.
+     */
     private List<String> signedEventsIds;
+
+    /**
+     * List storing the Event objects that the user has signed up for, initially empty.
+     */
     private final List<Event> signedEventsList = new ArrayList<>();
 
     /**
