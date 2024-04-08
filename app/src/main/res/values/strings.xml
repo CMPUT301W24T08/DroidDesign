@@ -102,5 +102,6 @@
     <string name="proffile_pic_note">Edit or remove profile picture using the options on the image.</string>
     <string name="default_notification_channel_id">your_notification_channel_id</string>
     <string name="google_maps_key">AIzaSyACpWJ8UeqCMkWrP8hmVrTkoJCVSK7OiY4</string>
+    <string name="set_milestones">Set Milestones</string>
 
 </resources>
