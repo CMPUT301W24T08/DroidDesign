@@ -136,6 +136,7 @@ public class DiscoverEventsActivity extends AppCompatActivity {
             EventsAdapter eventsAdapter = new EventsAdapter(events, event -> {
                 Intent detailIntent = new Intent(DiscoverEventsActivity.this, EventDetailsActivity.class);
                 detailIntent.putExtra("EVENT_ID", event.getEventId());
+                detailIntent.putExtra("ORIGIN", "DiscoverEventsActivity");
                 startActivity(detailIntent);
             });
             eventsRecyclerView.setAdapter(eventsAdapter);
