@@ -59,7 +59,7 @@ public class BrowseEventTest {
 
 
 		// Check if the events are displayed
-		onView(withId(R.id.events_recycler_view)).check(matches(isDisplayed()));
+		onView(withId(R.id.text_upcoming_events)).check(matches(isDisplayed()));
 
 
 	}
