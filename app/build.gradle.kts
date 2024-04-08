@@ -119,7 +119,9 @@ dependencies {
 // The xstream classloader is often not needed directly; you can usually use the default one
     androidTestImplementation ("org.powermock:powermock-classloading-base:2.0.9")
     implementation ("org.mockito:mockito-android:5.11.0")
-    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1"){
+        exclude("com.google.protobuf", "protobuf-lite")
+    }
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation ("androidx.test:rules:1.5.0")
     implementation ("com.google.protobuf:protobuf-javalite:3.22.3")
