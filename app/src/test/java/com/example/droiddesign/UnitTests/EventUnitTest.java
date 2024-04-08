@@ -38,8 +38,6 @@ public class EventUnitTest {
 		event.setDate(testString);
 		assertEquals(testString, event.getDate());
 
-		event.setGeolocation(testString);
-		assertEquals(testString, event.getGeolocation());
 
 		event.setOrganizerOwnerId(testString);
 		assertEquals(testString, event.getOrganizerOwnerId());

@@ -17,8 +17,6 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class EventTest {
 
-    @Mock
-    private Event mockedEvent;
 
     @Test
     public void testEventConstructor() {
@@ -29,7 +27,8 @@ public class EventTest {
         String eventLocation = "Test Location";
         String startTime = "10:00 AM";
         String endTime = "12:00 PM";
-        String geolocation = "1.234567, -1.234567";
+        double longitude = 0.00;
+        double latitude = 0.00;
         String organizerOwnerId = "456";
         String imagePosterId = "789";
         String description = "Test description";
@@ -42,9 +41,9 @@ public class EventTest {
         String checkInQrId = "checkInQrId";
 
         // Create the event object using the constructor
-        Event event = new Event(eventId, eventName, eventDate, eventLocation, startTime, endTime, geolocation,
-                organizerOwnerId, imagePosterId, description, signupLimit, attendeesCount, null,
-                shareQrCode, checkInQrCode, shareQrId, checkInQrId);
+        Event event = new Event(eventId,eventName,eventDate,eventLocation,longitude,latitude,startTime,
+                endTime,organizerOwnerId, imagePosterId, description, signupLimit,attendeesCount,null,
+                shareQrCode,checkInQrCode, shareQrId, checkInQrId);
 
         // Verify that the event object has been created with the expected values
         assertEquals(eventId, event.getEventId());
@@ -53,15 +52,12 @@ public class EventTest {
         assertEquals(eventLocation, event.getEventLocation());
         assertEquals(startTime, event.getStartTime());
         assertEquals(endTime, event.getEndTime());
-        assertEquals(geolocation, event.getGeolocation());
         assertEquals(organizerOwnerId, event.getOrganizerOwnerId());
         assertEquals(imagePosterId, event.getImagePosterId());
         assertEquals(description, event.getDescription());
         assertEquals(shareQrCode, event.getShareQrCode());
     }
 
-    @Mock
-    private FirebaseFirestore mockedFirestore;
 
     private Event event;
 
