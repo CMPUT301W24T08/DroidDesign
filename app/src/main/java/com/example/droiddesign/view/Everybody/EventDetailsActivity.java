@@ -115,14 +115,29 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 			}
 		});
 
+
+
 		ImageButton menuButton = findViewById(R.id.button_menu);
 		menuButton.setOnClickListener(v -> toggleNavigationMenu());
 		navigationMenu = findViewById(R.id.navigation_menu);
 		navigationMenu.getMenu().clear();
 
+
+
+		if ("DiscoverEventsActivity".equals(origin)) {
+			menuButton.setVisibility(View.GONE);
+		}
+
+
+
 		// Inflate the menu based on user role
 		if ("organizer".equalsIgnoreCase(userRole)) {
-			navigationMenu.inflateMenu(R.menu.menu_event_details);
+
+			if ("SignedEventsActivity".equals(origin)) {
+				navigationMenu.inflateMenu(R.menu.menu_attendee_event_details);
+			} else {
+				navigationMenu.inflateMenu(R.menu.menu_event_details);
+			}
 
 			// Check if eventId is in user.manageEventList
 			userRef.get().addOnSuccessListener(documentSnapshot -> {

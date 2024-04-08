@@ -101,17 +101,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
                         .into(holder.profileImageView);
             }
         } else {
-            // Increment and display for guest users
-            guestUserCount++;
-            holder.textUserName.setText("Guest User " + guestUserCount);
+            // Use position + 1 for guest user numbering to maintain consistency
+            holder.textUserName.setText("Guest User " + (position + 1));
             holder.textCompany.setText("");
 
             // Load a generic avatar image
-            String avatarUrl = "https://robohash.org/" + user.getUserId(); // Example URL
+            String avatarUrl = "https://robohash.org/" + user.getUserId();
             Glide.with(holder.itemView.getContext())
                     .load(avatarUrl)
                     .into(holder.profileImageView);
         }
+
 
         // Only show check-in data if checkInsMap is not null
         if (checkInsMap != null) {

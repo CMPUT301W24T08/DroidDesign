@@ -1,6 +1,8 @@
 package com.example.droiddesign.view.Admin;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -108,8 +110,11 @@ public class BrowseImagesActivity extends AppCompatActivity {
 							imageItemList.clear();
 							for (DocumentSnapshot document : task.getResult()) {
 								User user = document.toObject(User.class);
-								if (user != null && user.getProfilePic() != null) {
-									imageItemList.add(new ImageItem(user.getProfilePic(), user.getUserId()));
+								String profilePic = user.getProfilePic();
+								if (profilePic != null &&
+										!profilePic.startsWith("https://ui-avatars.com") &&
+										!profilePic.startsWith("https://robohash.org/")) {
+									imageItemList.add(new ImageItem(profilePic, user.getUserId()));
 								}
 							}
 							imagesAdapter.notifyDataSetChanged();
@@ -121,6 +126,7 @@ public class BrowseImagesActivity extends AppCompatActivity {
 			Toast.makeText(this, "An error occurred while loading user profile images: " + e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
+
 
 	/**
 	 * This method is called when the activity is resumed.
@@ -158,6 +164,10 @@ public class BrowseImagesActivity extends AppCompatActivity {
 		try {
 			Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog_image_preview);
+
+			if (dialog.getWindow() != null) {
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			}
 
 			ImageView imageView = dialog.findViewById(R.id.dialog_imageview);
 			Button deleteButton = dialog.findViewById(R.id.dialog_delete_button);

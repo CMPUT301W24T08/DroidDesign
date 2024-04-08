@@ -84,15 +84,16 @@ public class AttendanceDB {
 
                                     Log.d("AttendanceDB", "Event details fetched for organizer " + organizerOwnerId + " with milestones: " + milestones);
 
-                                    Object firstMilestone = milestones.get(0);
-                                    Log.d("AttendanceDB", "Type of first milestone: " + firstMilestone.getClass().getName());
+                                    if (milestones != null && !milestones.isEmpty()) {
+                                        Object firstMilestone = milestones.get(0);  // Now safe to access after checking if not empty
+                                        Log.d("AttendanceDB", "Type of first milestone: " + firstMilestone.getClass().getName());
 
-
-                                    if (milestones != null && milestones.contains(totalCheckInsLong)) {
-                                        Log.d("AttendanceDB", "Milestone reached for event " + eventId + ": " + totalCheckIns);
-                                        sendNotification(organizerOwnerId, totalCheckIns, eventId);
-                                    } else {
-                                        Log.d("AttendanceDB", "Current check-ins " + totalCheckIns + " do not match any milestones for event " + eventId);
+                                        if (milestones.contains(totalCheckInsLong)) {
+                                            Log.d("AttendanceDB", "Milestone reached for event " + eventId + ": " + totalCheckIns);
+                                            sendNotification(organizerOwnerId, totalCheckIns, eventId);
+                                        } else {
+                                            Log.d("AttendanceDB", "Current check-ins " + totalCheckIns + " do not match any milestones for event " + eventId);
+                                        }
                                     }
                                 } else {
                                     Log.d("AttendanceDB", "Event document does not exist for eventId: " + eventId);

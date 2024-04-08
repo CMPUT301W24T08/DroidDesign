@@ -192,6 +192,16 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                     String endTime = btnEndTime.getText().toString();
                     String startDate = btnStartDate.getText().toString();
 
+                    if (eventName.isEmpty()) {
+                        Toast.makeText(AddEventActivity.this, "Please enter an event name", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (selectedEventLocation.isEmpty()) {
+                        Toast.makeText(AddEventActivity.this, "Please select an event location", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                     intent.putExtra("eventName", eventName);
                     intent.putExtra("startTime", startTime);
