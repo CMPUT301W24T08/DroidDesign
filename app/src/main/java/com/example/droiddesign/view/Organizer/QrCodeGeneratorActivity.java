@@ -45,6 +45,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
      * Bitmap object to hold the generated QR code image.
      */
 
+    // QRcode objects to represent the share and check-in QR codes.
     private QRcode shareQrCode, checkInQrCode;
     private String shareQrUrl, checkInQrUrl;
     private int uploadCount = 0;
@@ -174,6 +175,7 @@ public class QrCodeGeneratorActivity extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 listener.onQrCodeUploadSuccess(uri.toString());
+                                                Toast.makeText(QrCodeGeneratorActivity.this,"QR code creation complete!", Toast.LENGTH_SHORT).show();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {

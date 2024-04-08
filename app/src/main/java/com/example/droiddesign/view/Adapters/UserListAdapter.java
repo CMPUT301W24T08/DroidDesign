@@ -16,23 +16,59 @@ import com.example.droiddesign.model.User;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Adapter for displaying a list of users in a RecyclerView.
+ * Each user is represented as a card within the list, showing their name, company, and check-in count.
+ */
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserViewHolder> {
 
+    /**
+     * List of users to display in the adapter.
+     */
     private List<User> userList;
+    /**
+     * Map storing the number of check-ins for each user.
+     */
     private HashMap<String, Integer> checkInsMap;
+    /**
+     * Listener for handling clicks on items within the adapter.
+     */
     private final OnItemClickListener listener;
+
+    /**
+     * Counter for guest users to differentiate between them in the list.
+     */
     private int guestUserCount = 0;
 
+    /**
+     * Interface for handling item clicks in the RecyclerView.
+     */
     public interface OnItemClickListener {
         void onItemClick(User user);
     }
 
+    /**
+     * Constructs a UserListAdapter with the specified user list, check-ins map, and click listener.
+     *
+     * @param userList   List of users to be displayed in the adapter.
+     * @param checkInsMap Map storing the check-in counts for each user.
+     * @param listener  Listener for click events in the adapter.
+     */
     public UserListAdapter(List<User> userList, HashMap<String, Integer> checkInsMap, OnItemClickListener listener) {
         this.userList = userList;
         this.checkInsMap = checkInsMap;
         this.listener = listener;
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link UserViewHolder} of the given type to represent
+     * an item.
+     *
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new UserViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,7 +78,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
 
 
-
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder   The UserViewHolder which should be updated to represent the
+     *                 contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
@@ -83,6 +125,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
         holder.itemView.setOnClickListener(v -> listener.onItemClick(user));
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return userList.size();

@@ -26,9 +26,24 @@ import java.util.Map;
  */
 public class AppSettingsActivity extends AppCompatActivity {
 
+	/**
+	 * Switch for toggling the geolocation setting on or off.
+	 */
 	private SwitchCompat switchGeolocation;
+
+	/**
+	 * Spinner for selecting the user's notification preference.
+	 */
 	private Spinner spinnerNotificationPreference;
+
+	/**
+	 * Instance of FirebaseFirestore used for database operations.
+	 */
 	private FirebaseFirestore db; // Firestore database reference
+
+	/**
+	 * Current user's ID, fetched from the authentication service.
+	 */
 	private final String currentUserId = getCurrentUserId();
 
 	/**
@@ -116,6 +131,12 @@ public class AppSettingsActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Fetches and loads the user settings from the Firestore database.
+	 * This method retrieves the user's settings, such as geolocation and notification preferences,
+	 * from the Firestore database and updates the UI elements accordingly.
+	 * Listeners for UI elements are set up after the settings are loaded to prevent premature triggering.
+	 */
 	private void loadUserSettings() {
 		db.collection("Users").document(currentUserId).get()
 				.addOnSuccessListener(documentSnapshot -> {

@@ -50,25 +50,25 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.7">
+        app:layout_constraintVertical_bias="0.80">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_event_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
             android:fontFamily="@font/opensans" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/image_event_poster"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.17"
+        app:layout_constraintVertical_bias="0.20"
         app:srcCompat="@drawable/image_placeholder" />
 
     <com.google.android.material.button.MaterialButton
@@ -86,7 +86,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintVertical_bias=".33"/>
+        app:layout_constraintVertical_bias=".37"/>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -105,12 +105,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias=".58">
+        app:layout_constraintVertical_bias=".65">
 
         <AutoCompleteTextView
             android:id="@+id/QR_menu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:inputType="none"
             android:textColor="@color/white"
             android:fontFamily="@font/opensans"
@@ -122,14 +122,14 @@
 
     <ImageView
         android:id="@+id/qr_code"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:srcCompat="@drawable/qr_placeholder"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintVertical_bias=".45" />
+        app:layout_constraintVertical_bias=".53" />
 
     <TextView
         android:id="@+id/textView4"
@@ -201,20 +201,6 @@
         app:boxCornerRadiusBottomEnd="12.5dp"
         app:boxBackgroundColor="@color/card_bg_light_transparent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/set_milestones_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/card_bg_light_transparent"
-            android:fontFamily="@font/opensans"
-            android:text="Set Milestones"
-            app:cornerRadius="12.5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.91"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.050000012" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -248,6 +234,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.965"
         app:tint="@color/secondary_light" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/set_milestones_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_bg_light_transparent"
+        android:fontFamily="@font/opensans"
+        android:text="Set Milestones"
+        app:cornerRadius="12.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.899" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,8 @@ package com.example.droiddesign.view.Organizer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,31 +24,50 @@ import com.example.droiddesign.R;
 import com.example.droiddesign.model.Event;
 import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.model.SharedPreferenceHelper;
+import com.example.droiddesign.view.AttendeeAndOrganizer.QrCodeScanActivity;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class AddEventSecondActivity extends AppCompatActivity {
+
+    /**
+     * Instance of FirebaseFirestore to interact with the Firebase Firestore database.
+     */
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Launcher for starting the QR code generator activity and handling its result.
+     */
     private ActivityResultLauncher<Intent> qrGeneratorLauncher, scanQrLauncher;
 
-    // Generate a UUID for the event
+    /**
+     * A unique identifier for the event being added, generated using UUID.
+     */
     private final String uniqueID = UUID.randomUUID().toString();
-    private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, eventGeo, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
 
+
+    private String eventName, eventLocation, eventStartTime, eventEndTime, eventDate, shareQrUrl, shareQrId, checkInQrUrl, checkInQrId, imagePosterId;
+
+    /**
+     * List of milestones associated with the event.
+     */
     private List<Integer> milestoneList = new ArrayList<>();
 
+    /**
+     * Launcher for starting the image upload activity and handling its result.
+     */
     private ActivityResultLauncher<Intent> imageUploadLauncher;
 
+
     private double eventLongitude, eventLatitude;
-    private TextView milestoneTextView;
+
 
 
     @Override
@@ -70,40 +90,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
                     }
                 });
 
-        // Create a QR code object from the scanned QR code and upload it to Firebase Storage
-        // Handle upload failure
-        // Display an error message or take appropriate action
-        // Generate the check-in QR code
-//        scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    if (result.getResultCode() == Activity.RESULT_OK) {
-//                        Intent data = result.getData();
-//                        if (data != null) {
-//                            shareQrId = data.getStringExtra("SCANNED_QR_DATA");
-//                            Bitmap qrBitmap = data.getParcelableExtra("SCANNED_QR_BITMAP");
-//                            Log.d("AddEventSecondActivity", "Scanned QR Code ID: " + shareQrId);
-//
-//                            // Create a QR code object from the scanned QR code and upload it to Firebase Storage
-//                            QRcode shareQr = new QRcode(uniqueID, shareQrId, qrBitmap);
-//                            shareQr.upload(new QRcode.OnQrCodeUploadListener() {
-//                                @Override
-//                                public void onQrCodeUploadSuccess() {
-//                                    shareQrUrl = shareQr.getUri();
-//                                    Log.d("AddEventSecondActivity", "Share QR code uploaded successfully. URL: " + shareQrUrl);
-//                                }
-//
-//                                @Override
-//                                public void onQrCodeUploadFailure(String errorMessage) {
-//                                    // Handle upload failure
-//                                    Log.e("AddEventSecondActivity", "Share QR code upload failed: " + errorMessage);
-//                                    // Display an error message or take appropriate action
-//                                }
-//                            });
-//                            // Generate the check-in QR code
-//                            generateCheckInQrCode();
-//                        }
-//                    }
-//                });
 
         scanQrLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK) {
@@ -157,7 +143,10 @@ public class AddEventSecondActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(view -> finish());
     }
 
-
+    /**
+     * Populates the event data from the passed intent.
+     * @param intent The intent containing the event data.
+     */
     private void populateEventFromIntent(Intent intent) {
         try {
             eventName = intent.getStringExtra("eventName");
@@ -165,7 +154,6 @@ public class AddEventSecondActivity extends AppCompatActivity {
             eventStartTime = intent.getStringExtra("startTime");
             eventEndTime = intent.getStringExtra("endTime");
             eventDate = intent.getStringExtra("startDate");
-            eventGeo = intent.getStringExtra("eventLocation");
             eventLongitude = intent.getDoubleExtra("longitude", -113.5257417);
             eventLatitude = intent.getDoubleExtra("latitude", 53.5281589);
 
@@ -205,9 +193,16 @@ public class AddEventSecondActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a dialog for adding milestones to the event.
+     */
     private void showMilestonesDialog() {
         Dialog milestonesDialog = new Dialog(this);
         milestonesDialog.setContentView(R.layout.dialog_milestones);
+
+        if (milestonesDialog.getWindow() != null) {
+            milestonesDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         LinearLayout milestoneContainer = milestonesDialog.findViewById(R.id.milestone_container);
         final int[] milestoneCount = {1}; // Use an array to hold the count
@@ -269,6 +264,9 @@ public class AddEventSecondActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Saves the event details to Firestore and navigates to the event details page.
+     */
     private void saveEvent() {
         TextView eventDescriptionTextView = findViewById(R.id.text_input_event_description);
         String eventDescription = eventDescriptionTextView.getText().toString();
@@ -291,7 +289,7 @@ public class AddEventSecondActivity extends AppCompatActivity {
         String currentUserId = prefsHelper.getUserId();
 
         Event event = new Event(
-                uniqueID, eventName, eventDate, eventLocation, eventLongitude, eventLatitude, eventStartTime, eventEndTime, eventLocation, currentUserId,
+                uniqueID, eventName, eventDate, eventLocation, eventLongitude, eventLatitude, eventStartTime, eventEndTime, currentUserId,
                 imagePosterId, eventDescription, maxAttendees, 0, milestoneList, shareQrUrl, checkInQrUrl, shareQrId, checkInQrId);
 
         event.saveToFirestore();

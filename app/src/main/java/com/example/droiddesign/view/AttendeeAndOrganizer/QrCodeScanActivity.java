@@ -1,10 +1,9 @@
-package com.example.droiddesign.view.Organizer;
+package com.example.droiddesign.view.AttendeeAndOrganizer;
 
 import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -13,8 +12,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -29,16 +26,12 @@ import com.example.droiddesign.databinding.ActivityQrCodeScanBinding;
 import com.example.droiddesign.model.AttendanceDB;
 import com.example.droiddesign.model.QRcode;
 import com.example.droiddesign.view.Everybody.EventDetailsActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -48,7 +41,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -155,6 +147,7 @@ public class QrCodeScanActivity extends AppCompatActivity {
                     returnIntent.putExtra("checkInQrId", qrId);
                     returnIntent.putExtra("checkInQrUrl", qrUrl); // Use the contents as the QR URL
                     setResult(Activity.RESULT_OK, returnIntent);
+                    Toast.makeText(QrCodeScanActivity.this, "QR code recycled!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
@@ -198,6 +191,13 @@ public class QrCodeScanActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Checks in the user for the specified event.
+     * If geolocation is enabled for the user, it fetches the current location and performs check-in with location data.
+     * Otherwise, it performs a check-in without location data.
+     *
+     * @param eventId The ID of the event for which the user is checking in.
+     */
     private void checkInUser(String eventId) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -222,6 +222,12 @@ public class QrCodeScanActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("checkInUser", "Error fetching user geolocation setting", e));
     }
 
+    /**
+     * Searches for a QR code URL in the Firestore database and processes the check-in if found.
+     * If a matching QR code is found, it initiates the user check-in process and navigates to the event details.
+     *
+     * @param qrUrl The URL to search for in the QR codes collection.
+     */
     private void searchByQRUrl(String qrUrl) {
         Log.d("QrCodeScanActivity", "Searching for QR URL: " + qrUrl);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -245,7 +251,15 @@ public class QrCodeScanActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Uploads the QR code data to Firestore and invokes the appropriate callback based on the operation's success or failure.
+     *
+     * @param qrId The unique identifier for the QR code.
+     * @param eventId The event ID associated with the QR code.
+     * @param type The type of QR code (e.g., "check_in" or "share").
+     * @param contents The actual content or URL embedded in the QR code.
+     * @param listener The listener to receive callback notifications.
+     */
     private void uploadQrCode(String qrId, String eventId, String type, String contents, final OnQrCodeUploadListener listener) {
         UploadQR upload = new UploadQR(contents, eventId, type);  // Use contents directly as qrUrl
         mFirestoreDb.collection("qrcodes").document(qrId).set(upload)
@@ -253,11 +267,22 @@ public class QrCodeScanActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> listener.onQrCodeUploadFailure(e.getMessage()));
     }
 
+
+    /**
+     * Listener interface for QR code upload operations, providing success and failure callback methods.
+     */
     public interface OnQrCodeUploadListener {
         void onQrCodeUploadSuccess(String qrUrl);
         void onQrCodeUploadFailure(String errorMessage);
     }
 
+
+    /**
+     * Fetches the current location of the device and passes the coordinates to the provided callback.
+     * Location updates are requested with high accuracy and are stopped as soon as the first location result is obtained.
+     *
+     * @param callback The callback to be invoked with the obtained location.
+     */
     private void getCurrentLocation(MyLocationCallback callback) {
 
         if (isCheckedIn) {
@@ -293,6 +318,9 @@ public class QrCodeScanActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Callback interface for obtaining the latitude and longitude from the current location.
+     */
     private interface MyLocationCallback {
         void onLocationObtained(double latitude, double longitude);
     }

@@ -72,8 +72,8 @@ public class BrowseImagesActivity extends AppCompatActivity {
 	private void setupSpinner() {
 		try {
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-					R.array.image_types, android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+					R.array.image_types, R.layout.spinner_dropdown_item);
+			adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 			imageTypeSpinner.setAdapter(adapter);
 			imageTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 				@Override

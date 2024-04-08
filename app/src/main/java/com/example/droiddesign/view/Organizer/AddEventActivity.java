@@ -47,7 +47,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
     /**
      * Button to trigger the end date picker.
      */
-    private Button btnEndDate;
 
     private String selectedEventLocation = "";
     double latitude;
@@ -124,15 +123,6 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             String startDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(startDate.getTime());
             btnStartDate.setText(startDateFormatted);
 
-            // Set default button behaviour to gone and set button to display current date + 2 days
-            TextView endDateText = findViewById(R.id.textView3);
-            Calendar endDate = (Calendar) currentDate.clone();
-            endDate.add(Calendar.DATE, 2);
-            String endDateFormatted = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(endDate.getTime());
-            btnEndDate = findViewById(R.id.button_end_date);
-            btnEndDate.setText(endDateFormatted);
-            btnEndDate.setVisibility(View.GONE);
-            endDateText.setVisibility(View.GONE);
 
             btnStartTime = findViewById(R.id.button_start_time);
             btnEndTime = findViewById(R.id.button_end_time);
@@ -198,16 +188,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
             }
         });
 
-        btnEndDate.setOnClickListener(v -> {
-            if (btnEndDate.getVisibility() == View.VISIBLE) {
-                isStartDate = false;
-                try {
-                    showDatePickerDialog();
-                } catch (Exception e) {
-                    Toast.makeText(AddEventActivity.this, "Error showing date picker", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
 
         FloatingActionButton fabNextPage = findViewById(R.id.fab_next_page);
         fabNextPage.setOnClickListener(new View.OnClickListener() {
@@ -220,14 +201,12 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
                     String startTime = btnStartTime.getText().toString();
                     String endTime = btnEndTime.getText().toString();
                     String startDate = btnStartDate.getText().toString();
-                    String endDate = btnEndDate.getText().toString();
 
                     Intent intent = new Intent(AddEventActivity.this, AddEventSecondActivity.class);
                     intent.putExtra("eventName", eventName);
                     intent.putExtra("startTime", startTime);
                     intent.putExtra("endTime", endTime);
                     intent.putExtra("startDate", startDate);
-                    intent.putExtra("endDate", endDate);
                     intent.putExtra("eventLocation", selectedEventLocation);
                     intent.putExtra("longitude", longitude);
                     intent.putExtra("latitude", latitude);
@@ -245,6 +224,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         });
     }
 
+    /**
+     * Shows the date picker dialog for the user to select a date.
+     * Catches and handles any exceptions by showing an error toast.
+     */
     private void showDatePickerDialog() {
         try {
             DialogFragment datePicker = new DatePickerFragment();
@@ -254,6 +237,14 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
+    /**
+     * Callback method for when a date is set in the date picker dialog.
+     * Updates the UI with the selected date and handles any exceptions by showing an error toast.
+     *
+     * @param year  The selected year.
+     * @param month The selected month.
+     * @param day   The selected day.
+     */
     public void onDateSet(int year, int month, int day) {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -265,14 +256,20 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
 
             if (isStartDate) {
                 btnStartDate.setText(dateString);
-            } else {
-                btnEndDate.setText(dateString);
             }
         } catch (Exception e) {
             Toast.makeText(this, "Error setting date", Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Callback method for when a time is set in the time picker dialog.
+     * Updates the UI with the selected time and handles any exceptions by showing an error toast.
+     *
+     * @param tag       Identifier for the time picker instance.
+     * @param hourOfDay The selected hour of the day.
+     * @param minute    The selected minute.
+     */
     public void onTimeSet(String tag, int hourOfDay, int minute) {
         try {
             String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
@@ -297,8 +294,10 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerFra
         }
     }
 
-
-
+    /**
+     * Sets up the autocomplete fragment for location search.
+     * Initializes the fragment with necessary fields and sets a place selection listener to handle selected place.
+     */
     private void setupAutocompleteFragment() {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);

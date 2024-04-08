@@ -19,9 +19,25 @@ import java.util.List;
  * This activity displays a list of users who have signed up for an event.
  */
 public class SignedUpUsersActivity extends AppCompatActivity {
+
+    /**
+     * Adapter for the RecyclerView that displays the list of users.
+     */
     private UserListAdapter usersListAdapter;
+
+    /**
+     * List of User objects representing the users to be displayed in the RecyclerView.
+     */
     private final List<User> users = new ArrayList<>();
+
+    /**
+     * Unique identifier for the event. Used to fetch users related to this specific event.
+     */
     private String eventId;
+
+    /**
+     * Instance of FirebaseFirestore used for fetching and updating data in the Firestore database.
+     */
     private FirebaseFirestore firestore;
 
     /**

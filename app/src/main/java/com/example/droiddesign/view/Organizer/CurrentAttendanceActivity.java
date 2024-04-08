@@ -31,16 +31,44 @@ import java.util.List;
 
 public class CurrentAttendanceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    /**
+     * GoogleMap instance for displaying the event's check-in locations.
+     */
     private GoogleMap map;
 
+    /**
+     * RecyclerView for displaying the list of attendees.
+     */
     private RecyclerView attendanceListView;
+
+    /**
+     * Adapter for the attendance list RecyclerView.
+     */
     private UserListAdapter attendanceListAdapter;
 
+    /**
+     * List to store the user data fetched from Firestore.
+     */
     List<User> users = new ArrayList<>(); // Initialize the list
+
+    /**
+     * Map to store the number of check-ins per user, with user ID as key and check-in count as value.
+     */
     private HashMap<String, Integer> checkedInUsers = new HashMap<>(); // Initialize the map
+
+    /**
+     * Event ID for which the attendance is being displayed.
+     */
     private String eventId;
+
+    /**
+     * FirebaseFirestore instance for database interaction.
+     */
     private FirebaseFirestore firestore;
 
+    /**
+     * TextView to display the number of check-ins.
+     */
     TextView checkInsTextView;
 
     @Override
@@ -76,6 +104,12 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
         });
     }
 
+    /**
+     * Retrieves the event attendance list from Firestore, including user details and check-in counts.
+     * This method queries the "AttendanceDB" collection to find all check-ins associated with the current event.
+     * For each check-in found, it fetches the corresponding user's details from the "Users" collection.
+     * The method updates the local list of users and their check-in counts, and then refreshes the UI to display this data.
+     */
     private void retrieveEventAndAttendanceList() {
         firestore.collection("AttendanceDB")
                 .whereEqualTo("event_id", eventId)
@@ -114,6 +148,10 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
                 });
     }
 
+
+    /**
+     * Initializes the map and sets up the markers based on the check-in locations of attendees.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("CurrentAttendance", "Map is ready");
@@ -124,6 +162,9 @@ public class CurrentAttendanceActivity extends AppCompatActivity implements OnMa
         displayCheckInsOnMap(); // Function to display the check-in locations
     }
 
+    /**
+     * Displays check-in locations on the map by placing markers at the coordinates of each check-in.
+     */
     private void displayCheckInsOnMap() {
         firestore.collection("AttendanceDB")
                 .whereEqualTo("event_id", eventId)
