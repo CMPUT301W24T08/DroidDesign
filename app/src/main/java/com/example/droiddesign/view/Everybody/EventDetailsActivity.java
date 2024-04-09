@@ -124,7 +124,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
 
 
-		if ("DiscoverEventsActivity".equals(origin)) {
+		if ("DiscoverEventsActivity".equals(origin) && !"admin".equalsIgnoreCase(userRole)) {
 			menuButton.setVisibility(View.GONE);
 		}
 
@@ -138,6 +138,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 			} else {
 				navigationMenu.inflateMenu(R.menu.menu_event_details);
 			}
+
 
 			// Check if eventId is in user.manageEventList
 			userRef.get().addOnSuccessListener(documentSnapshot -> {
